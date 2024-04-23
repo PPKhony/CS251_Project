@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/home.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/search.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/corner-up-left.css' rel='stylesheet'>
+    <link rel="stylesheet" href="account.css">
+</head>
+<body>
+ 
+    <nav>
+        <div class="nav-container">
+            <div class="nav-con">
+                <div class="nav-logo">
+                    <img src="./component/CS251 Component/Food category/logo.png" style="height: 75px;">
+                    <h1>Fast Food</h1>
+                </div>
+                <div class="nav-search">
+                    <div class="input-container">
+                        <i class="gg-search"></i>
+                        <input type="text" placeholder="Search menu, order..." required><br>
+                    </div>
+                </div>
+                <div class="nav-menu">
+                    <ul>
+                        <li><a href="./home.html" class="home"><i class="gg-home"></i>Home</a></li>
+                        <li><a href="./manageDish.html" class="manager-dish"><img src="./component/CS251 Component/icon/dish.png">Manager Dish</a></li>
+                        <li><a href="./member.html" class="member"><img src="./component/CS251 Component/icon/member.png">Member</a></li>
+                        <li><a href="./transaction.html" class="transaction"><img src="./component/CS251 Component/icon/transaction.png">Transaction</a></li>
+                        <li><a href="./account.html" class="account"><img src="./component/CS251 Component/icon/account.png">Account</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>  
+    </nav>
+
+    <main>
+        <div class="main-container">
+            <h2>Account</h2>
+            <div class="main-con">
+                <div class="account-info">
+                    <div class="account-info-profile-and-name">
+                        <img src="./component/CS251 Component/Food category/1777635_can_coke_cola_drink_packaging_icon.svg">
+                        <h2>Name:xxxxxxxxxx</h2>
+                    </div>
+                    <div class="account-info-word-id">
+                        <h3>Word ID:</h3>
+                        <span style="padding: 0 70px;"></span>
+                        <h3>12345678</h3>
+                    </div>
+                    <div class="account-info-tel">
+                        <h3>Tel:</h3>
+                        <span style="padding: 0 70px;"></span>
+                        <h3>123-123-1234</h3>
+                    </div>
+                    <div class="account-info-address">
+                        <h3 style="height: 30px;">Address:</h3>
+                        <h3 id="adressInfo">
+                            99 Village
+                            No.18
+                            Kamphaeng Din Road,
+                            Si Phum Sub-district,
+                            Muang District,
+                            Chiang Mai, 50180
+                        </h3>
+                        <textarea rows="4" cols="50" style="display:none" id="changeAddress"></textarea>
+                    </div>
+                    <div class="account-info-start-date">
+                        <h3>Start Date:</h3>
+                        <span style="padding: 0 67px;"></span>
+                        <h3>xx/xx/xx</h3>
+                    </div>
+                    <div class="account-info-button">
+                        <button type="button" id="editButton">Edit</button>
+                        <button type="button" style="display:none" id="saveButton">Save</button>
+                    </div>
+                </div>
+
+                <div class="account-info-con">
+                    <div class="account-check-in">
+                        <div class="left-check-in">
+                            <h2>Check In Activity</h2>
+                            <h3>Today Check In</h3>
+                            <div class="status-check-in-box">
+                                <div class="status-check-in-box-con">
+                                    <h3>Thu, 14/05/2024</h3>
+                                    <div class="status-check-in-box-in">
+                                        <img src="./component/CS251 Component/icon/logIn.png">
+                                        <h3>08.00am</h3>
+                                    </div>
+                                    <div class="status-check-in-box-out">
+                                        <img src="./component/CS251 Component/icon/logOut2.png">
+                                        <h3></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right-check-in">
+                            <div class="box-date-container">
+                                <div class="box-date">
+                                    <img src="./component/CS251 Component/icon/calendar.png">
+                                    <h2>Tue 12,Mar 2024</h2>
+                                </div>
+                            </div>
+                            <div class="table-check-in-container">
+                                <div class="table-check-in-con">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>No</td>
+                                                <td>Date</td>
+                                                <td>Time In</td>
+                                                <td>Time Out</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Thu, 14/05/2024</td>
+                                                <td>08.00</td>
+                                                <td>16.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Thu, 14/05/2024</td>
+                                                <td>08.00</td>
+                                                <td>16.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Thu, 14/05/2024</td>
+                                                <td>08.00</td>
+                                                <td>16.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Thu, 14/05/2024</td>
+                                                <td>08.00</td>
+                                                <td>16.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Thu, 14/05/2024</td>
+                                                <td>08.00</td>
+                                                <td>16.00</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+
+                        </div>
+                    </div>
+
+                    <div class="account-sale">
+                        <div class="account-sale-con">
+                            <div class="account-sale-header">
+                                <h2>My<span> </span>Sales</h2>
+                                <div class="account-sale-click">
+                                    <h3 id="dailySales">Daily Average</h3>
+                                    <h3 id="monthlySales">Monthly Average</h3>
+                                </div>
+                            </div>
+                            <img src="./component/CS251 Component/icon/graph1.png" id="changeGraph">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="personal-employee-account-container">
+        <div class="personal-employee-account-con-top">
+            <img src="./component/CS251 Component/icon/account.png">
+            <h3>Pongsatorn Sripli</h3>
+            <img src="./component/CS251 Component/icon/arrow-down.png" id="logoutIcon1">
+        </div>
+        <div class="personal-employee-account-con-bottom" style="display: none;" id="logoutIcon2">
+            <a href="index.html"><img src="./component/CS251 Component/icon/logout.png"><p>Logout</p></a>
+        </div>
+    </div>
+
+    <script src="account.js"></script> 
+</body>
+</html>

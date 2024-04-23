@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/home.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/search.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/corner-up-left.css' rel='stylesheet'>
+    <link rel="stylesheet" href="manageDish.css">
+</head>
+<body>
+ 
+    <nav>
+        <div class="nav-container">
+            <div class="nav-con">
+                <div class="nav-logo">
+                    <img src="./component/CS251 Component/Food category/logo.png" style="height: 75px;">
+                    <h1>Fast Food</h1>
+                </div>
+                <div class="nav-search">
+                    <div class="input-container">
+                        <i class="gg-search"></i>
+                        <input type="text" placeholder="Search menu, order..." required><br>
+                    </div>
+                </div>
+                <div class="nav-menu">
+                    <ul>
+                        <li><a href="./home.html" class="home"><i class="gg-home"></i>Home</a></li>
+                        <li><a href="./manageDish.html" class="manager-dish"><img src="./component/CS251 Component/icon/dish.png">Manager Dish</a></li>
+                        <li><a href="./member.html" class="member"><img src="./component/CS251 Component/icon/member.png">Member</a></li>
+                        <li><a href="./transaction.html" class="transaction"><img src="./component/CS251 Component/icon/transaction.png">Transaction</a></li>
+                        <li><a href="./account.html" class="account"><img src="./component/CS251 Component/icon/account.png">Account</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>  
+    </nav>
+
+<main>
+
+    <div class="promotion">
+        <h1>Promotion</h1>
+        <div class="promotion-slide-container">
+            <div class="promotion-slide-con" id="promotionSlideCon">
+
+                <div class="promotion-add-card">
+                    <div class="promotion-card-add-container">
+                        <button type="button">ADD</button>
+                        <h2>Add New Promotion</h2>
+                    </div>
+                </div>
+
+                <div class="promotion-card">
+                    <div class="promotion-add-pic">
+                        <img src="./component/CS251 Component/Menu Photos/Dish1.jpeg">
+                    <button type="button">ADD</button>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h1>Food Category</h1>
+        <div class="category-container">
+            <div class="category-con">
+
+                <div class="category-food-add">
+                    <div class="category-food-add-container">
+                        <button type="submit">ADD</button>
+                        <h2>Add New Category</h2>
+                    </div>
+                </div>
+                
+            </div>
+        </div>  
+    </div>
+
+    <div class="menu">
+        <div class="menu-container">
+            <div class="menu-con" id="menuSlideCon">
+
+                <div class="menu-card-add">
+                    <div class="menu-card-add-container">
+                        <button type="submit">ADD</button>
+                        <h2>Add New Dish</h2>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+<div class="personal-employee-account-container">
+    <div class="personal-employee-account-con-top">
+        <img src="./component/CS251 Component/icon/account.png">
+        <h3>Pongsatorn Sripli</h3>
+        <img src="./component/CS251 Component/icon/arrow-down.png" id="logoutIcon1">
+    </div>
+    <div class="personal-employee-account-con-bottom" style="display: none;" id="logoutIcon2">
+        <a href="index.html"><img src="./component/CS251 Component/icon/logout.png"><p>Logout</p></a>
+    </div>
+</div>
+
+    <script src="manageDish.js"></script> 
+</body>
+</html>

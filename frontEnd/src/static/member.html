@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/home.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/search.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/corner-up-left.css' rel='stylesheet'>
+    <link rel="stylesheet" href="member.css">
+</head>
+<body>
+ 
+    <nav>
+        <div class="nav-container">
+            <div class="nav-con">
+                <div class="nav-logo">
+                    <img src="./component/CS251 Component/Food category/logo.png" style="height: 75px;">
+                    <h1>Fast Food</h1>
+                </div>
+                <div class="nav-search">
+                    <div class="input-container">
+                        <i class="gg-search"></i>
+                        <input type="text" placeholder="Search menu, order..." required><br>
+                    </div>
+                </div>
+                <div class="nav-menu">
+                    <ul>
+                        <li><a href="./home.html" class="home"><i class="gg-home"></i>Home</a></li>
+                        <li><a href="./manageDish.html" class="manager-dish"><img src="./component/CS251 Component/icon/dish.png">Manager Dish</a></li>
+                        <li><a href="./member.html" class="member"><img src="./component/CS251 Component/icon/member.png">Member</a></li>
+                        <li><a href="./transaction.html" class="transaction"><img src="./component/CS251 Component/icon/transaction.png">Transaction</a></li>
+                        <li><a href="./account.html" class="account"><img src="./component/CS251 Component/icon/account.png">Account</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>  
+    </nav>
+
+    <main>
+        <div class="member-list">
+            <div class="member-list-container">
+                <div class="member-list-con">
+                    <h2>Member List</h2>
+                    <div class="member-list-box">
+                        <div class="member-list-box-con">
+                            <div class="member-list-box-top">
+                                <h2>All Member</h2>
+                                <div class="input-container-2">
+                                    <i class="gg-search"></i>
+                                    <input type="text" placeholder="Search..."><br>
+                                </div>
+                                <button type="button" onclick="addMember()">ADD</button>
+                                <div class="input-table">
+                                    <h2>Page:</h2>
+                                    <input type="text" id="numInputSearchValue">
+                                    <img src="./component/CS251 Component/icon/arrow-down.png" class="arrow">
+                                </div>
+                            </div>
+                            <div class="member-list-box-bottom">
+                                <div class="member-list-box-bottom-container">
+                                    <div class="member-list-box-bottom-con">
+
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <td>No</td>
+                                                    <td>Member ID</td>
+                                                    <td>Enroll Date</td>
+                                                    <td>Member Point</td>
+                                                    <td>Action</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tableMember" class="table-member">
+
+                                                <!-- <tr>
+                                                    <td>1</td>
+                                                    <td>6509611908</td>
+                                                    <td>Thu, Mar 14 2024</td>
+                                                    <td>200</td>
+                                                    <td><div class="member-edit-icon">
+                                                        <img src="./component/CS251 Component/icon/trash.png">
+                                                        <img src="./component/CS251 Component/icon/setting.png">
+                                                    </div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>6509611908</td>
+                                                    <td>Thu, Mar 14 2024</td>
+                                                    <td>200</td>
+                                                    <td><div class="member-edit-icon">
+                                                        <img src="./component/CS251 Component/icon/trash.png">
+                                                        <img src="./component/CS251 Component/icon/setting.png">
+                                                    </div></td>
+                                                </tr> -->
+
+                                            </tbody>
+                                        </table>
+   
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="member-list-page">
+                                <ul>
+                                   <li id="previous-page"><</li>
+                                   <li id="current-page">1</li>
+                                   <li id="next-current-page">2</li>
+                                   <li>...</li>
+                                   <li id="next-page">></li>
+                               </ul>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="personal-employee-account-container">
+        <div class="personal-employee-account-con-top">
+            <img src="./component/CS251 Component/icon/account.png">
+            <h3>Pongsatorn Sripli</h3>
+            <img src="./component/CS251 Component/icon/arrow-down.png" id="logoutIcon1">
+        </div>
+        <div class="personal-employee-account-con-bottom" style="display: none;" id="logoutIcon2">
+            <a href="index.html"><img src="./component/CS251 Component/icon/logout.png"><p>Logout</p></a>
+        </div>
+    </div>
+
+    <div class="add-member-popup" style="display: none;">
+        <div class="add-member-popup-container">
+            <div class="add-member-popup-con">
+                <div class="membertext-and-quit">
+                    <h3>Member Form</h3>
+                    <div class="exit">X</div>
+                </div>
+                <div class="member-name">
+                    <p>Member Name</p>
+                    <input type="text" id="addMemberName">
+                </div>
+                <div class="member-info">
+                    <div class="info-box">
+                        <label for="password">password</label><input type="text" name="password" id="addMemberPassword">
+                    </div>
+                    <div class="info-box">
+                        <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID">
+                    </div>
+                    <div class="info-box">
+                        <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel">
+                    </div>
+                    <div class="info-box">
+                        <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate">
+                    </div>
+                </div>
+                <div class="button-save">
+                    <button type="button" onclick="saveMember()">SAVE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="member.js"></script> 
+</body>
+</html>

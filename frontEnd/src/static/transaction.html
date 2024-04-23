@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/home.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/search.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/corner-up-left.css' rel='stylesheet'>
+    <link rel="stylesheet" href="transaction.css">
+</head>
+<body>
+ 
+    <nav>
+        <div class="nav-container">
+            <div class="nav-con">
+                <div class="nav-logo">
+                    <img src="./component/CS251 Component/Food category/logo.png" style="height: 75px;">
+                    <h1>Fast Food</h1>
+                </div>
+                <div class="nav-search">
+                    <div class="input-container">
+                        <i class="gg-search"></i>
+                        <input type="text" placeholder="Search menu, order..." required><br>
+                    </div>
+                </div>
+                <div class="nav-menu">
+                    <ul>
+                        <li><a href="./home.html" class="home"><i class="gg-home"></i>Home</a></li>
+                        <li><a href="./manageDish.html" class="manager-dish"><img src="./component/CS251 Component/icon/dish.png">Manager Dish</a></li>
+                        <li><a href="./member.html" class="member"><img src="./component/CS251 Component/icon/member.png">Member</a></li>
+                        <li><a href="./transaction.html" class="transaction"><img src="./component/CS251 Component/icon/transaction.png">Transaction</a></li>
+                        <li><a href="./account.html" class="account"><img src="./component/CS251 Component/icon/account.png">Account</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>  
+    </nav>
+
+    <main>
+        <div class="member-list">
+            <div class="member-list-container">
+                <div class="member-list-con">
+                    <div class="topic-transaction">
+                        <h2>Transactions</h2>
+                        <div class="box-date">
+                            <img src="./component/CS251 Component/icon/calendar.png">
+                            <h2>Tue 12,Mar 2024</h2>
+                        </div>
+                    </div>
+                    <div class="member-list-box">
+                        <div class="member-list-box-con">
+                            <div class="member-list-box-top">
+                                <h2>All Transactions</h2>
+                                <div class="input-container-2">
+                                    <i class="gg-search"></i>
+                                    <input type="text" placeholder="Search..."><br>
+                                </div>
+                                <!-- <button type="button">ADD</button> -->
+                                <div class="input-table">
+                                    <h2>Page:</h2>
+                                    <input type="text" id="numInputSearchValue">
+                                    <img src="./component/CS251 Component/icon/arrow-down.png" class="arrow">
+                                </div>
+                            </div>
+                            <div class="member-list-box-bottom">
+                                <div class="member-list-box-bottom-container">
+                                    <div class="member-list-box-bottom-con">
+
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <td>No</td>
+                                                    <td>Order ID</td>
+                                                    <td>Order Date</td>
+                                                    <td>Order Type</td>
+                                                    <td>Payment Method</td>
+                                                    <td>Sub Total</td>
+                                                    <td>Action</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tableTransaction">
+
+                                                <!-- <tr>
+                                                    <td>1</td>
+                                                    <td>6509611908</td>
+                                                    <td>Thu, Mar 14 2024</td>
+                                                    <td>Dine in</td>
+                                                    <td>Scan</td>
+                                                    <td>$55</td>
+                                                    <td><div class="member-edit-icon">
+                                                        <img src="./component/CS251 Component/icon/trash.png">
+                                                        <img src="./component/CS251 Component/icon/setting.png">
+                                                    </div></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>6509611908</td>
+                                                    <td>Thu, Mar 14 2024</td>
+                                                    <td>Dine in</td>
+                                                    <td>Scan</td>
+                                                    <td>$55</td>
+                                                    <td><div class="member-edit-icon">
+                                                        <img src="./component/CS251 Component/icon/trash.png">
+                                                        <img src="./component/CS251 Component/icon/setting.png">
+                                                    </div></td>
+                                                </tr> -->
+
+                                            </tbody>
+                                        </table>
+   
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="member-list-page">
+                             <ul>
+                                <li id="previous-page"><</li>
+                                   <li id="current-page">1</li>
+                                   <li id="next-current-page">2</li>
+                                   <li id="testcard">...</li>
+                                   <li id="next-page">></li>
+                            </ul>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="personal-employee-account-container">
+        <div class="personal-employee-account-con-top">
+            <img src="./component/CS251 Component/icon/account.png">
+            <h3>Pongsatorn Sripli</h3>
+            <img src="./component/CS251 Component/icon/arrow-down.png" id="logoutIcon1">
+        </div>
+        <div class="personal-employee-account-con-bottom" style="display: none;" id="logoutIcon2">
+            <a href="index.html"><img src="./component/CS251 Component/icon/logout.png"><p>Logout</p></a>
+        </div>
+    </div>
+
+    <script src="transaction.js"></script> 
+</body>
+</html>

@@ -1,0 +1,518 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+:root {
+    --background-color: #E6E6E6; /* กำหนดค่าสีหลัก */
+    --white: #FFFFFF;
+    --red: #E0115F;
+    --text: #4D4D4D;
+    --pink: #FFC0CB;
+    --blue: #2585BB;
+    --orange: #E37D32;
+    --background-blue: #BDE3F9;
+    --background-orange: #FFDEC6;
+    --gray: #888383;
+    --green: #8CC63F;
+    --gray-li: #DCDCDC;
+  }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:"Inter", sans-serif;
+}
+
+body {
+    background-color: var(--background-color);
+    display: flex;
+    padding: 25px;
+    position: relative;
+}
+
+/* input */
+
+input {
+    height: 35px;
+    width: 13vw;
+    border-radius: 15px;
+    border: none;
+    padding-left: 50px;
+    background-color: var(--background-color);
+}
+
+input:hover {
+    outline:auto;
+    outline-color: var(--red);
+}
+
+input:focus {
+    outline:auto;
+    outline-color: var(--red);
+}
+
+button {
+    /* position: absolute;
+    left: 310px;
+    top: 150px; */
+    height: 30px;
+    width: 70px;
+
+    border: none;
+    border-radius: 15px;
+    background-color: #E0115F;
+    color: #E6E6E6;
+    font-weight: 500;
+    font-size: 18px;
+    transition: background-color 3s;
+    transition: color 0.8s;
+    cursor: pointer;
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background-color: var(--pink);
+    color: #4D4D4D;
+}
+
+/* input */
+
+/* nav section */
+
+.nav-container {
+    width: 16vw;
+    height: 94vh;
+    background-color: var(--white);
+    border-radius: 10px;
+
+    .nav-con {
+        width: 16vw;
+        height: 95vh;
+        display:flexbox;
+        align-items: center;
+        flex-direction: column;
+
+        .nav-logo {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            padding: 10%;
+
+            img {
+                width: 42%;
+            }
+
+            h1 {
+                padding-left: 25px;
+                font-size: 40px;
+                color: var(--red);
+            }
+        }
+
+        .nav-search {
+            display: flex;
+            justify-content: center;
+
+            .input-container {
+                position: relative;
+                display: inline-block;
+            }
+
+            i {
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+            }
+        }
+
+        .nav-menu {
+            margin-top: 3vh;
+
+            ul {
+                width: 100%;
+
+                li {
+                    margin-left: 30px;
+                    height: 4vh;
+                    width: 80%;
+                    margin-top: 10px;
+                    list-style-type: none;
+                    border-radius: 10px;
+                    position: relative;
+                    transition: background-color 0.5s;
+                    cursor: pointer;
+
+                    a {
+                        display: block;
+                        text-decoration: none;
+                        color: var(--text);
+                        width: 100%;
+                        padding: 10px;
+                        padding-left: 55px;
+                    }
+
+                    i {
+                        position: absolute;
+                        left: 25px;
+                        top: 15px;
+                    }
+
+                    img {
+                        position: absolute;
+                        height: 25px;
+                        width: 25px;
+                        left: 20px;
+                        top: 10px;
+                    }
+                }
+
+                li:hover {
+                    background-color: var(--pink);
+
+                    a {
+                        color: var(--red);
+                    }
+                }
+
+                li:nth-child(4) {
+                    background-color: var(--pink);
+
+                    a {
+                        color: var(--red);
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+/* nav section */
+
+.member-list-container {
+    margin-left: 30px;
+    width: 78vw;
+    height: 90vh;
+}
+
+.member-list-con {
+    h2 {
+        margin-top: 15px;
+        font-size: 32px;
+        color: var(--text);
+    }
+}
+
+.topic-transaction {
+    display: flex;
+    
+    :nth-child(2) {
+        margin-left: 5%;
+    }
+}
+
+.box-date {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    /* i {
+        position: absolute;
+        top: 20px;
+        left: 37px;
+    } */
+
+    img{
+         
+       height: 65%;
+       width: 15%; 
+    }
+    
+    h2 {
+        padding: 0;
+        margin-top: 2%;
+        font-size: 20px;
+        color: var(--text);
+        font-weight: 500;
+    }
+
+
+
+    padding: 0 25px;
+    justify-content: center;
+    border: var(--background-color) 1px solid;
+    border-radius: 25px;
+    background-color: var(--white);
+
+}  
+
+.box-date:hover {
+    background-color: var(--pink);
+}
+
+.member-list-box {
+    margin-top: 15px;
+    height: 85vh;
+    width: 95%;
+    border: none;
+    background-color: var(--white);
+    border-radius: 15px;
+}
+
+.member-list-box-con {
+    
+    .member-list-box-top {
+        display: flex;
+        align-items: center;
+        padding: 0 25px;
+
+        .input-container-2 {
+            margin-left: 100px;
+            position: relative;
+
+            input {
+                height: 40px;
+                margin-top: 10px;
+                margin-left: 300px;
+                width: 400px;
+            }
+
+            i {
+                position: absolute;
+                top: 23px;
+                left: 325px;
+            }
+
+        }
+
+        button {
+            margin-top: 10px;
+            margin-left: 40px;
+        }
+
+        .input-table {
+            display: flex;
+            margin-left: 40px;
+
+            h2 {
+                font-size: 25px;
+                font-weight: 500;
+            }
+
+            input {
+                border: var(--text) 1px solid;
+                border-radius: 10px;
+                margin-left: 20px;
+                margin-top: 14px;
+                width: 60px;
+                padding-left: 10px;
+                font-size: 20px;
+            }
+        }
+    }
+
+    .member-list-box-bottom {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .member-list-box-bottom-container {
+            margin-top: 20px;
+            width: 90%;
+            height: 600px;
+            border: var(--text) 1px solid;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+    }
+
+}
+
+.member-list-box-bottom-con table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.member-list-box-bottom-con table thead tr {
+    background-color: var(--pink);
+    font-weight: 600;
+}
+
+.member-list-box-bottom-con td,
+.member-list-box-bottom-con th {
+    height: 55px;
+    text-align: center;
+    padding: 0px 40px;
+}
+
+.member-list-box-bottom-con table tr {
+    border-bottom: 1px solid #000; /* สร้างเส้นใต้สำหรับแต่ละแถว */
+}
+
+.member-list-box-bottom-con table tbody tr {
+    transition: background-color 0.3s;
+}
+
+.member-list-box-bottom-con table tbody tr:hover {
+    background-color: var(--pink);
+}
+
+.member-edit-icon {
+    display: grid;
+    grid-template-columns: repeat(2, 50px);
+    justify-content: center;
+    align-items: center;
+    padding: 0 20%;
+    width: 127%;
+    height: 100%;
+
+    img {
+        height: 70%;
+        width: 70%;
+    }
+}
+
+.member-list-page {
+    
+    ul {
+        display: flex;
+        justify-content:end;
+        align-items: center;
+        padding: 0 60px;
+
+        li {
+            margin: 20px 10px;
+            padding: 15px 20px;
+            list-style-type: none;
+            border: var(--text) solid 2px;
+            border-radius: 50px;
+            background-color: var(--gray-li);
+            transition: background-color 0.5s;
+        }
+
+        li:nth-child(2) {
+            background-color: var(--pink);
+            border: var(--red) solid 2px;
+        }
+
+        li:nth-child(1):hover, li:nth-child(5):hover {
+            background-color: var(--pink);
+            border: var(--red) solid 2px;
+        }
+    }
+
+}
+
+.personal-employee-account-container {
+    position: absolute;
+    width: 235px;
+    height: 40px;
+    background-color: var(--white);
+    border-radius: 25px;
+    left: 1630px;
+}
+
+.personal-employee-account-con-top {
+    position: relative; /* เพิ่มบรรทัดนี้เพื่อให้ z-index มีผล */
+    display: flex;
+    justify-content: baseline;
+    align-items: center;
+    border-radius: 25px;
+    padding: 8px 8px;
+    gap: 20px;
+    transition: background-color 0.3s;
+    z-index: 10;
+
+    :nth-child(1), :nth-child(3) {
+        width: 25px;
+        height: 25px;
+        border: 25px;
+        border-radius: 25px;
+    }
+
+    :nth-child(2) {
+        font-weight: 400;
+        font-size: 16px;
+    }
+
+    :nth-child(3) {
+        border: 1px var(--text) solid;
+        border-radius: 25px;
+    }
+}
+
+.personal-employee-account-con-top:hover {
+    background-color: var(--pink);
+
+    :nth-child(1), :nth-child(3) {
+        border: 1px solid var(--red);
+    }
+
+    :nth-child(3) {
+        transition: transform 0.3s ease;
+    }
+
+    :nth-child(3):focus {
+        transform: rotate(180);
+    }
+}
+
+.personal-employee-account-con-bottom {
+    position: relative; /* เพิ่มบรรทัดนี้เพื่อให้ z-index มีผล */
+    z-index: 1;
+    margin-top: -40px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: baseline;
+    align-items: center;
+    height: 280%;
+    background-color: var(--white);
+}
+
+.personal-employee-account-con-bottom a {
+    position: relative;
+    font-weight: 500;
+    font-size: 14px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text);
+    padding: 0px 120px;
+    transition: color 0.3s;
+
+    p {
+        position: absolute;
+        left: 144px;
+    }
+
+    img {
+        height: 20px;
+        width: 20px;
+    }
+}
+
+.personal-employee-account-con-bottom a:hover {
+    color: var(--red);
+}
+
+.arrow {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    left: 130px;
+    top: 26px;
+    border-radius: 25px;
+    border: #000 1px solid;
+    height: 15px;
+    left: 1605px;
+    top: 122px;
+
+    cursor: pointer;
+}
+
+

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://unpkg.com/css.gg@2.0.0/icons/css/home.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/css.gg@2.0.0/icons/css/search.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/css.gg@2.0.0/icons/css/corner-up-left.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="manageDish.css" />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div class="nav-con">
+          <div class="nav-logo">
+            <img
+              src="./component/CS251 Component/Food category/logo.png"
+              style="height: 75px"
+            />
+            <h1>Fast Food</h1>
+          </div>
+          <div class="nav-search">
+            <div class="input-container">
+              <i class="gg-search"></i>
+              <input
+                type="text"
+                placeholder="Search menu, order..."
+                required
+              /><br />
+            </div>
+          </div>
+          <div class="nav-menu">
+            <ul>
+              <li>
+                <a href="./home.html" class="home"
+                  ><i class="gg-home"></i>Home</a
+                >
+              </li>
+              <li>
+                <a href="./manageDish.html" class="manager-dish"
+                  ><img
+                    src="./component/CS251 Component/icon/dish.png"
+                  />Manager Dish</a
+                >
+              </li>
+              <li>
+                <a href="./member.html" class="member"
+                  ><img
+                    src="./component/CS251 Component/icon/member.png"
+                  />Member</a
+                >
+              </li>
+              <li>
+                <a href="./transaction.html" class="transaction"
+                  ><img
+                    src="./component/CS251 Component/icon/transaction.png"
+                  />Transaction</a
+                >
+              </li>
+              <li>
+                <a href="./account.html" class="account"
+                  ><img
+                    src="./component/CS251 Component/icon/account.png"
+                  />Account</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <div class="promotion">
+        <h1>Promotion</h1>
+        <div class="promotion-slide-container">
+          <div class="promotion-slide-con" id="promotionSlideCon">
+
+            <div class="promotion-add-card">
+              <div class="promotion-card-add-container">
+                <button type="button" onclick="openPopupPromotion()">ADD</button>
+                <h2>Add New Promotion</h2>
+              </div>
+            </div>
+
+            <div class="promotion-card">
+              <div class="promotion-add-pic">
+                <img src="./component/CS251 Component/Menu Photos/Dish1.jpeg" />
+                <div class="promotion-card-con">
+                  <h3>PromotionName</h3>
+                  <div class="member-edit-icon">
+                    <h3>PromotionExpired</h3>
+                    <img src="./component/CS251 Component/icon/trash.png" />
+                    <img src="./component/CS251 Component/icon/setting.png" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="category">
+        <h1>Food Category</h1>
+        <div class="category-container">
+          <div class="category-con">
+
+            <div class="category-food-add">
+              <div class="category-food-add-container">
+                <button type="submit" onclick="openPopupCategory()">ADD</button>
+                <h2>Add New Category</h2>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="menu">
+        <div class="menu-container">
+          <div class="menu-con" id="menuSlideCon">
+            <div class="menu-card-add">
+              <div class="menu-card-add-container">
+                <button type="submit" onclick="openPopupMenu()">ADD</button>
+                <h2>Add New Dish</h2>
+              </div>
+            </div>
+
+            <div class="menu-card">
+              <div class="menu-card-con">
+                <div class="menu-pic-container">
+                  <img src="./component/CS251 Component/Menu Photos/Dish13.jpg" />
+                </div>
+                <div class="menu-desc-con">
+                  <div class="menu-desc">
+                    <h3>Pizza Cheese</h3>
+                    <h3 class="h3-qty" id="qty-${index}">QTY: 1</h3>
+                    <h3><span class="dollar-sign">$</span>: 11</h3>
+                    <div class="member-edit-icon">
+                      <img src="./component/CS251 Component/icon/trash.png" />
+                      <img src="./component/CS251 Component/icon/setting.png" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="menu-card">
+              <div class="menu-card-con">
+                <div class="menu-pic-container">
+                  <img src="./component/CS251 Component/Menu Photos/Dish2.jpg" />
+                </div>
+                <div class="menu-desc-con">
+                  <div class="menu-desc">
+                    <h3>Burger set1</h3>
+                    <h3 class="h3-qty" id="qty-${index}">
+                      QTY: 5
+                    </h3>
+                    <h3><span class="dollar-sign">$</span>: 69</h3>
+                    <div class="member-edit-icon">
+                        <img src="./component/CS251 Component/icon/trash.png" />
+                        <img src="./component/CS251 Component/icon/setting.png" />
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="personal-employee-account-container">
+      <div class="personal-employee-account-con-top">
+        <img src="./component/CS251 Component/icon/account.png" />
+        <h3>Pongsatorn Sripli</h3>
+        <img
+          src="./component/CS251 Component/icon/arrow-down.png"
+          id="logoutIcon1"
+        />
+      </div>
+      <div
+        class="personal-employee-account-con-bottom"
+        style="display: none"
+        id="logoutIcon2"
+      >
+        <a href="index.html"
+          ><img src="./component/CS251 Component/icon/logout.png" />
+          <p>Logout</p></a
+        >
+      </div>
+    </div>
+
+    <div class="category-popup" style="display: none;" id="categoryPopup">
+      <div class="category-popup-container">
+        <div class="category-popup-top">
+          <h3>Category #10</h3>
+          <div class="exit" id="exitCategory">X</div>
+        </div>
+        <div class="category-name">
+          <p>Category Name</p>
+          <input type="text">
+        </div>
+        <div class="category-popup-bottom">
+          <div class="category-popup-bottom-pic">
+            <p>Add Photo</p>
+            <img src="./component/CS251 Component/icon/image.png">
+          </div>
+          <button type="button" id="saveCategory">SAVE</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-popup" style="display: none;" id="menuPopup">
+      <div class="menu-popup-container">
+        <div class="menu-popup-top">
+          <h3>Dish #101</h3>
+          <div class="exit" id="exitMenu">X</div>
+        </div>
+        <div class="menu-info-name">
+          <p>Dish Name</p>
+          <input type="text">
+        </div>
+        <div class="menu-info-desc">
+          <p>Dish Description</p>
+          <input type="text">
+        </div>
+        <div class="menu-info-price-qty">
+          <div class="menu-info-price">
+            <h4>Price</h4>
+            <input type="text">
+          </div>
+          <div class="menu-info-qty">
+            <h4>QTY</h4>
+            <input type="text">
+          </div>
+        </div>
+        <div class="menu-info-category">
+          <h4>Category</h4>
+          <div class="select-container">
+            <select id="">
+            <option value="Fries"></option>
+            <option value="Burger"></option>
+            <option value="Chicken"></option>
+          </select>
+          </div>
+        </div>
+        <div class="menu-popup-bottom">
+          <div class="menu-popup-bottom-pic">
+            <p>Add Photo</p>
+            <img src="./component/CS251 Component/icon/image.png">
+          </div>
+          <button type="button" id="saveMenu">SAVE</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="promotion-popup" style="display: none;" id="promotionPopup">
+      <div class="promotion-popup-container">
+        <div class="promotion-popup-top">
+          <h3>Promotion #10</h3>
+          <div class="exit" id="exitPromotion">X</div>
+        </div>
+        <div class="promotion-info-name">
+          <p>Promotion Name</p>
+          <input type="text">
+        </div>
+        <div class="promotion-info-code">
+          <p>Promotion Code</p>
+          <input type="text">
+        </div>
+        <div class="promotion-info-exp-price">
+          <div class="promotion-info-exp">
+            <h4>EXP</h4>
+            <input type="text">
+          </div>
+          <div class="promotion-info-price">
+            <h4>Price</h4>
+            <input type="text">
+          </div>
+        </div>
+          <div class="promotion-item">
+            <div class="promotion-item-container">
+              <div class="promotion-item-con">
+
+                <div class="item-add-con">
+                  <div class="item-qty">
+                    <h2>Item: <span id="itemCount">0</span></h2>
+                  </div>
+
+                  <button type="button">ADD</button>
+                </div>
+                
+                <div class="qty-item-container" id="itemSlideCon">
+
+                  <div class="item-card" id="item-card-${index}">
+                    <div class="item-card-con">
+                        <div class="item-card-pic-container">
+                            <img src="${menu_data[index].image_url}">
+                        </div>
+                        <h3 id="name-item-${index}">1</h3>
+                        <h3 id="count-item-${index}" class="count-item">2</h3>
+                        <h3 id="price-item-${index}" class="price-item">3</h3>
+                        <h3 id="qty-item-${index}">QTY:4</h3>
+                        <h3 id="add-item-${index}" class="add-item-icon">+</h3>
+                        <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
+                        <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+                    </div>
+                  </div>
+
+                  <div class="item-card" id="item-card-${index}">
+                    <div class="item-card-con">
+                        <div class="item-card-pic-container">
+                            <img src="${menu_data[index].image_url}">
+                        </div>
+                        <h3 id="name-item-${index}">1</h3>
+                        <h3 id="count-item-${index}" class="count-item">2</h3>
+                        <h3 id="price-item-${index}" class="price-item">3</h3>
+                        <h3 id="qty-item-${index}">QTY:4</h3>
+                        <h3 id="add-item-${index}" class="add-item-icon">+</h3>
+                        <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
+                        <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+                    </div>
+                  </div>
+
+                  <div class="item-card" id="item-card-${index}">
+                    <div class="item-card-con">
+                        <div class="item-card-pic-container">
+                            <img src="${menu_data[index].image_url}">
+                        </div>
+                        <h3 id="name-item-${index}">1</h3>
+                        <h3 id="count-item-${index}" class="count-item">2</h3>
+                        <h3 id="price-item-${index}" class="price-item">3</h3>
+                        <h3 id="qty-item-${index}">QTY:4</h3>
+                        <h3 id="add-item-${index}" class="add-item-icon">+</h3>
+                        <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
+                        <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+                    </div>
+                  </div>
+
+                  <div class="item-card" id="item-card-${index}">
+                    <div class="item-card-con">
+                        <div class="item-card-pic-container">
+                            <img src="${menu_data[index].image_url}">
+                        </div>
+                        <h3 id="name-item-${index}">1</h3>
+                        <h3 id="count-item-${index}" class="count-item">2</h3>
+                        <h3 id="price-item-${index}" class="price-item">3</h3>
+                        <h3 id="qty-item-${index}">QTY:4</h3>
+                        <h3 id="add-item-${index}" class="add-item-icon">+</h3>
+                        <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
+                        <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        <div class="promotion-popup-bottom">
+          <div class="promotion-popup-bottom-pic">
+            <p>Add Photo</p>
+            <img src="./component/CS251 Component/icon/image.png">
+          </div>
+          <button type="button" id="savePromotion">SAVE</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="manageDish.js"></script>
+  </body>
+</html>

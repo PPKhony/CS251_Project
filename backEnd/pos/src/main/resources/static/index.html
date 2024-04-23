@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="index.css">
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/eye.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="main">
+        <div class="up-main">
+            <div class="logo-log">
+                <img src="component/CS251 Component/Food category/logo.png" style="height: 75px;">
+                <h1>Fast Food</h1>
+            </div>
+            <h2>Nice to see you again</h2>
+        </div>
+        <div class="bottom-main">
+            <form id="loginForm" action="#">
+                <h4>Login</h4>
+                <input type="text" placeholder="Employee ID" required id="username"><br>
+                <h4>Password</h4>
+                <input type="password" id="password" placeholder="Password" required><br>
+                <i class="gg-eye" id="togglePassword"></i>
+                <button type="submit">Sign in</button>
+            </form>
+            <p id="message"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent the form from submitting normally
+
+    // Get username and password from the form
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+
+    // Example API endpoint for authentication
+    var apiUrl = "http://localhost:8080/api/login/" + encodeURIComponent(username) + "/" + encodeURIComponent(password);
+
+    // Send a GET request to the API endpoint
+    fetch(apiUrl)
+    .then(response => {
+        if (response.ok) {
+            // If response is successful (status code 200), redirect to next page
+            window.location.href = "home.html";
+        } else {
+            // If response is not successful, display error message
+            document.getElementById("message").innerText = "Login failed. Please check your username and password.";
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById("message").innerText = "An error occurred while processing your request. Please try again later.";
+    });
+});
+
+    </script>
+</body>
+</html>

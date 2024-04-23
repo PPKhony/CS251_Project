@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="index.css">
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/eye.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="main">
+        <div class="up-main">
+            <div class="logo-log">
+                <img src="component/CS251 Component/Food category/logo.png" style="height: 75px;">
+                <h1>Fast Food</h1>
+            </div>
+            <h2>Nice to see you again</h2>
+        </div>
+        <div class="bottom-main">
+            <form id="loginForm" action="#">
+                <h4>Login</h4>
+                <input type="text" placeholder="Employee ID" required id="employeeID"><br>
+                <h4>Password</h4>
+                <input type="password" id="passwordInput" placeholder="Password" required><br>
+                <i class="gg-eye" id="togglePassword"></i>
+                <button type="submit">Sign in</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const passwordInput = document.getElementById('passwordInput');
+        const togglePassword = document.getElementById('togglePassword');
+
+        togglePassword.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                // เปลี่ยนไอคอนเมื่อแสดงรหัสผ่าน
+            } else {
+                passwordInput.type = 'password';
+                // เปลี่ยนไอคอนเมื่อซ่อนรหัสผ่าน
+            }
+        });
+
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        // ดึงข้อมูลจากฟอร์ม
+        var employeeID = document.getElementById("employeeID").value;
+        var password = togglePassword.value;
+
+        // ตรวจสอบข้อมูล
+
+        console.log(employeeID);
+        console.log(password);
+
+        // หากข้อมูลถูกต้อง ให้นำไปยังหน้า HTML อื่น ๆ
+        window.location.href = "home.html";
+    });
+    </script>
+</body>
+</html>
