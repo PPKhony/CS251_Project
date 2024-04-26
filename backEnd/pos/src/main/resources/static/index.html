@@ -19,44 +19,44 @@
         <div class="bottom-main">
             <form id="loginForm" action="#">
                 <h4>Login</h4>
-                <input type="text" placeholder="Employee ID" required id="username"><br>
+                <input type="text" placeholder="Employee ID" required id="employeeID"><br>
                 <h4>Password</h4>
-                <input type="password" id="password" placeholder="Password" required><br>
+                <input type="password" id="passwordInput" placeholder="Password" required><br>
                 <i class="gg-eye" id="togglePassword"></i>
                 <button type="submit">Sign in</button>
             </form>
-            <p id="message"></p>
         </div>
     </div>
 
     <script>
+        const passwordInput = document.getElementById('passwordInput');
+        const togglePassword = document.getElementById('togglePassword');
+
+        togglePassword.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                // เปลี่ยนไอคอนเมื่อแสดงรหัสผ่าน
+            } else {
+                passwordInput.type = 'password';
+                // เปลี่ยนไอคอนเมื่อซ่อนรหัสผ่าน
+            }
+        });
+
         document.getElementById("loginForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent the form from submitting normally
+        event.preventDefault();
 
-    // Get username and password from the form
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
+        // ดึงข้อมูลจากฟอร์ม
+        var employeeID = document.getElementById("employeeID").value;
+        var password = togglePassword.value;
 
-    // Example API endpoint for authentication
-    var apiUrl = "http://localhost:8080/api/login/" + encodeURIComponent(username) + "/" + encodeURIComponent(password);
+        // ตรวจสอบข้อมูล
 
-    // Send a GET request to the API endpoint
-    fetch(apiUrl)
-    .then(response => {
-        if (response.ok) {
-            // If response is successful (status code 200), redirect to next page
-            window.location.href = "home.html";
-        } else {
-            // If response is not successful, display error message
-            document.getElementById("message").innerText = "Login failed. Please check your username and password.";
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById("message").innerText = "An error occurred while processing your request. Please try again later.";
+        console.log(employeeID);
+        console.log(password);
+
+        // หากข้อมูลถูกต้อง ให้นำไปยังหน้า HTML อื่น ๆ
+        window.location.href = "home.html";
     });
-});
-
     </script>
 </body>
 </html>

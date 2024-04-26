@@ -372,6 +372,7 @@ public class PosController {
                     member.getM_name(), member.getM_points(), member.getM_enroll(), member.getM_birthdate() ));
             return new ResponseEntity<>("Member was created successfully.", HttpStatus.CREATED);
         }catch (Exception e) {
+            System.err.println(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

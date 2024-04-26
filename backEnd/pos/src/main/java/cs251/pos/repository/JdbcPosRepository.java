@@ -45,7 +45,7 @@ public class JdbcPosRepository implements PosRepository{
 
     @Override
     public int insertMember(Member member) {
-        return jdbcTemplate.update("INSERT INTO Member (m_id, m_password, m_rank, m_citizenId, m_name, m_points, m_enroll, m_birthdate) " +
+        return jdbcTemplate.update("INSERT INTO member (m_id, m_password, m_rank, m_citizenId, m_name, m_points, m_enroll, m_birthdate) " +
                 "VALUES (?,?,?,?,?,?,?,?)",
                 new Object[] {member.getM_id(), member.getM_password(), member.getM_rank(), member.getM_citizenId(), member.getM_name(), member.getM_points(),
                 member.getM_enroll(), member.getM_birthdate()});

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="home.css">
 </head>
 <body>
- 
+    
     <nav>
         <div class="nav-container">
             <div class="nav-con">
@@ -94,7 +94,7 @@
             </div>
             <div class="popup-order-list-slide-con" id="orderListSlideCon">
 
-                <div class="list-card-wait">
+                <!-- <div class="list-card-wait">
                     <div class="list-card-con">
                         <h3>#xxxx</h3>
                         <h3>Table xx</h3>
@@ -112,7 +112,7 @@
                         <h3>1 mins ago</h3>
                         <button type="button">Served</button>
                     </div>
-                </div>
+                </div> -->
 
             </div>
             <button type="button" class="add-order-button" id="add-order-button"><span class="add-span">ADD ORDER</span></button>
@@ -120,12 +120,14 @@
 
         <div class="popup-con-2" style="display: none;">
             <div class="order-cus-add">
-                <h2>Order #xxxx</h2>
+                <h2 id="orderNumber">Order #0</h2>
                 <h4>Date Thu,Mar 14 2014</h4>
             </div>
             <div class="button-served">
-                <button type="button" id="dine-in">Dine in</button>
-                <button type="button" id="take-away">Take away</button>
+                <div class="dine-in" id="dine-in">Dine in</div>
+                <div class="take-away" id="take-away">Take away</div>
+                <!-- <button type="button" id="dine-in">Dine in</button>
+                <button type="button" id="take-away">Take away</button> -->
                 <div class="dive-input" style="display: block;">
                     <label for="table">Table:</label>
                     <input type="text" id="served-table">
@@ -182,22 +184,31 @@
             <div class="payment-method-container">
                 <h1>Payment method</h1>
                 <div class="payment-method-type-container">
-                    <div class="payment-method-type">
-                        <button type="button" class="payment-method-icon">
+                    <div class="payment-method-type" id="cash">
+                        <div class="payment-method-icon">
                             <img src="./component/CS251 Component/icon/member.png">
-                        </button>
+                        </div>
+                        <!-- <button type="button" class="payment-method-icon">
+                            <img src="./component/CS251 Component/icon/member.png">
+                        </button> -->
                         <h3>Cash</h3>
                     </div>
-                    <div class="payment-method-type">
-                        <button type="button" class="payment-method-icon">
+                    <div class="payment-method-type" id="creditCard">
+                        <div class="payment-method-icon">
                             <img src="./component/CS251 Component/icon/member.png">
-                        </button>
+                        </div>
+                        <!-- <button type="button" class="payment-method-icon">
+                            <img src="./component/CS251 Component/icon/member.png">
+                        </button> -->
                         <h3>Credit Card</h3>
                     </div>
-                    <div class="payment-method-type">
-                        <button type="button" class="payment-method-icon">
+                    <div class="payment-method-type" id="scan">
+                        <div class="payment-method-icon">
                             <img src="./component/CS251 Component/icon/member.png">
-                        </button>
+                        </div>
+                        <!-- <button type="button" class="payment-method-icon">
+                            <img src="./component/CS251 Component/icon/member.png">
+                        </button> -->
                         <h3>Scan</h3>
                     </div>
                 </div>
@@ -219,6 +230,38 @@
     </div>
     <div class="personal-employee-account-con-bottom" style="display: none;" id="logoutIcon2">
         <a href="index.html"><img src="./component/CS251 Component/icon/logout.png"><p>Logout</p></a>
+    </div>
+</div>
+
+<div class="add-member-popup" style="display: none;">
+    <div class="add-member-popup-container">
+        <div class="add-member-popup-con">
+            <div class="membertext-and-quit">
+                <h3>Member Form</h3>
+                <div class="exit">X</div>
+            </div>
+            <div class="member-name">
+                <p>Member Name</p>
+                <input type="text" id="addMemberName">
+            </div>
+            <div class="member-info">
+                <div class="info-box">
+                    <label for="password">password</label><input type="text" name="password" id="addMemberPassword">
+                </div>
+                <div class="info-box">
+                    <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID">
+                </div>
+                <div class="info-box">
+                    <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel">
+                </div>
+                <div class="info-box">
+                    <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate">
+                </div>
+            </div>
+            <div class="button-save">
+                <button type="button" onclick="saveMember()">SAVE</button>
+            </div>
+        </div>
     </div>
 </div>
 

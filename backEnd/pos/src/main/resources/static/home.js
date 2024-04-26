@@ -5,7 +5,7 @@ const promotion_data = [
       "Expired" : "12/34/56",
       "Price" : 900,
       "image_url" : "https://example.com/classic_cheeseburger.jpg",
-      "menu_id_data" : [0, 1]
+      "menu_id_data" : [[0,1], [1,2]]
   }
 ]
 
@@ -229,13 +229,27 @@ orderListSlider.addEventListener('mousemove', (e) => {
 const dineInMode = document.getElementById('dine-in');
 const takeAwayMode = document.getElementById('take-away');
 const haveTable = document.querySelector('.dive-input');
-
+var hasDineIn = true;
 
 takeAwayMode.addEventListener('click', function() {
+  
+    dineInMode.style.backgroundColor = '#E6E6E6';
+    dineInMode.style.color = 'black';
+    takeAwayMode.style.backgroundColor = '#E0115F';
+    takeAwayMode.style.color = '#FFFFFF';
+    hasDineIn = false;
+  
     haveTable.style.display = 'none';
 });
 
 dineInMode.addEventListener('click', function() {
+
+    takeAwayMode.style.backgroundColor = '#E6E6E6';
+    takeAwayMode.style.color = 'black';
+    dineInMode.style.backgroundColor = '#E0115F';
+    dineInMode.style.color = '#FFFFFF';
+    hasDineIn = true;
+
     haveTable.style.display = 'block';
 });
 
@@ -254,6 +268,8 @@ checkBoxMember.addEventListener('click', function() {
 });
 
 
+
+
 const changeOrderCon = document.getElementById('add-order-button');
 const changeBack = document.querySelector('.gg-corner-up-left');
 const orderCon1 = document.querySelector('.popup-con-1');
@@ -262,6 +278,7 @@ const orderCon2 = document.querySelector('.popup-con-2');
 changeOrderCon.addEventListener('click', () => {
     orderCon1.style.display = 'none';
     orderCon2.style.display = 'block';
+    document.getElementById('orderNumber').textContent = 'order #' + (orderListCount+1);
 })
 
 changeBack.addEventListener('click', () => {
@@ -286,6 +303,90 @@ logoutChange1.addEventListener('click', () => {
     toggleLogout = true;
   }
 })
+
+var whichPayment = 0;
+
+var cash = document.getElementById('cash');
+var creditCard = document.getElementById('creditCard');
+var scan = document.getElementById('scan');
+
+takeAwayMode.style.backgroundColor = '#E6E6E6';
+    takeAwayMode.style.color = 'black';
+    dineInMode.style.backgroundColor = '#E0115F';
+    dineInMode.style.color = '#FFFFFF';
+
+cash.addEventListener('click', () => {
+  cash.style.backgroundColor = '#E0115F';
+  cash.style.color = '#FFFFFF';
+  cash.style.borderRadius = '15px';
+  creditCard.style.backgroundColor = '#E6E6E6';
+  creditCard.style.color = 'black';
+  creditCard.style.borderRadius = '15px';
+  scan.style.backgroundColor = '#E6E6E6';
+  scan.style.color = 'black';
+  scan.style.borderRadius = '15px';
+  whichPayment = 1;
+  console.log(whichPayment);
+})
+
+creditCard.addEventListener('click', () => {
+  whichPayment = 2;
+  creditCard.style.backgroundColor = '#E0115F';
+  creditCard.style.color = '#FFFFFF';
+  creditCard.style.borderRadius = '15px';
+  cash.style.backgroundColor = '#E6E6E6';
+  cash.style.color = 'black';
+  cash.style.borderRadius = '15px';
+  scan.style.backgroundColor = '#E6E6E6';
+  scan.style.color = 'black';
+  scan.style.borderRadius = '15px';
+  console.log(whichPayment);
+})
+
+scan.addEventListener('click', () => {
+  scan.style.backgroundColor = '#E0115F';
+  scan.style.color = '#FFFFFF';
+  scan.style.borderRadius = '15px';
+  creditCard.style.backgroundColor = '#E6E6E6';
+  creditCard.style.color = 'black';
+  creditCard.style.borderRadius = '15px';
+  cash.style.backgroundColor = '#E6E6E6';
+  cash.style.color = 'black';
+  cash.style.borderRadius = '15px';
+  whichPayment = 3;
+  console.log(whichPayment);
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const categoryCon = document.querySelector('.category-con');
 
@@ -329,12 +430,12 @@ const promotionSlideCon = document.querySelector('.promotion-slide-con');
       <div class="menu-card">
         <div class="menu-card-con">
           <div class="menu-pic-container">
-            <img src="${item.image_url}">
+            <img src="./component/CS251 Component/HomeMenuDish/Dish${index+1}.png">
           </div>
           <div class="menu-desc-con">
             <div class="menu-desc">
               <h3>${item.name}</h3>
-              <h3 class="h3-qty">QTY: ${item.quantity}</h3>
+              <h3 class="h3-qty" id="qty-${index}">QTY: ${item.quantity}</h3>
               <h3><span class="dollar-sign">$</span>: ${item.price}</h3>
               <button type="button" id="menu-add-button-${index}" class="menu-add-button">ADD</button>
             </div>
@@ -383,6 +484,8 @@ var itemNum = [];
 
 function addItem(index) {
 
+  
+
     const card = `
         <div class="item-card" id="item-card-${index}">
             <div class="item-card-con">
@@ -395,7 +498,7 @@ function addItem(index) {
                 <h3 id="qty-item-${index}">QTY:${menu_data[index].quantity}</h3>
                 <h3 id="add-item-${index}" class="add-item-icon">+</h3>
                 <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
-                <img src="./component/CS251 Component/icon/dish.png"  class="item-bin">
+                <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
             </div>
         </div>
     `;
@@ -406,6 +509,8 @@ function addItem(index) {
 
     itemNum.push(index);
     
+    var cardv = document.getElementById(`item-card-${index}`);
+    cardv.value = index;
     for(let j=0;j<itemNum.length;j++){
       
       var addItemIcon = document.getElementById(`add-item-${itemNum[j]}`);
@@ -424,6 +529,19 @@ function addItem(index) {
         updatedPay();
       })
     }
+
+    for(let j=0;j<itemNum.length;j++){
+      var rmAllItemIcon = document.getElementById(`rm-all-item-${index}`);
+      rmAllItemIcon.addEventListener('click', () => {
+        let rmNum = document.getElementById(`count-item-${index}`);
+        rmNum.textContent = 1;
+        console.log(rmNum.textContent);
+        const idx = itemNum[j];
+        rmQty(idx);
+        updatedPay();
+      })
+    }
+
     updatedPay();
 }
 
@@ -453,13 +571,16 @@ function updatedPay() {
   let PaymentDiscount = document.getElementById('paymentDiscountTotal');
   let currentValue3 = PaymentDiscount.textContent;
   currentValue3 = parseInt(currentValue3.substring(1));
-  currentValue3 = 100;
+  currentValue3 = 0;
   PaymentDiscount.textContent = '$'+currentValue3;
 
   let allTotal = document.getElementById('allTotal');
   let currentValue4 = allTotal.textContent;
   currentValue4 = parseInt(currentValue4.substring(1));
   currentValue4 = total + currentValue2 - currentValue3;
+  if(currentValue4 < 0){
+    currentValue4 = 0;
+  }
   allTotal.textContent = '$'+currentValue4.toFixed(2);
 }
 
@@ -503,7 +624,7 @@ function rmQty(index) {
   let nameItem = document.getElementById(`name-item-${index}`);
   let checkItem = document.getElementById(`qty-item-${index}`);
   let currentItemName = nameItem.textContent;
-  let currentQtyLeft = parseInt(((checkItem.textContent).match(/\d+/)[0]));
+  // let currentQtyLeft = parseInt(((checkItem.textContent).match(/\d+/)[0]));
   let currentQty = parseInt(countItem.textContent);
   const RmitemCard = document.getElementById(`item-card-${index}`);
   if(currentQty <= 1){
@@ -523,8 +644,11 @@ function rmQty(index) {
 }
 
 menuAdd.forEach((add, index) => {
+
     add.addEventListener('click', () => {
-      let checkItem = document.getElementById(`count-item-${index}`);
+      let qty = menu_data[index].quantity;
+      if(qty > 0){
+        let checkItem = document.getElementById(`count-item-${index}`);
       if(checkItem !== null){
         addQty(index);
       }else{
@@ -539,6 +663,11 @@ menuAdd.forEach((add, index) => {
       currentValue++;
       itemCount.textContent = currentValue;
       }
+      
+      }
+      else{
+        console.log("No adding after 0 or less");
+      }
     })
 });
 
@@ -546,26 +675,223 @@ const promotionAdd = document.querySelectorAll('.promotion-add-button');
 
 promotionAdd.forEach((pro, index) => {
   pro.addEventListener('click', () => {
-    promotion_data[index].menu_id_data.forEach((menu, index) => {
-      let checkItem = document.getElementById(`count-item-${index}`);
-      if(checkItem !== null){
-        addQty(index);
-      }else{
-        addItem(index);
-      const itemCount = document.getElementById('itemCount');
-      let currentValue = parseInt(itemCount.textContent);
-      currentValue++;
-      itemCount.textContent = currentValue;
+    let pass = true;
+    let ordered = false
+    promotion_data[index].menu_id_data.forEach((menu)=>{
+      console.log("checking for ",menu);
+      let ordering = document.getElementById(`count-item-${menu[0]}`);
+      let orderingVal = 0;
+      if(ordering){
+        orderingVal = parseInt(ordering.textContent);
       }
+      if(menu_data[menu[0]].quantity < menu[1] + orderingVal){
+        pass = false;
+      }
+    });
+    promotion_data[index].menu_id_data.forEach((menu, index) => {
+      if(pass){
+        for(let i = 0 ; i < menu[1] ; i++){
+          let checkItem = document.getElementById(`count-item-${menu[0]}`);
+         if(checkItem !== null){
+          
+          addQty(menu[0]);
+        }else{
+        addItem(menu[0]);
+        const itemCount = document.getElementById('itemCount');
+        let currentValue = parseInt(itemCount.textContent);
+       currentValue++;
+       itemCount.textContent = currentValue;
+      } 
+        }
+        
+    }
+    else{
+      console.log("No adding promotion after stock shortage");
+    }
+      
     })
   });
 });
 
 var placeOrder = document.getElementById('placeOrder');
+var orderListCount = 0;
+
 
 placeOrder.addEventListener('click', () => {
+  orderListCount++;
+  const orderlistCardContainer = document.querySelector('.popup-order-list-slide-con');
+  let orderNumber = document.getElementById('orderNumber').textContent;
+  let orderNumberValue = parseInt(((orderNumber).match(/\d+/)[0]));
+  orderNumberValue = orderListCount;
+  orderNumber = 'order #' + orderNumberValue;
+  let countItem = document.getElementById('itemCount').textContent;
+  let tableNum = document.getElementById('served-table').value;
+
+
+
+  console.log(orderNumberValue);
+
+  if(tableNum == "" || hasDineIn == false){
+    tableNum = '-';
+  }
+
+  let card = `
+              <div class="list-card-wait">
+                <div class="list-card-con">
+                  <h3>${orderNumber}</h3>
+                  <h3>Table ${tableNum}</h3>
+                  <h3>Order: ${countItem} item</h3>
+                  <h3>1 mins ago</h3>
+                  <button type="button">Wait List</button>
+                </div>
+              </div>
+            `
+
+  orderlistCardContainer.innerHTML += card;
+
+  orderCon1.style.display = 'block';
+  orderCon2.style.display = 'none';
+  updateQty();
 
 });
+
+function updateQty () {
+  let itemCard = document.querySelectorAll('.item-card');
+  itemCard.forEach(() => {
+    let index = itemNum[0];
+    let val = document.getElementById(`count-item-${index}`);
+    let upd = val.textContent;
+    menu_data[index].quantity -= parseInt(upd);
+    let menu = document.getElementById(`qty-${index}`);
+    menu.textContent = "QTY: " + menu_data[index].quantity
+    val.textContent = 1;
+    const idx = itemNum[0];
+    rmQty(idx);
+ 
+  });
+}
+
+const newestMember = document.getElementById('newMember');
+const popup = document.querySelector('.add-member-popup');
+
+newestMember.addEventListener('click', () => {
+  popup.style.display = 'block';
+})
+
+function validating(obj){
+  let regexCitizen = /^\d{13}$/
+  let regextel = /^0\d{9}$/;
+  let regexBd = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+  let arrayCit = obj.citizenID.split("").reverse().map((num, index) => ({ index: index + 1, value: parseInt(num) }));
+  let sum = 0;
+  
+  if(regexCitizen.test(obj.citizenID)){
+  for(let i = 1 ; i < 13; i++){
+    sum += arrayCit[i].index * arrayCit[i].value;
+  }
+    sum = (11-sum%11)%10;
+  }
+  
+  if(!(regexCitizen.test(obj.citizenID) && (sum==arrayCit[0].value))){
+    window.alert("Invalid citizen ID format")
+  }
+  if(!regextel.test(obj.tel)){
+    window.alert("Invalid telephone number format")
+  }
+  if(!(regexBd.test(obj.birthDate))){
+    window.alert("Invalid Birthdate format (dd/mm/yyyy)");
+  }
+  return regexCitizen.test(obj.citizenID) && regextel.test(obj.tel) && regexBd.test(obj.birthDate) && (sum==arrayCit[0].value);
+}
+function clearAddmemberBox(){
+  let nameBox = document.getElementById('addMemberName');
+  let passwordBox = document.getElementById('addMemberPassword');
+  let citizenIDBox = document.getElementById('addMemberCitizenID');
+  let telBox = document.getElementById('addMemberTel');
+  let birthDateBox = document.getElementById('addMemberBirthDate');
+  nameBox.value="";
+  passwordBox.value="";
+  citizenIDBox.value="";
+  telBox.value="";
+  birthDateBox.value="";
+}
+
+function saveMember() {
+  let name = document.getElementById('addMemberName').value;
+  let password = document.getElementById('addMemberPassword').value;
+  let citizenID = document.getElementById('addMemberCitizenID').value;
+  let tel = document.getElementById('addMemberTel').value;
+  let birthDate = document.getElementById('addMemberBirthDate').value;
+
+let newMember = {
+    "name": name,
+    "password": password,
+    "citizenID": citizenID,
+    "tel": tel,
+    "birthDate": birthDate
+  };
+  
+  if(validating(newMember)){
+  console.log(newMember);
+  memberInfoList.push(newMember);
+
+  var currentDate = new Date();
+  let idAutoString = String(idAuto).padStart(10,'0');
+// Days of the week and months array
+  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// Get day, month, and year
+  var day = daysOfWeek[currentDate.getDay()];
+  var month = months[currentDate.getMonth()];
+  var date = currentDate.getDate();
+  var year = currentDate.getFullYear();
+  var senddel = idAuto;
+
+// Format the date
+  var formattedDate = day + ", " + month + " " + date + " " + year;
+  let card = `
+              <tr id = "memberList${idAuto}">
+                <td>${idCount}</td>
+                <td>${idAutoString}</td>
+                <td>${formattedDate}</td>
+                <td>0</td>
+                <td><div class="member-edit-icon">
+                <img src="./component/CS251 Component/icon/trash.png" id = "removeList${idAuto}">
+                <img src="./component/CS251 Component/icon/setting.png" id="editList${idAuto}">
+                 </div></td>
+              </tr>
+            `;
+  
+  const table = document.getElementById('tableMember');
+  table.innerHTML += card;
+  idCount++;
+  idAuto++;
+  memberList.push(senddel);
+  memberList.forEach(element => {
+    delIDGenerate(element);
+  });
+  memberList.forEach(element => {
+    delIDGenerate(element);
+  });
+  clearAddmemberBox();
+}
+else{
+  window.alert("Invalid format. Cancel Adding...");
+}
+ 
+  //console.log(table.innerHTML);
+ 
+  
+  popup.style.display = 'none';
+}
+
+const exit = document.querySelector('.exit');
+
+exit.addEventListener('click', () => {
+  popup.style.display = 'none';
+});
+
+
 
 
 
