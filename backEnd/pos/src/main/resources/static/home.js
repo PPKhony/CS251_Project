@@ -1,4 +1,4 @@
-const promotion_data = [
+var promotion_data = [
   {
       "promotionName" : "you are my special!",
       "promotionCode" : "12345",
@@ -9,7 +9,7 @@ const promotion_data = [
   }
 ]
 
-const food_category = [
+var food_category = [
   {
     "name": "Burger",
     "image_category": "./component/CS251 Component/Food category/burger.svg"
@@ -36,98 +36,63 @@ const food_category = [
   }
 ]
 
-const menu_data = [
-  {
-    "id": "0",
-    "name": "Classic Cheeseburger",
-    "food_category": "Burger",
-    "quantity": 10,
-    "price": 120,
-    "description": "A classic cheeseburger with cheddar cheese, lettuce, tomato, and pickles.",
-    "image_url": "https://example.com/classic_cheeseburger.jpg"
-  },
-  {
-    "id": "1",
-    "name": "Crispy Chicken Wings",
-    "food_category": "Chicken",
-    "quantity": 3,
-    "price": 150,
-    "description": "Crispy chicken wings served with your choice of dipping sauce.",
-    "image_url": "https://example.com/crispy_chicken_wings.jpg"
-  },
-  {
-    "id": "2",
-    "name": "Taco Supreme",
-    "food_category": "Taco",
-    "quantity": 6,
-    "price": 100,
-    "description": "A supreme taco filled with seasoned ground beef, lettuce, cheese, and tomato.",
-    "image_url": "https://example.com/taco_supreme.jpg"
-  },
-  {
-    "id": "3",
-    "name": "Loaded Fries",
-    "food_category": "Fries",
-    "quantity": 8,
-    "price": 90,
-    "description": "Fries loaded with melted cheese, crispy bacon, and green onions.",
-    "image_url": "https://example.com/loaded_fries.jpg"
-  },
-  {
-    "id": "4",
-    "name": "Chocolate Brownie Sundae",
-    "food_category": "Dessert",
-    "quantity": 2,
-    "price": 80,
-    "description": "A decadent chocolate brownie topped with vanilla ice cream and chocolate sauce.",
-    "image_url": "https://example.com/chocolate_brownie_sundae.jpg"
-  },
-  {
-    "id": "5",
-    "name": "Classic Margarita",
-    "food_category": "Drink",
-    "quantity": 3,
-    "price": 70,
-    "description": "A classic margarita made with tequila, lime juice, and triple sec.",
-    "image_url": "https://example.com/classic_margarita.jpg"
-  },
-  {
-    "id": "6",
-    "name": "All American Burger",
-    "food_category": "Burger",
-    "quantity": 4,
-    "price": 130,
-    "description": "A burger with all the classic fixings: lettuce, tomato, onion, and pickles.",
-    "image_url": "https://example.com/all_american_burger.jpg"
-  },
-  {
-    "id": "7",
-    "name": "Spicy Chicken Sandwich",
-    "food_category": "Chicken",
-    "quantity": 99,
-    "price": 140,
-    "description": "A spicy chicken sandwich served on a toasted bun with lettuce and mayo.",
-    "image_url": "https://example.com/spicy_chicken_sandwich.jpg"
-  },
-  {
-    "id": "8",
-    "name": "Crispy Fish Taco",
-    "food_category": "Taco",
-    "quantity": 3,
-    "price": 110,
-    "description": "A crispy fish taco with shredded cabbage and tangy tartar sauce.",
-    "image_url": "https://example.com/crispy_fish_taco.jpg"
-  },
-  {
-    "id": "9",
-    "name": "Sweet Potato Fries",
-    "food_category": "Fries",
-    "quantity": 69,
-    "price": 100,
-    "description": "Sweet potato fries seasoned with cinnamon and sugar.",
-    "image_url": "https://example.com/sweet_potato_fries.jpg"
-  }
-];
+var menu_data = [];
+async function loadMenu(){
+  await fetch("http://localhost:8080/api/menu")
+  .then(response => {
+    // Check if the response is successful (status code 200)
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Parse the JSON response
+    return response.json();
+  })
+  .then(data => {
+    // Data retrieved successfully, do something with it
+    console.log(data);
+    data.forEach((dish)=>{
+      menu_data.push(dish);
+      console.log("Pushing ",dish.foodname);
+      console.log("Menu data is" , menu_data);
+    });
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
+    console.error('There was a problem with the fetch operation:', error);
+  });
+
+  await loadMenuCard();
+}
+loadMenu();
+async function loadMenuCard(){
+  const menuContainer = document.getElementById('menuSlideCon');
+//console.log("We in load Menu card fn");
+  // สร้างการ์ดสำหรับแต่ละรายการเมนู
+  await menu_data.forEach((item,index) => {
+    const card = `
+      <div class="menu-card">
+        <div class="menu-card-con">
+          <div class="menu-pic-container">
+            <img src="./component/CS251 Component/HomeMenuDish/${item.foodname}.png">
+          </div>
+          <div class="menu-desc-con">
+            <div class="menu-desc">
+              <h3>${item.foodname}</h3>
+              <h3 class="h3-qty" id="qty-${index}">QTY: ${item.amount}</h3>
+              <h3><span class="dollar-sign">$</span>: ${item.price}</h3>
+              <button type="button" id="menu-add-button-${index}" class="menu-add-button">ADD</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    // เพิ่มการ์ดลงใน container
+    menuContainer.innerHTML += card;
+  });
+  var menuAdd = document.querySelectorAll('.menu-add-button');
+  await updateAddMenuButton(menuAdd);
+  
+}
 
 // promotion section
 
@@ -422,31 +387,7 @@ const promotionSlideCon = document.querySelector('.promotion-slide-con');
     promotionSlideCon.innerHTML += card;
   });
   
-  const menuContainer = document.querySelector('.menu-con');
 
-  // สร้างการ์ดสำหรับแต่ละรายการเมนู
-  menu_data.forEach((item, index) => {
-    const card = `
-      <div class="menu-card">
-        <div class="menu-card-con">
-          <div class="menu-pic-container">
-            <img src="./component/CS251 Component/HomeMenuDish/Dish${index+1}.png">
-          </div>
-          <div class="menu-desc-con">
-            <div class="menu-desc">
-              <h3>${item.name}</h3>
-              <h3 class="h3-qty" id="qty-${index}">QTY: ${item.quantity}</h3>
-              <h3><span class="dollar-sign">$</span>: ${item.price}</h3>
-              <button type="button" id="menu-add-button-${index}" class="menu-add-button">ADD</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    // เพิ่มการ์ดลงใน container
-    menuContainer.innerHTML += card;
-  });
 const categoryFoods = document.querySelectorAll('.category-food'); 
 
 function selectCategory(index) {
@@ -479,23 +420,21 @@ function selectCategory(index) {
       });
   });
 
-const menuAdd = document.querySelectorAll('.menu-add-button');
+
 var itemNum = [];
 
 function addItem(index) {
-
-  
 
     const card = `
         <div class="item-card" id="item-card-${index}">
             <div class="item-card-con">
                 <div class="item-card-pic-container">
-                    <img src="${menu_data[index].image_url}">
+                    <img src="./component/CS251 Component/HomeMenuDish/${menu_data[index].foodname}.png">
                 </div>
-                <h3 id="name-item-${index}">${menu_data[index].name}</h3>
+                <h3 id="name-item-${index}">${menu_data[index].foodname}</h3>
                 <h3 id="count-item-${index}" class="count-item">${1}</h3>
                 <h3 id="price-item-${index}" class="price-item">$${menu_data[index].price}</h3>
-                <h3 id="qty-item-${index}">QTY:${menu_data[index].quantity}</h3>
+                <h3 id="qty-item-${index}">QTY:${menu_data[index].amount}</h3>
                 <h3 id="add-item-${index}" class="add-item-icon">+</h3>
                 <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
                 <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
@@ -642,11 +581,12 @@ function rmQty(index) {
   countItem.textContent = currentQty;
   updatedPay();
 }
-
-menuAdd.forEach((add, index) => {
+function updateAddMenuButton(menuAdd){
+    
+  menuAdd.forEach((add,index) => {
 
     add.addEventListener('click', () => {
-      let qty = menu_data[index].quantity;
+      let qty = menu_data[index].amount;
       if(qty > 0){
         let checkItem = document.getElementById(`count-item-${index}`);
       if(checkItem !== null){
@@ -670,6 +610,8 @@ menuAdd.forEach((add, index) => {
       }
     })
 });
+}
+
 
 const promotionAdd = document.querySelectorAll('.promotion-add-button');
 
@@ -684,11 +626,11 @@ promotionAdd.forEach((pro, index) => {
       if(ordering){
         orderingVal = parseInt(ordering.textContent);
       }
-      if(menu_data[menu[0]].quantity < menu[1] + orderingVal){
+      if(menu_data[menu[0]].amount < menu[1] + orderingVal){
         pass = false;
       }
     });
-    promotion_data[index].menu_id_data.forEach((menu, index) => {
+    promotion_data[index].menu_id_data.forEach((menu) => {
       if(pass){
         for(let i = 0 ; i < menu[1] ; i++){
           let checkItem = document.getElementById(`count-item-${menu[0]}`);
@@ -754,6 +696,32 @@ placeOrder.addEventListener('click', () => {
   updateQty();
 
 });
+function updateMemuQty(item){
+  let url = `/api/update/menu/${item.foodname}`
+  let itemjson = JSON.stringify(item);
+  return fetch(url, {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+        // You might need to include other headers like authentication token if required
+    },
+    body: itemjson,
+})
+.then(response => {
+    if (!response.ok) {
+        return null; // Return null if response is not OK
+    }
+    return response.json();
+})
+.then(updatedFood => {
+    console.log('Food updated successfully:', updatedFood);
+    return updatedFood; // Optionally, you can return the updated food object
+})
+.catch(error => {
+    console.error('Error updating food:', error);
+    return -1; // Return null in case of any other error
+});
+}
 
 function updateQty () {
   let itemCard = document.querySelectorAll('.item-card');
@@ -761,12 +729,21 @@ function updateQty () {
     let index = itemNum[0];
     let val = document.getElementById(`count-item-${index}`);
     let upd = val.textContent;
-    menu_data[index].quantity -= parseInt(upd);
+    let toUpdate = menu_data[index];
+    toUpdate.amount -= parseInt(upd);
+    if(updateMemuQty(toUpdate) !== null){
+      //menu_data[index].amount -= parseInt(upd);
     let menu = document.getElementById(`qty-${index}`);
-    menu.textContent = "QTY: " + menu_data[index].quantity
+    menu.textContent = "QTY: " + menu_data[index].amount;
     val.textContent = 1;
     const idx = itemNum[0];
     rmQty(idx);
+    }
+    else{
+      toUpdate.amount += parseInt(upd);
+      window.alert("Fail to Update DB");
+    }
+    
  
   });
 }

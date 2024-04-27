@@ -125,9 +125,6 @@ function dbAddmember(json) {
       console.error('Error:', error);
       //throw error; // Re-throw the error for further handling
   });
-
- // window.alert(json);
-
 }
 
 function addCardList(newMember){
@@ -155,8 +152,6 @@ function addCardList(newMember){
     const table = document.getElementById('tableMember');
     table.innerHTML += card;
     memberList.push(userId);
-    idCount++;
-    //idAuto++;
     memberList.forEach(element => {
       delIDGenerate(element);
     });
@@ -233,6 +228,7 @@ else{
   
   popup.style.display = 'none';
 }
+
 function DbDelID(m_id){
   let url = `http://localhost:8080/api/delete/member/${m_id}`;
   return fetch(url, {
