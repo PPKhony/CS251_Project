@@ -103,6 +103,17 @@ public class JdbcPosRepository implements PosRepository{
                 new Object[]{member.getM_password(), member.getM_rank(), member.getM_citizenId(), member.getM_name(), member.getM_points(),
                 member.getM_enroll(), member.getM_birthdate(), member.getM_id()});
     }
+    @Override
+    public List<Member> getAllMember(){
+        try {
+            List<Member> members = jdbcTemplate.query("SELECT * FROM member",
+                    BeanPropertyRowMapper.newInstance(Member.class));
+            return members;
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null; // จัดการและคืนค่า null หากพบข้อมูลมากกว่าหนึ่งแถว
+        }
+
+    }
 
 
     @Override

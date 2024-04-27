@@ -28,6 +28,29 @@ var idAuto = 1;
 var memberList=[];
 
 var memberInfoList=[];
+function loadUser(){
+  fetch("http://localhost:8080/api/member/all")
+  .then(response => {
+    // Check if the response is successful (status code 200)
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Parse the JSON response
+    return response.json();
+  })
+  .then(data => {
+    // Data retrieved successfully, do something with it
+    //console.log(data);
+    data.forEach((member)=>{
+      addCardList(member);
+    });
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
+    console.error('There was a problem with the fetch operation:', error);
+  })
+}
+loadUser();
 
 // let newMember = {
 //   "m_id" : randomTenDigitNumber,
@@ -107,7 +130,40 @@ function dbAddmember(json) {
 
 }
 
- function saveMember() {
+function addCardList(newMember){
+  memberInfoList.push(newMember);
+  let userId = newMember.m_id;
+  const date = new Date(newMember.m_enroll);
+
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const formattedDate = `${days[date.getUTCDay()]}, ${months[date.getUTCMonth()]} ${date.getUTCDate()} ${date.getUTCFullYear()}`;
+    let card = `
+                <tr id = "memberList${userId}">
+                  <td>${idCount}</td>
+                  <td>${userId}</td>
+                  <td>${formattedDate}</td>
+                  <td>0</td>
+                  <td><div class="member-edit-icon">
+                  <img src="./component/CS251 Component/icon/trash.png" id = "removeList${userId}">
+                  <img src="./component/CS251 Component/icon/setting.png" id="editList${userId}">
+                   </div></td>
+                </tr>
+              `;
+    
+    const table = document.getElementById('tableMember');
+    table.innerHTML += card;
+    memberList.push(userId);
+    idCount++;
+    //idAuto++;
+    memberList.forEach(element => {
+      delIDGenerate(element);
+    });
+
+}
+
+function saveMember() {
   let name = document.getElementById('addMemberName').value;
   let password = document.getElementById('addMemberPassword').value;
   let citizenID = document.getElementById('addMemberCitizenID').value;
@@ -119,35 +175,18 @@ function dbAddmember(json) {
 
 // Concatenate '42069' with the random number
   const randomTenDigitNumber = '42069' + randomNumber;
-  let idAutoString = String(randomTenDigitNumber).padStart(10,'0');
-
-  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-  var day = daysOfWeek[currentDate.getDay()];
-  var month = months[currentDate.getMonth()];
-  var date = currentDate.getDate();
-  var year = currentDate.getFullYear();
-  var senddel = idAuto;
-
-  const DBmonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-  const DBday = String(currentDate.getDate()).padStart(2, '0');
-  
-  // Format the date string as YYYY-MM-DD
-
-  var formattedDate = day + ", " + month + " " + date + " " + year;
-var DBformattedDate = currentDate.toISOString().replace('Z', '+07:00');
+  var DBformattedDate = currentDate.toISOString().replace('Z', '+07:00');
 
 
-function formatBD(dateString) {
-  // Split the date string into day, month, and year components
-  const [day, month, year] = dateString.split('/');
+   function formatBD(dateString) {
+    // Split the date string into day, month, and year components
+     const [day, month, year] = dateString.split('/');
 
-  // Reorder the components to YYYY-MM-DD format
-  const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    // Reorder the components to YYYY-MM-DD format
+      const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 
-  return formattedDate;
-}
+      return formattedDate;
+    }
 
 let newMember = {
     "m_id" : randomTenDigitNumber,
@@ -178,31 +217,8 @@ let newMember = {
    // console.log(result);
     if(result !== null){
       //console.log("We are in if statement!");
-      memberInfoList.push(newMember);
-    let card = `
-                <tr id = "memberList${idAuto}">
-                  <td>${idCount}</td>
-                  <td>${idAutoString}</td>
-                  <td>${formattedDate}</td>
-                  <td>0</td>
-                  <td><div class="member-edit-icon">
-                  <img src="./component/CS251 Component/icon/trash.png" id = "removeList${idAuto}">
-                  <img src="./component/CS251 Component/icon/setting.png" id="editList${idAuto}">
-                   </div></td>
-                </tr>
-              `;
-    
-    const table = document.getElementById('tableMember');
-    table.innerHTML += card;
-    idCount++;
-    idAuto++;
-    memberList.push(senddel);
-    memberList.forEach(element => {
-      delIDGenerate(element,dbID);
-    });
-    // memberList.forEach(element => {
-    //   delIDGenerate(element);
-    // });
+      addCardList(newMember);
+      
     clearAddmemberBox();
     }
     else{
@@ -245,9 +261,9 @@ function DbDelID(m_id){
   return true;
   
 }
-function delIDGenerate(index,dbID){
+function delIDGenerate(dbID){
   // console.log("Adding del ID",index);
-  const id = index;
+  const id = dbID;
   const button = document.getElementById(`removeList${id}`);
   button.addEventListener('click',function(){
 
@@ -261,8 +277,8 @@ function delIDGenerate(index,dbID){
     else{
       window.alert("Failed to delete from DB");
     }
-    
   });
+
 }
 
 // function editMember(index){

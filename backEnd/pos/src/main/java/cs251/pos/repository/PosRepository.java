@@ -34,6 +34,7 @@ public interface PosRepository {
     List<Invoice> getInvoiceByDay(String startDate, String endDate, int limit, int offset);
     List<Menu> findAmountMenuInPromotion(String Promotion_Code);
     Member findMemberByMemberId(String m_id);
+    List<Member> getAllMember();
     List<Member> findMemberByName(String name);
     List<Member_tel> findMemberTelByMemberId(String m_id);
     List<Checkin> findCheckinById(String s_workid);

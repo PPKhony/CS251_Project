@@ -477,6 +477,11 @@ public class PosController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping(value = "/member/all")
+    public  ResponseEntity<List<Member>> getAllMember(){
+        List<Member> memberList = posRepository.getAllMember();
+        return new ResponseEntity<>(memberList,HttpStatus.OK);
+    }
 
     @GetMapping(value = "/member/tel/{m_id}")
     public ResponseEntity<List<Member_tel>> getMemberTelByMemberId(@PathVariable("m_id") String m_id) {
