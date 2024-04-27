@@ -107,6 +107,10 @@ function saveTransaction(invoice) {
   console.log(table.innerHTML);
  
 }
+function updateTable(){
+  const table = document.getElementById('tableTransaction');
+  table
+}
 // var test = document.getElementById("testcard");
 // test.addEventListener('click',function(){
 //   saveMember();

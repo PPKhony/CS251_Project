@@ -207,6 +207,7 @@ let newMember = {
   
   if(validating(newMember)){
   let jsonMember = JSON.stringify(newMember);
+  console.log(jsonMember);
    dbAddmember(jsonMember).then(result=>{
     if(result !== null){
       addCardList(newMember);

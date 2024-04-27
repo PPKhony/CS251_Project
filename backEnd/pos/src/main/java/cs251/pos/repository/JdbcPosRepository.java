@@ -46,7 +46,7 @@ public class JdbcPosRepository implements PosRepository{
 
     @Override
     public int insertMember(Member member) {
-        return jdbcTemplate.update("INSERT INTO member (m_id, m_password, m_rank, m_citizenId, m_name, m_points, m_enroll, m_birthdate) " +
+        return jdbcTemplate.update("INSERT INTO Member (m_id, m_password, m_rank, m_citizenId, m_name, m_points, m_enroll, m_birthdate) " +
                 "VALUES (?,?,?,?,?,?,?,?)",
                 new Object[] {member.getM_id(), member.getM_password(), member.getM_rank(), member.getM_citizenId(), member.getM_name(), member.getM_points(),
                 member.getM_enroll(), member.getM_birthdate()});
@@ -107,7 +107,7 @@ public class JdbcPosRepository implements PosRepository{
     @Override
     public List<Member> getAllMember(){
         try {
-            List<Member> members = jdbcTemplate.query("SELECT * FROM member",
+            List<Member> members = jdbcTemplate.query("SELECT * FROM Member",
                     BeanPropertyRowMapper.newInstance(Member.class));
             return members;
         } catch (IncorrectResultSizeDataAccessException e) {
@@ -373,7 +373,7 @@ public class JdbcPosRepository implements PosRepository{
     }
     @Override
     public int deleteTransaction(String t_id){
-        return jdbcTemplate.update("DELETE FROM invoice WHERE InvoiceNo = ?",t_id);
+        return jdbcTemplate.update("DELETE FROM Invoice WHERE InvoiceNo = ?",t_id);
     }
     @Override
     public int deletePromotionByCode(String Promotion_Code) {
