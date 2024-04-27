@@ -221,27 +221,28 @@ else{
   popup.style.display = 'none';
 }
 function DbDelID(m_id){
-  let url = `http://localhost:8080/api/delete/member/${m_id}`;
-  return fetch(url, {
-      method: 'DELETE',
-      headers: {
-          'Content-Type': 'application/json',
-          // Add any other headers if required
-      },
+  // let url = `http://localhost:8080/api/delete/member/${m_id}`;
+  // return fetch(url, {
+  //     method: 'DELETE',
+  //     headers: {
+  //         'Content-Type': 'application/json',
+  //         // Add any other headers if required
+  //     },
       
-  })
-  .then(response => {
-      if (response.ok) {
-          return response.json(); // Return parsed JSON for successful response
-      } else {
-          console.error('Network response was not ok');
-          return null; // Return null for non-success response
-      }
-  })
-  .catch(error => {
-      console.error('Error:', error);
-      //throw error; // Re-throw the error for further handling
-  });
+  // })
+  // .then(response => {
+  //     if (response.ok) {
+  //         return response.json(); // Return parsed JSON for successful response
+  //     } else {
+  //         console.error('Network response was not ok');
+  //         return null; // Return null for non-success response
+  //     }
+  // })
+  // .catch(error => {
+  //     console.error('Error:', error);
+  //     //throw error; // Re-throw the error for further handling
+  // });
+  return true;
   
 }
 function delIDGenerate(index,dbID){
