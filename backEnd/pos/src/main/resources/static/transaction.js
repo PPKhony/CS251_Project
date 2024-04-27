@@ -22,99 +22,135 @@ function addMember() {
   popup.style.display = 'block';
 }
 
+
 var idCount = 1;
 var idAuto = 1;
 var memberList=[];
-var serving = ["Dine in","Take away"];
-var payment = ["Scan","Cash","Promptpay"];
-var memberInfoList=[
-  // {
-  //   "name": "pee",
-  //   "password": "admin",
-  //   "citizenID": "1212312121",
-  //   "tel": "0811231456",
-  //   "birthDate": "12/34/56",
-  // },
-];
+var memberInfoList=[];
+function loadTransaction(){
+  fetch("http://localhost:8080/api/invoice/list/0/100")
+  .then(response => {
+    // Check if the response is successful (status code 200)
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Parse the JSON response
+    return response.json();
+  })
+  .then(data => {
 
-function saveMember() {
-  // let name = document.getElementById('addMemberName').value;
-  // let password = document.getElementById('addMemberPassword').value;
-  // let citizenID = document.getElementById('addMemberCitizenID').value;
-  // let tel = document.getElementById('addMemberTel').value;
-  // let birthDate = document.getElementById('addMemberBirthDate').value;
-  let idAutoString = String(idAuto).padStart(10,'0');
+    // Data retrieved successfully, do something with it
+    //console.log(data);
+    data.forEach((invoice)=>{
+      saveTransaction(invoice);
+    });
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
+    console.error('There was a problem with the fetch operation:', error);
+  });
+}
+loadTransaction();
 
-  // let newMember = {
-  //   "name": name,
-  //   "password": password,
-  //   "citizenID": citizenID,
-  //   "tel": tel,
-  //   "birthDate": birthDate
-  // };
+function saveTransaction(invoice) {
+    //   {
+  //     "i_change": 7.0,
+  //     "payment": 125.12,
+  //     "takeHome": false,
+  //     "paymentMethod": "Cash",
+  //     "dateTime": "2024-04-03T05:30:00.000+00:00",
+  //     "netPrice": 124.12,
+  //     "memberID": "1234567890",
+  //     "totalDiscount": 1.0,
+  //     "invoiceNo": 1
+  // }
 
-  // memberInfoList.push(newMember);
+  let idString = String(invoice.invoiceNo).padStart(10,'0');
 
-  var currentDate = new Date();
+  var   date = new Date(invoice.dateTime);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-// Days of the week and months array
-  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const formattedDate = `${days[date.getUTCDay()]}, ${months[date.getUTCMonth()]} ${date.getUTCDate()} ${date.getUTCFullYear()}`;
+
+  var serving;
+  if (invoice.serveType == true){
+    serving = 'Dine in';
+  }
+  else{
+    serving = 'Take home';
+  }
 // Get day, month, and year
-  var day = daysOfWeek[currentDate.getDay()];
-  var month = months[currentDate.getMonth()];
-  var date = currentDate.getDate();
-  var year = currentDate.getFullYear();
-  var senddel = idAuto;
 
-// Format the date
-  var formattedDate = day + ", " + month + " " + date + " " + year;
   let card = `
-  <tr id="transaction${idAuto}">
-  <td>${idCount}</td>
-  <td>${idAutoString}</td>
+  <tr id="transaction${invoice.invoiceNo}">
+  <td>${invoice.invoiceNo}</td>
+  <td>${idString}</td>
   <td>${formattedDate}</td>
-  <td>${serving[idCount%2]}</td>
-  <td>${payment[idCount%3]}</td>
+  <td>${serving}</td>
+  <td>${invoice.paymentMethod}</td>
   <td>$55</td>
   <td><div class="member-edit-icon">
-      <img src="./component/CS251 Component/icon/trash.png" id="del-transaction${idAuto}">
-      <img src="./component/CS251 Component/icon/setting.png" id="edit-transaction${idAuto}">
+      <img src="./component/CS251 Component/icon/trash.png" id="del-transaction${invoice.invoiceNo}">
+      <img src="./component/CS251 Component/icon/setting.png" id="edit-transaction${invoice.invoiceNo}">
   </div></td>
 </tr>`;
   
   const table = document.getElementById('tableTransaction');
   table.innerHTML += card;
-  idCount++;
-  idAuto++;
-  memberList.push(senddel);
+  memberList.push(invoice.invoiceNo);
   memberList.forEach(element => {
     delIDGenerate(element);
   });
-  // memberList.forEach(element => {
-  //   delIDGenerate(element);
-  // });
- 
+
+
   console.log(table.innerHTML);
  
-  
-  // popup.style.display = 'none';
 }
-var test = document.getElementById("testcard");
-test.addEventListener('click',function(){
-  saveMember();
-});//test until Db coming
+// var test = document.getElementById("testcard");
+// test.addEventListener('click',function(){
+//   saveMember();
+// });//test until Db coming
 
-
+function DbDelID(m_id){
+  let url = `http://localhost:8080/api/delete/invoice/${m_id}`;
+  return fetch(url, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json',
+          // Add any other headers if required
+      },
+      
+  })
+  .then(response => {
+      if (response.ok) {
+          return response.json(); // Return parsed JSON for successful response
+      } else {
+          console.error('Network response was not ok');
+          return null; // Return null for non-success response
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      //throw error; // Re-throw the error for further handling
+  });
+}
 function delIDGenerate(index){
   // console.log("Adding del ID",index);
   const id = index;
   const button = document.getElementById(`del-transaction${id}`);
   button.addEventListener('click',function(){
+
     //ADDING confirm code
-    const del = document.getElementById(`transaction${id}`);
-    del.parentNode.removeChild(del);
-    memberList = memberList.filter(item => item !== id);
+    if(DbDelID(id) !== null){
+      const del = document.getElementById(`transaction${id}`);
+      del.parentNode.removeChild(del);
+     memberList = memberList.filter(item => item !== id);
+    }
+    else{
+      window.alert("Cannot delete Transaction due to Database Error");
+    }
+    
   });
 }
 

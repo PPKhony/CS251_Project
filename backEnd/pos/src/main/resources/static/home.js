@@ -433,7 +433,7 @@ function addItem(index) {
                 </div>
                 <h3 id="name-item-${index}">${menu_data[index].foodname}</h3>
                 <h3 id="count-item-${index}" class="count-item">${1}</h3>
-                <h3 id="price-item-${index}" class="price-item">$${menu_data[index].price}</h3>
+                <h3 id="price-item-${index}" class="price-item">฿${menu_data[index].price}</h3>
                 <h3 id="qty-item-${index}">QTY:${menu_data[index].amount}</h3>
                 <h3 id="add-item-${index}" class="add-item-icon">+</h3>
                 <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
@@ -470,7 +470,7 @@ function addItem(index) {
     }
 
     for(let j=0;j<itemNum.length;j++){
-      var rmAllItemIcon = document.getElementById(`rm-all-item-${index}`);
+      var rmAllItemIcon = document.getElementById(`rm-all-item-${itemNum[j]}`);
       rmAllItemIcon.addEventListener('click', () => {
         let rmNum = document.getElementById(`count-item-${index}`);
         rmNum.textContent = 1;

@@ -225,6 +225,21 @@ public class PosController {
         }
 
     }
+    @DeleteMapping(value = "/delete/invoice/{t_id}")
+    public ResponseEntity<String> deleteTransaction(@PathVariable("t_id") String t_id){
+        try{
+            int result = posRepository.deleteTransaction(t_id);
+            if (result == 0){
+                return new ResponseEntity<>("Cannot find Transaction id="+t_id,HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>("Delete Transaction id "+t_id+" Successfully",HttpStatus.OK);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Cannot Delete Transaction",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @DeleteMapping(value = "/delete/menu/{foodname}")
     public ResponseEntity<String> deleteMenuByName(@PathVariable("foodname") String foodname) {
         try {

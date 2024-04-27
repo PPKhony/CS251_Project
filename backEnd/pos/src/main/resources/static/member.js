@@ -48,7 +48,7 @@ function loadUser(){
   .catch(error => {
     // Handle any errors that occurred during the fetch
     console.error('There was a problem with the fetch operation:', error);
-  })
+  });
 }
 loadUser();
 
@@ -141,7 +141,7 @@ function addCardList(newMember){
                   <td>${userNo}</td>
                   <td>${userId}</td>
                   <td>${formattedDate}</td>
-                  <td>0</td>
+                  <td>${newMember.m_points}</td>
                   <td><div class="member-edit-icon">
                   <img src="./component/CS251 Component/icon/trash.png" id = "removeList${userId}">
                   <img src="./component/CS251 Component/icon/setting.png" id="editList${userId}">

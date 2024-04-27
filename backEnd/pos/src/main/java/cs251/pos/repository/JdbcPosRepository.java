@@ -37,6 +37,7 @@ public class JdbcPosRepository implements PosRepository{
 
     @Override
     public int insertInvoice(Invoice invoice) {
+
         return jdbcTemplate.update("INSERT INTO Invoice (Payment, PaymentMethod, DateTime, TotalDiscount, NetPrice, " +
                 "IsTakeHome, MemberID, i_change) VALUES (?,?,?,?,?,?,?,?)",
                 new Object[] {invoice.getPayment(), invoice.getPaymentMethod(), invoice.getDateTime(), invoice.getTotalDiscount(),
@@ -370,7 +371,10 @@ public class JdbcPosRepository implements PosRepository{
             return null;
         }
     }
-
+    @Override
+    public int deleteTransaction(String t_id){
+        return jdbcTemplate.update("DELETE FROM invoice WHERE InvoiceNo = ?",t_id);
+    }
     @Override
     public int deletePromotionByCode(String Promotion_Code) {
         return jdbcTemplate.update("DELETE FROM Promotion WHERE Promotion_Code =?", Promotion_Code);

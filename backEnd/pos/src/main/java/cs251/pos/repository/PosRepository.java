@@ -48,6 +48,7 @@ public interface PosRepository {
     int deletePromotionByCode(String Promotion_Code);
     int deleteMenuByName(String foodname);
     int deleteMenuHavePromotion(String Promotion_Code);
+    int deleteTransaction(String t_id);
     Seller login(String s_workid, String password);
 
     int insertBook(Book book);
