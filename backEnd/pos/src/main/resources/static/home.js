@@ -353,22 +353,22 @@ scan.addEventListener('click', () => {
 
 
 
-  const categoryCon = document.querySelector('.category-con');
+  // const categoryCon = document.querySelector('.category-con');
 
-  // สร้างการ์ดสำหรับแต่ละรายการเมนู
-  food_category.forEach((item, index) => {
-    const card = `
-        <div class="category-food" id= "categoryFood-${index}">
-            <div class="icon-container">
-                <img src="${item.image_category}">
-            </div>
-            <p>${item.name}</p>
-        </div>
-    `;
+  // // สร้างการ์ดสำหรับแต่ละรายการเมนู
+  // food_category.forEach((item, index) => {
+  //   const card = `
+  //       <div class="category-food" id= "categoryFood-${index}">
+  //           <div class="icon-container">
+  //               <img src="${item.image_category}">
+  //           </div>
+  //           <p>${item.name}</p>
+  //       </div>
+  //   `;
     
-    // เพิ่มการ์ดลงใน container
-    categoryCon.innerHTML += card;
-  });
+  //   // เพิ่มการ์ดลงใน container
+  //   categoryCon.innerHTML += card;
+  // });
 
 const promotionSlideCon = document.querySelector('.promotion-slide-con');
 
@@ -847,9 +847,7 @@ let newMember = {
   memberList.forEach(element => {
     delIDGenerate(element);
   });
-  memberList.forEach(element => {
-    delIDGenerate(element);
-  });
+
   clearAddmemberBox();
 }
 else{
