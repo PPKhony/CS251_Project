@@ -210,6 +210,21 @@ public class PosController {
             return new ResponseEntity<>("Cannot delete promotion", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @DeleteMapping(value = "/delete/member/{m_id}")
+    public ResponseEntity<String> deleteMember(@PathVariable("m_id") String m_id){
+        try{
+            int result = posRepository.deleteMember(m_id);
+            if(result == 0){
+                return new ResponseEntity<>("Cannot find Member with id= "+ m_id,HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Delete user "+ m_id+" successfully",HttpStatus.OK);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return  new ResponseEntity<>("Cannot delete member",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
     @DeleteMapping(value = "/delete/menu/{foodname}")
     public ResponseEntity<String> deleteMenuByName(@PathVariable("foodname") String foodname) {
         try {

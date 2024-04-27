@@ -18,6 +18,7 @@ public interface PosRepository {
     int insertOrderPromotion(OrderPromotion orderPromotion);
     int updateCheckin(Checkin checkin);
     int updateMember(Member member);
+    int deleteMember(String m_id);
     int addMemberPoint(int point, String m_id);
     int addMenuAmount(String foodname, int amount);
     int reduceMenuAmount(String foodname, int reduce);

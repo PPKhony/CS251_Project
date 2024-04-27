@@ -115,6 +115,10 @@ public class JdbcPosRepository implements PosRepository{
 
     }
 
+    @Override
+    public int deleteMember(String m_id) {
+            return jdbcTemplate.update("DELETE FROM Member WHERE m_id =?", m_id);
+    }
 
     @Override
     public int addMemberPoint(int point, String m_id) {

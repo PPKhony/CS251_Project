@@ -134,14 +134,14 @@ function addCardList(newMember){
   memberInfoList.push(newMember);
   let userId = newMember.m_id;
   const date = new Date(newMember.m_enroll);
-
+  let userNo = userId%10000;
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const formattedDate = `${days[date.getUTCDay()]}, ${months[date.getUTCMonth()]} ${date.getUTCDate()} ${date.getUTCFullYear()}`;
     let card = `
                 <tr id = "memberList${userId}">
-                  <td>${idCount}</td>
+                  <td>${userNo}</td>
                   <td>${userId}</td>
                   <td>${formattedDate}</td>
                   <td>0</td>
@@ -211,12 +211,9 @@ let newMember = {
 //  }
   
   if(validating(newMember)){
-  //console.log(newMember);
   let jsonMember = JSON.stringify(newMember);
    dbAddmember(jsonMember).then(result=>{
-   // console.log(result);
     if(result !== null){
-      //console.log("We are in if statement!");
       addCardList(newMember);
       
     clearAddmemberBox();
@@ -237,28 +234,28 @@ else{
   popup.style.display = 'none';
 }
 function DbDelID(m_id){
-  // let url = `http://localhost:8080/api/delete/member/${m_id}`;
-  // return fetch(url, {
-  //     method: 'DELETE',
-  //     headers: {
-  //         'Content-Type': 'application/json',
-  //         // Add any other headers if required
-  //     },
+  let url = `http://localhost:8080/api/delete/member/${m_id}`;
+  return fetch(url, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json',
+          // Add any other headers if required
+      },
       
-  // })
-  // .then(response => {
-  //     if (response.ok) {
-  //         return response.json(); // Return parsed JSON for successful response
-  //     } else {
-  //         console.error('Network response was not ok');
-  //         return null; // Return null for non-success response
-  //     }
-  // })
-  // .catch(error => {
-  //     console.error('Error:', error);
-  //     //throw error; // Re-throw the error for further handling
-  // });
-  return true;
+  })
+  .then(response => {
+      if (response.ok) {
+          return response.json(); // Return parsed JSON for successful response
+      } else {
+          console.error('Network response was not ok');
+          return null; // Return null for non-success response
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      //throw error; // Re-throw the error for further handling
+  });
+  // return true;
   
 }
 function delIDGenerate(dbID){
