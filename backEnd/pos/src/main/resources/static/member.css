@@ -457,6 +457,16 @@ button:hover {
     border: var(--text) 1px solid;
 }
 
+.edit-member-popup-container {
+    border-radius: 15px;
+    width: 300px;
+    height: 350px;
+    background-color: var(--white);
+    z-index: 10;
+    transform: translate(-310%, 100%);
+    border: var(--text) 1px solid;
+}
+
 .membertext-and-quit {
     display: flex;
     justify-content: space-between;
