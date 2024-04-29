@@ -1,3 +1,5 @@
+
+
 const logoutChange1 = document.getElementById('logoutIcon1');
 const logoutChange2 = document.getElementById('logoutIcon2');
 
@@ -28,6 +30,8 @@ var idAuto = 1;
 var memberList=[];
 
 var memberInfoList=[];
+var memberEditInfoList=[];
+
 function loadUser(){
   fetch("http://localhost:8080/api/member/all")
   .then(response => {
@@ -41,8 +45,9 @@ function loadUser(){
   .then(data => {
     // Data retrieved successfully, do something with it
     //console.log(data);
-    data.forEach((member)=>{
-      addCardList(member);
+    data.forEach(async (member)=>{
+      await addCardList(member);
+      await addEditCardList(member);
     });
   })
   .catch(error => {
@@ -176,8 +181,83 @@ function addCardList(newMember){
     memberList.push(userId);
     memberList.forEach(element => {
       delIDGenerate(element);
+      // editIDGenerate(element);
     });
 
+}
+
+function addEditCardList(newMember) {
+    memberEditInfoList.push(newMember);
+    let userId = newMember.m_id;
+    let user = newMember;
+    let card = `
+                <div class="edit-member-popup" id="edit-member-popup${userId}" style="display:none;">
+                  <div class="edit-member-popup-container">
+                      <div class="edit-member-popup-con">
+                          <div class="membertext-and-quit">
+                              <h3>Member Form</h3>
+                              <div class="exit" id="exit${userId}">X</div>
+                          </div>
+                          <div class="member-name">
+                              <p>Member Name</p>
+                              <input type="text" id="editMemberName${userId}" placeholder="${user.m_name}">
+                          </div>
+                          <div class="member-info">
+                              <div class="info-box">
+                                  <label for="password">password</label><input type="text" name="password" id="editMemberPassword${userId}" placeholder="${user.m_password}">
+                              </div>
+                              <div class="info-box">
+                                  <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="editMemberCitizenID${userId}" placeholder="${user.m_citizenId}">
+                              </div>
+                              <div class="info-box">
+                                  <label for="tel">Tel</label><input type="text" name="tel" id="editMemberTel${userId}" placeholder="ExampleTel">
+                              </div>
+                              <div class="info-box">
+                                  <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="editMemberBirthDate${userId}" placeholder="${user.m_birthdate}">
+                              </div>
+                          </div>
+                          <div class="button-save">
+                              <button type="button" id="saveEditMember${userId}">SAVE</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            `;
+      let editMemberCon = document.getElementById('editMemberCon');
+      editMemberCon.innerHTML += card;
+
+      editMemberButton();
+}
+
+function editMemberButton() {
+  memberEditInfoList.forEach(e => {
+    console.log(e.m_id + 'access edit');
+    let userId = e.m_id;
+    let editButton = document.getElementById(`editList${userId}`);
+    editButton.addEventListener('click', () => {
+
+      let userPopup = document.getElementById(`edit-member-popup${userId}`);
+      userPopup.style.display = 'block';
+
+      let exit = document.getElementById(`exit${userId}`);
+      exit.addEventListener('click', () => {
+      userPopup.style.display = 'none';
+
+      let save = document.getElementById(`saveEditMember${userId}`);
+      save.addEventListener('click', () => {
+        saveEditMember(userId);
+      })
+    });
+    })
+  })
+}
+
+function saveEditMember(id) {
+  let editMemberName = document.getElementById(`editMemberName${userId}`).value;
+  let editMemberCitizenID = document.getElementById(`editMemberCitizenID${userId}`).value;
+  let editMemberPassword = document.getElementById(`editMemberPassword${userId}`).value;
+  let editMemberTel = document.getElementById(`editMemberTel${userId}`).value;
+  let editMemberBirthDate = document.getElementById(`editMemberBirthDate${userId}`).value;
 }
 
 function saveMember() {
@@ -264,10 +344,6 @@ else{
   popup.style.display = 'none';
 }
 
-function saveEditMember(id) {
-
-}
-
 function DbDelID(m_id){
   let url = `http://localhost:8080/api/delete/member/${m_id}`;
   return fetch(url, {
@@ -313,10 +389,31 @@ function delIDGenerate(dbID){
 
 }
 
+//idk just wait
+
+// function editIDGenerate(dbID){
+//   let id = dbID;
+//   let button = document.getElementById(`editList${id}`);
+//   button.addEventListener('click',function(){
+
+//     if(DbEditID(dbID) !== null){
+//       const edit = document.getElementById(`memberList${id}`);
+      
+      
+//     }
+//     else{
+//       window.alert("Failed to update from DB");
+//     }
+
+//   });
+// }
+
+//wait
+
 // function DbEditID(m_id){
-//   let url = `http://localhost:8080/api/delete/member/${m_id}`;
+//   let url = `http://localhost:8080/api/update/member/${m_id}`;
 //   return fetch(url, {
-//       method: 'DELETE',
+//       method: 'PUT',
 //       headers: {
 //           'Content-Type': 'application/json',
 //           // Add any other headers if required
@@ -338,58 +435,52 @@ function delIDGenerate(dbID){
 //   // return true; 
 // }
 
-function editIDGenerate(dbID) {
-  const id = dbID;
-  const button = document.getElementById(`editList${id}`);
+// function editIDGenerate(dbID) {
+//   const id = dbID;
+//   const button = document.getElementById(`editList${id}`);
 
-  button.addEventListener('click', () => {
+//   button.addEventListener('click', () => {
 
-    const card = `
-                  <div class="edit-member-popup" id="edit-member-popup${id}">
-                    <div class="edit-member-popup-container">
-                        <div class="edit-member-popup-con">
-                            <div class="membertext-and-quit">
-                                <h3>Member Form</h3>
-                                <div class="exit">X</div>
-                            </div>
-                            <div class="member-name">
-                                <p>Member Name</p>
-                                <input type="text" id="editMemberName${id}" placeholder="ExampleMemberName">
-                            </div>
-                            <div class="member-info">
-                                <div class="info-box">
-                                    <label for="password">password</label><input type="text" name="password" id="addMemberPassword${id}" placeholder="ExampleMemberPassword">
-                                </div>
-                                <div class="info-box">
-                                    <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID${id}" placeholder="ExampleMemberCitizenID">
-                                </div>
-                                <div class="info-box">
-                                    <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel${id}" placeholder="ExampleMemberTel">
-                                </div>
-                                <div class="info-box">
-                                    <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate${id}" placeholder="ExampleMemberBD">
-                                </div>
-                            </div>
-                            <div class="button-save">
-                                <button type="button" onclick="saveEditMember(${id})">SAVE</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-              `;
+//     const card = `
+//                   <div class="edit-member-popup" id="edit-member-popup${id}">
+//                     <div class="edit-member-popup-container">
+//                         <div class="edit-member-popup-con">
+//                             <div class="membertext-and-quit">
+//                                 <h3>Member Form</h3>
+//                                 <div class="exit">X</div>
+//                             </div>
+//                             <div class="member-name">
+//                                 <p>Member Name</p>
+//                                 <input type="text" id="editMemberName${id}" placeholder="ExampleMemberName">
+//                             </div>
+//                             <div class="member-info">
+//                                 <div class="info-box">
+//                                     <label for="password">password</label><input type="text" name="password" id="addMemberPassword${id}" placeholder="ExampleMemberPassword">
+//                                 </div>
+//                                 <div class="info-box">
+//                                     <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID${id}" placeholder="ExampleMemberCitizenID">
+//                                 </div>
+//                                 <div class="info-box">
+//                                     <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel${id}" placeholder="ExampleMemberTel">
+//                                 </div>
+//                                 <div class="info-box">
+//                                     <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate${id}" placeholder="ExampleMemberBD">
+//                                 </div>
+//                             </div>
+//                             <div class="button-save">
+//                                 <button type="button" onclick="saveEditMember(${id})">SAVE</button>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//               `;
 
-    const container = document.createElement('div');
-    container.innerHTML = card;
+//     const container = document.createElement('div');
+//     container.innerHTML = card;
 
-    document.body.appendChild(container);
-  });
-}
-
-const exit = document.querySelector('.exit');
-
-exit.addEventListener('click', () => {
-  popup.style.display = 'none';
-});
+//     document.body.appendChild(container);
+//   });
+// }
 
 const inputSearchMember = document.querySelector('.arrow');
 
