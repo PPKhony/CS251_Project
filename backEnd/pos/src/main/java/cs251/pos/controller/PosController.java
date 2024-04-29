@@ -319,7 +319,7 @@ public class PosController {
     @PostMapping(value = "/add/invoice")
     public ResponseEntity<String> createInvoice(@RequestBody Invoice invoice) {
         try {
-            posRepository.insertInvoice(new Invoice(invoice.getPayment(), invoice.getPaymentMethod(), invoice.getDateTime(),
+             posRepository.insertInvoice(new Invoice(invoice.getPayment(), invoice.getPaymentMethod(), invoice.getDateTime(),
                     invoice.getTotalDiscount(), invoice.getNetPrice(), invoice.isTakeHome(), invoice.getMemberID(), invoice.getI_change()));
             return new ResponseEntity<>("Invoice was created successfully", HttpStatus.CREATED);
         }catch (Exception e) {
@@ -332,6 +332,7 @@ public class PosController {
         try {
             posRepository.insertOrderPromotion(new OrderPromotion(orderPromotion.getInvoiceNo(),
                     orderPromotion.getPromotion_Code(), orderPromotion.getP_amount()));
+
             return new ResponseEntity<>("Successfully", HttpStatus.CREATED);
         }catch (Exception e){
             e.printStackTrace();

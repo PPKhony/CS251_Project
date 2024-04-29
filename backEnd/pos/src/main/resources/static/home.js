@@ -720,7 +720,7 @@ placeOrder.addEventListener('click', async () => {
 
   let Payment = 1000;
   let PaymentMethod = "Cash";
-  let DBformattedDate = currentDate.toISOString().replace('Z', '+07:00');
+  let DBformattedDate = currentDate.toISOString().replace('Z', '+00:00');
   let TotalDiscountelement = document.getElementById('paymentDiscountTotal');
   let stringTotalDiscount = TotalDiscountelement.textContent;
   let TotalDiscount = parseFloat(stringTotalDiscount.replace("$", ""));
@@ -740,7 +740,7 @@ placeOrder.addEventListener('click', async () => {
     "netPrice":NetPrice,
     "isTakeHome":IsTakeHome,
     "memberID":MemberID,
-    "i_change": 1000-NetPrice
+    "i_change": Payment-NetPrice
 
   };
   let jsoninvoice = JSON.stringify(invoicedb);
@@ -768,12 +768,78 @@ placeOrder.addEventListener('click', async () => {
       //throw error; // Re-throw the error for further handling
   });
   }
-  if(updateDBInvoice(jsoninvoice)){
-
+  let pass = 0;
+  function getInvoice(){
+    fetch("http://localhost:8080/api/invoice/list/0/1")
+    .then(response => {
+    // Check if the response is successful (status code 200)
+    if (!response.ok) {
+      return null;
+      //throw new Error('Network response was not ok');
+    }
+    // Parse the JSON response
+    return response.json();
+  })
+  .then(async data => {
+    // Data retrieved successfully, do something with it
+    console.log("Invoice in data: ",data);
+    await orderMenu.forEach(async (menu)=>{
+      console.log("Menu is ", menu);
+      console.log("Data[0] is ", data[0]);
+      let dbUpdateMenu ={
+        "invoiceNo" : data[0].invoiceNo,
+        "foodname" : menu[0].foodname,
+        "m_amount" : menu[1]
+      };
+      let jsonUpdateOrderMenu = JSON.stringify(dbUpdateMenu);
+      console.log("Json order menu before send :",jsonUpdateOrderMenu);
+      await updateOrderMenu(jsonUpdateOrderMenu);
+      
+   
+    });
+    await updateQty();
     orderCon1.style.display = 'block';
     orderCon2.style.display = 'none';
-    orderMenu = [];
-    updateQty();
+    return data;
+    
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
+    console.error('There was a problem with the fetch operation:', error);
+  });
+
+  }
+  function updateOrderMenu(jsonMenu){
+    console.log("Now we in update with json :",jsonMenu);
+    let url = 'http://localhost:8080/api/add/order/menu';
+  return fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          // Add any other headers if required
+      },
+      body: jsonMenu,
+  })
+  .then(response => {
+      if (response.ok) {
+        console.log("Update OrderMenu pass!");
+          return response.json(); // Return parsed JSON for successful response
+      } else {
+          console.error('Network response was not ok');
+          return null; // Return null for non-success response
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      //throw error; // Re-throw the error for further handling
+  });
+
+  }
+
+  if(await updateDBInvoice(jsoninvoice) !== null){
+   
+    await getInvoice();
+
   }
   else
   {window.alert("Update invoice error due to Database");}
