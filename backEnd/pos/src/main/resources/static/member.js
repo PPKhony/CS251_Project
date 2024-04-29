@@ -28,6 +28,8 @@ var idAuto = 1;
 var memberList=[];
 
 var memberInfoList=[];
+var memberEditInfoList=[];
+
 function loadUser(){
   fetch("http://localhost:8080/api/member/all")
   .then(response => {
@@ -158,6 +160,46 @@ function addCardList(newMember){
 
 }
 
+function addEditCardList(newMember) {
+    memberEditInfoList.push(newMember);
+    let userId = newMember.m_id;
+    let card = `
+                <div class="edit-member-popup" id="edit-member-popup${userId}" style="display:none;">
+                  <div class="edit-member-popup-container">
+                      <div class="edit-member-popup-con">
+                          <div class="membertext-and-quit">
+                              <h3>Member Form</h3>
+                              <div class="exit">X</div>
+                          </div>
+                          <div class="member-name">
+                              <p>Member Name</p>
+                              <input type="text" id="editMemberName${userId}" placeholder="ExampleMemberName">
+                          </div>
+                          <div class="member-info">
+                              <div class="info-box">
+                                  <label for="password">password</label><input type="text" name="password" id="addMemberPassword${userId}" placeholder="ExampleMemberPassword">
+                              </div>
+                              <div class="info-box">
+                                  <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID${userId}" placeholder="ExampleMemberCitizenID">
+                              </div>
+                              <div class="info-box">
+                                  <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel${userId}" placeholder="ExampleMemberTel">
+                              </div>
+                              <div class="info-box">
+                                  <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate${userId}" placeholder="ExampleMemberBD">
+                              </div>
+                          </div>
+                          <div class="button-save">
+                              <button type="button" onclick="saveEditMember(${userId})">SAVE</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            `;
+      const editMemberCon = document.getElementById('editMemberCon');
+      editMemberCon.innerHTML += card;
+}
+
 function saveMember() {
   let name = document.getElementById('addMemberName').value;
   let password = document.getElementById('addMemberPassword').value;
@@ -211,7 +253,7 @@ let newMember = {
    dbAddmember(jsonMember).then(result=>{
     if(result !== null){
       addCardList(newMember);
-      
+      addEditCardList(newMember);
     clearAddmemberBox();
     }
     else{
@@ -304,52 +346,52 @@ function delIDGenerate(dbID){
 //   // return true; 
 // }
 
-function editIDGenerate(dbID) {
-  const id = dbID;
-  const button = document.getElementById(`editList${id}`);
+// function editIDGenerate(dbID) {
+//   const id = dbID;
+//   const button = document.getElementById(`editList${id}`);
 
-  button.addEventListener('click', () => {
+//   button.addEventListener('click', () => {
 
-    const card = `
-                  <div class="edit-member-popup" id="edit-member-popup${id}">
-                    <div class="edit-member-popup-container">
-                        <div class="edit-member-popup-con">
-                            <div class="membertext-and-quit">
-                                <h3>Member Form</h3>
-                                <div class="exit">X</div>
-                            </div>
-                            <div class="member-name">
-                                <p>Member Name</p>
-                                <input type="text" id="editMemberName${id}" placeholder="ExampleMemberName">
-                            </div>
-                            <div class="member-info">
-                                <div class="info-box">
-                                    <label for="password">password</label><input type="text" name="password" id="addMemberPassword${id}" placeholder="ExampleMemberPassword">
-                                </div>
-                                <div class="info-box">
-                                    <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID${id}" placeholder="ExampleMemberCitizenID">
-                                </div>
-                                <div class="info-box">
-                                    <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel${id}" placeholder="ExampleMemberTel">
-                                </div>
-                                <div class="info-box">
-                                    <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate${id}" placeholder="ExampleMemberBD">
-                                </div>
-                            </div>
-                            <div class="button-save">
-                                <button type="button" onclick="saveEditMember(${id})">SAVE</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-              `;
+//     const card = `
+//                   <div class="edit-member-popup" id="edit-member-popup${id}">
+//                     <div class="edit-member-popup-container">
+//                         <div class="edit-member-popup-con">
+//                             <div class="membertext-and-quit">
+//                                 <h3>Member Form</h3>
+//                                 <div class="exit">X</div>
+//                             </div>
+//                             <div class="member-name">
+//                                 <p>Member Name</p>
+//                                 <input type="text" id="editMemberName${id}" placeholder="ExampleMemberName">
+//                             </div>
+//                             <div class="member-info">
+//                                 <div class="info-box">
+//                                     <label for="password">password</label><input type="text" name="password" id="addMemberPassword${id}" placeholder="ExampleMemberPassword">
+//                                 </div>
+//                                 <div class="info-box">
+//                                     <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID${id}" placeholder="ExampleMemberCitizenID">
+//                                 </div>
+//                                 <div class="info-box">
+//                                     <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel${id}" placeholder="ExampleMemberTel">
+//                                 </div>
+//                                 <div class="info-box">
+//                                     <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate${id}" placeholder="ExampleMemberBD">
+//                                 </div>
+//                             </div>
+//                             <div class="button-save">
+//                                 <button type="button" onclick="saveEditMember(${id})">SAVE</button>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//               `;
 
-    const container = document.createElement('div');
-    container.innerHTML = card;
+//     const container = document.createElement('div');
+//     container.innerHTML = card;
 
-    document.body.appendChild(container);
-  });
-}
+//     document.body.appendChild(container);
+//   });
+// }
 
 const exit = document.querySelector('.exit');
 
