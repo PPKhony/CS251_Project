@@ -74,7 +74,8 @@ function saveTransaction(invoice) {
   const formattedDate = `${days[date.getUTCDay()]}, ${months[date.getUTCMonth()]} ${date.getUTCDate()} ${date.getUTCFullYear()}`;
 
   var serving;
-  if (invoice.serveType == true){
+  console.log("TakeHome : ",invoice.takeHome);
+  if (invoice.takeHome === false){
     serving = 'Dine in';
   }
   else{
@@ -89,7 +90,7 @@ function saveTransaction(invoice) {
   <td>${formattedDate}</td>
   <td>${serving}</td>
   <td>${invoice.paymentMethod}</td>
-  <td>$55</td>
+  <td>${invoice.netPrice}</td>
   <td><div class="member-edit-icon">
       <img src="./component/CS251 Component/icon/trash.png" id="del-transaction${invoice.invoiceNo}">
       <img src="./component/CS251 Component/icon/setting.png" id="edit-transaction${invoice.invoiceNo}">

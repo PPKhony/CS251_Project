@@ -119,7 +119,7 @@ public class JdbcPosRepository implements PosRepository{
 
     @Override
     public int deleteMember(String m_id) {
-            return jdbcTemplate.update("DELETE FROM Member WHERE m_id =?", m_id);
+            return (jdbcTemplate.update("DELETE FROM Member_tel WHERE m_id = ?",m_id)*jdbcTemplate.update("DELETE FROM Member WHERE m_id =?", m_id));
     }
 
     @Override
@@ -213,11 +213,30 @@ public class JdbcPosRepository implements PosRepository{
         }
     }
 
+
     @Override
     public List<Invoice> getInvoice(int limit, int offset) {
-        String q = "SELECT * FROM Invoice ORDER BY InvoiceNo DESC LIMIT " + Integer.toString(limit) + " OFFSET " + Integer.toString(offset);
-        return jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(Invoice.class));
+        String q = "SELECT *, IF(IsTakeHome = 1, TRUE, FALSE) AS IsTakeHomeBool FROM Invoice ORDER BY InvoiceNo DESC LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(q, new Object[]{limit, offset}, (rs, rowNum) -> {
+            Invoice invoice = new Invoice();
+            invoice.setInvoiceNo(rs.getInt("InvoiceNo"));
+            invoice.setPayment(rs.getDouble("Payment"));
+            invoice.setPaymentMethod(rs.getString("PaymentMethod"));
+            invoice.setDateTime(rs.getTimestamp("DateTime"));
+            invoice.setTotalDiscount(rs.getDouble("TotalDiscount"));
+            invoice.setNetPrice(rs.getDouble("NetPrice"));
+            invoice.setTakeHome(rs.getBoolean("IsTakeHomeBool"));
+            invoice.setMemberID(rs.getString("MemberID"));
+            invoice.setI_change(rs.getDouble("i_change"));
+            return invoice;
+        });
     }
+// @Override
+//    public List<Invoice> getInvoice(int limit, int offset) {
+//        String q = "SELECT *, CASE WHEN IsTakeHome = 1 THEN TRUE ELSE FALSE END AS boolIsTakeHome FROM Invoice ORDER BY InvoiceNo DESC LIMIT " + Integer.toString(limit) + " OFFSET " + Integer.toString(offset);
+//
+//        return jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(Invoice.class));
+//    }
 
     @Override
     public List<Invoice> getInvoiceByDay(String startDate, String endDate, int limit, int offset) {

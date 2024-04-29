@@ -242,7 +242,11 @@ function delDBMenu(data){
   .then(response => {
       if (response.ok) {
           return response.json(); // Return parsed JSON for successful response
-      } else {
+      } else if(response.status === 500){
+        console.error('Network response was not ok');
+          return null;
+      }
+      else{
           console.error('Network response was not ok');
           return null; // Return null for non-success response
       }
@@ -259,16 +263,17 @@ function updateDeleteMenuButton(){
   menu_data.forEach(elm =>{
     console.log("Updating ",elm.foodname);
     var button = document.getElementById(`del-${elm.foodname}`);
-    button.addEventListener( "click", function() {
-      if(delDBMenu(elm) !== null){
-        var del = document.getElementById(`menu-${elm.foodname}`);
-        del.parentNode.removeChild(del);
-        menu_data = menu_data.filter(item => item !== elm);
-      }
-      else{
-        window.alert('Fail to delete the food');
-      }
-
+    button.addEventListener("click", function() {
+      delDBMenu(elm).then((result)=>{
+        if(result !== null){
+          var del = document.getElementById(`menu-${elm.foodname}`);
+          del.parentNode.removeChild(del);
+          menu_data = menu_data.filter(item => item !== elm);
+        }
+        else{
+          window.alert('Fail to delete the food');
+        }
+      });
     });
   });
 }

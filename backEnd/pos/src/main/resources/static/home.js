@@ -738,7 +738,7 @@ placeOrder.addEventListener('click', async () => {
     "dateTime" : DBformattedDate,
     "totalDiscount":TotalDiscount,
     "netPrice":NetPrice,
-    "isTakeHome":IsTakeHome,
+    "takeHome":IsTakeHome,
     "memberID":MemberID,
     "i_change": Payment-NetPrice
 
@@ -843,10 +843,6 @@ placeOrder.addEventListener('click', async () => {
   }
   else
   {window.alert("Update invoice error due to Database");}
-  let OrderMenudb = {};
-
-  
-  
 
 });
 function updateMemuQty(item){

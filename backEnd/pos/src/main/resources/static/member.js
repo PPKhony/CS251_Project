@@ -105,6 +105,7 @@ function clearAddmemberBox(){
 function dbAddmember(json) {
   console.log(json);
   let url = 'http://localhost:8080/api/add/member';
+  
   return fetch(url, {
       method: 'POST',
       headers: {
@@ -124,6 +125,27 @@ function dbAddmember(json) {
   .catch(error => {
       console.error('Error:', error);
       //throw error; // Re-throw the error for further handling
+  });
+}
+function dbAddMemberTel(jsontel){
+  let telurl = 'http://localhost:8080/api/add/member/tel'
+  return fetch(telurl,{
+    method: 'POST',
+    headers:{
+      'Content-Type': 'application/json',
+    },
+    body : jsontel,
+  }).then(res =>{
+    if(res.ok){
+      return res.json();
+    }
+    else{
+      console.error('Network response was not ok');
+      return null;
+    }
+    
+  }).catch(err =>{
+    console.error('Error : ',err);
   });
 }
 
@@ -193,6 +215,11 @@ let newMember = {
     "m_enroll" : DBformattedDate,
     "m_birthdate": formatBD(birthDate),
   };
+  let newMemberTel = {
+    "m_id" : randomTenDigitNumber,
+    "m_tel" : tel
+  }
+  let newMemberTeljson = JSON.stringify(newMemberTel);
 
 //   let jsonexample = {
 //     "m_id": "6509681141",
@@ -207,16 +234,23 @@ let newMember = {
   
   if(validating(newMember)){
   let jsonMember = JSON.stringify(newMember);
-  console.log(jsonMember);
+  //console.log(jsonMember,newMemberTeljson);
    dbAddmember(jsonMember).then(result=>{
-    if(result !== null){
-      addCardList(newMember);
-      
-    clearAddmemberBox();
+    if(result === null){
+      window.alert("Failue due to add Member database error");
     }
     else{
-      window.alert("Failue due to database error");
-    }
+    dbAddMemberTel(newMemberTeljson).then((telresult)=>{
+      if(telresult !== null){
+        addCardList(newMember);
+        clearAddmemberBox();
+      }
+      else{
+        window.alert("Failue due to add Member tel database error");
+      }
+    });
+  }
+    
    });
   
 }
