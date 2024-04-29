@@ -37,8 +37,8 @@ public class JdbcPosRepository implements PosRepository{
 
     @Override
     public int insertInvoice(Invoice invoice) {
-        System.out.println(invoice.isTakeHome());
-        System.out.println(((invoice.isTakeHome()) ? 1:0));
+//        System.out.println(invoice.isTakeHome());
+//        System.out.println(((invoice.isTakeHome()) ? 1:0));
         return jdbcTemplate.update("INSERT INTO Invoice (Payment, PaymentMethod, DateTime, TotalDiscount, NetPrice, " +
                 "IsTakeHome, MemberID, i_change) VALUES (?,?,?,?,?,?,?,?)",
                 new Object[] {invoice.getPayment(), invoice.getPaymentMethod(), invoice.getDateTime(), invoice.getTotalDiscount(),
@@ -215,7 +215,7 @@ public class JdbcPosRepository implements PosRepository{
 
     @Override
     public List<Invoice> getInvoice(int limit, int offset) {
-        String q = "SELECT * FROM Invoice ORDER BY DateTime DESC LIMIT " + Integer.toString(limit) + " OFFSET " + Integer.toString(offset);
+        String q = "SELECT * FROM Invoice ORDER BY InvoiceNo DESC LIMIT " + Integer.toString(limit) + " OFFSET " + Integer.toString(offset);
         return jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(Invoice.class));
     }
 
@@ -374,7 +374,7 @@ public class JdbcPosRepository implements PosRepository{
     }
     @Override
     public int deleteTransaction(String t_id){
-        return jdbcTemplate.update("DELETE FROM Invoice WHERE InvoiceNo = ?",t_id);
+        return (jdbcTemplate.update("DELETE FROM OrderMenu WHERE InvoiceNo = ?",t_id)*jdbcTemplate.update("DELETE FROM Invoice WHERE InvoiceNo = ?",t_id));
     }
     @Override
     public int deletePromotionByCode(String Promotion_Code) {

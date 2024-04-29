@@ -145,8 +145,11 @@ function historyGenerate(index){
 // test.addEventListener('click',function(){
 //   saveMember();
 // });//test until Db coming
-
+function DbDelMenuOrderID(m_id){
+  
+}
 function DbDelID(m_id){
+
   let url = `http://localhost:8080/api/delete/invoice/${m_id}`;
   return fetch(url, {
       method: 'DELETE',
