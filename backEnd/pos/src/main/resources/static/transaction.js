@@ -428,3 +428,12 @@ previousPage.addEventListener('click', () => {
 // }
 
 
+
+//ยัง error อยู่สำหรับ edit
+// const exit = document.querySelector('.exit');
+
+// exit.addEventListener('click', () => {
+//   popup.style.display = 'none';
+// });
+
+

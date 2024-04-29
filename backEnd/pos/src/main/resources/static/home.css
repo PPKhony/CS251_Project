@@ -343,7 +343,7 @@ input:focus {
     margin-top: 10px;
     height: 67vh;
     width: 60.5vw;
-    margin-left: 40px;
+    margin-left: 9px;
     overflow: hidden;
 }
 
@@ -720,6 +720,10 @@ input:focus {
         :nth-child(1)::after {
             top: 6px;
             left: 7px;
+        }
+
+        input {
+            padding: 0 0 0 24px;
         }
     }
 }
