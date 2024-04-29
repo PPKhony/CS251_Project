@@ -1,3 +1,5 @@
+
+
 const logoutChange1 = document.getElementById('logoutIcon1');
 const logoutChange2 = document.getElementById('logoutIcon2');
 
@@ -43,8 +45,9 @@ function loadUser(){
   .then(data => {
     // Data retrieved successfully, do something with it
     //console.log(data);
-    data.forEach((member)=>{
-      addCardList(member);
+    data.forEach(async (member)=>{
+      await addCardList(member);
+      await addEditCardList(member);
     });
   })
   .catch(error => {
@@ -156,6 +159,7 @@ function addCardList(newMember){
     memberList.push(userId);
     memberList.forEach(element => {
       delIDGenerate(element);
+      editIDGenerate(element);
     });
 
 }
@@ -169,7 +173,7 @@ function addEditCardList(newMember) {
                       <div class="edit-member-popup-con">
                           <div class="membertext-and-quit">
                               <h3>Member Form</h3>
-                              <div class="exit">X</div>
+                              <div class="exit" id="exit${userId}">X</div>
                           </div>
                           <div class="member-name">
                               <p>Member Name</p>
@@ -190,14 +194,32 @@ function addEditCardList(newMember) {
                               </div>
                           </div>
                           <div class="button-save">
-                              <button type="button" onclick="saveEditMember(${userId})">SAVE</button>
+                              <button type="button" id="saveEditMember${userId}">SAVE</button>
                           </div>
                       </div>
                   </div>
               </div>
             `;
-      const editMemberCon = document.getElementById('editMemberCon');
+      let editMemberCon = document.getElementById('editMemberCon');
       editMemberCon.innerHTML += card;
+
+      editMemberButton();
+}
+
+function editMemberButton() {
+  memberEditInfoList.forEach(e => {
+    console.log(e.m_id + 'access edit');
+    let userId = e.m_id;
+    let editButton = document.getElementById(`editList${userId}`);
+    editButton.addEventListener('click', () => {
+      let userPopup = document.getElementById(`edit-member-popup${userId}`);
+      userPopup.style.display = 'block';
+      let exit = document.getElementById(`exit${userId}`);
+      exit.addEventListener('click', () => {
+      userPopup.style.display = 'none';
+    });
+    })
+  })
 }
 
 function saveMember() {
@@ -272,10 +294,6 @@ else{
   popup.style.display = 'none';
 }
 
-function saveEditMember(id) {
-
-}
-
 function DbDelID(m_id){
   let url = `http://localhost:8080/api/delete/member/${m_id}`;
   return fetch(url, {
@@ -319,6 +337,25 @@ function delIDGenerate(dbID){
     }
   });
 
+}
+
+//idk just wait Ta
+
+function editIDGenerate(dbID){
+  let id = dbID;
+  let button = document.getElementById(`editList${id}`);
+  button.addEventListener('click',function(){
+
+
+    // if(DbEditID(dbID) !== null){
+    //   const del = document.getElementById(`memberList${id}`);
+      
+      
+    // }
+    // else{
+    //   window.alert("Failed to Edit from DB");
+    // }
+  });
 }
 
 // function DbEditID(m_id){
@@ -392,12 +429,6 @@ function delIDGenerate(dbID){
 //     document.body.appendChild(container);
 //   });
 // }
-
-const exit = document.querySelector('.exit');
-
-exit.addEventListener('click', () => {
-  popup.style.display = 'none';
-});
 
 const inputSearchMember = document.querySelector('.arrow');
 
