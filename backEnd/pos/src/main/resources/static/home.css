@@ -747,8 +747,10 @@ input:focus {
             font-weight: 400;
         }
 
-        span {
-            margin-left: 5px;
+        input {
+            padding: 0 5px;
+            width: 160px;
+            height: 20px;
         }
     }
 
@@ -768,8 +770,10 @@ input:focus {
             font-weight: 400;
         }
 
-        span {
-            margin-left: 5px;
+        input {
+            padding: 0 5px;
+            width: 65px;
+            height: 20px;
         }
     }
 }
