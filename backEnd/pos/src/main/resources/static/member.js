@@ -159,7 +159,7 @@ function addCardList(newMember){
     memberList.push(userId);
     memberList.forEach(element => {
       delIDGenerate(element);
-      editIDGenerate(element);
+      // editIDGenerate(element);
     });
 
 }
@@ -167,6 +167,7 @@ function addCardList(newMember){
 function addEditCardList(newMember) {
     memberEditInfoList.push(newMember);
     let userId = newMember.m_id;
+    let user = newMember;
     let card = `
                 <div class="edit-member-popup" id="edit-member-popup${userId}" style="display:none;">
                   <div class="edit-member-popup-container">
@@ -177,20 +178,20 @@ function addEditCardList(newMember) {
                           </div>
                           <div class="member-name">
                               <p>Member Name</p>
-                              <input type="text" id="editMemberName${userId}" placeholder="ExampleMemberName">
+                              <input type="text" id="editMemberName${userId}" placeholder="${user.m_name}">
                           </div>
                           <div class="member-info">
                               <div class="info-box">
-                                  <label for="password">password</label><input type="text" name="password" id="addMemberPassword${userId}" placeholder="ExampleMemberPassword">
+                                  <label for="password">password</label><input type="text" name="password" id="editMemberPassword${userId}" placeholder="${user.m_password}">
                               </div>
                               <div class="info-box">
-                                  <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID${userId}" placeholder="ExampleMemberCitizenID">
+                                  <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="editMemberCitizenID${userId}" placeholder="${user.m_citizenId}">
                               </div>
                               <div class="info-box">
-                                  <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel${userId}" placeholder="ExampleMemberTel">
+                                  <label for="tel">Tel</label><input type="text" name="tel" id="editMemberTel${userId}" placeholder="ExampleTel">
                               </div>
                               <div class="info-box">
-                                  <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate${userId}" placeholder="ExampleMemberBD">
+                                  <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="editMemberBirthDate${userId}" placeholder="${user.m_birthdate}">
                               </div>
                           </div>
                           <div class="button-save">
@@ -212,14 +213,29 @@ function editMemberButton() {
     let userId = e.m_id;
     let editButton = document.getElementById(`editList${userId}`);
     editButton.addEventListener('click', () => {
+
       let userPopup = document.getElementById(`edit-member-popup${userId}`);
       userPopup.style.display = 'block';
+
       let exit = document.getElementById(`exit${userId}`);
       exit.addEventListener('click', () => {
       userPopup.style.display = 'none';
+
+      let save = document.getElementById(`saveEditMember${userId}`);
+      save.addEventListener('click', () => {
+        saveEditMember(userId);
+      })
     });
     })
   })
+}
+
+function saveEditMember(id) {
+  let editMemberName = document.getElementById(`editMemberName${userId}`).value;
+  let editMemberCitizenID = document.getElementById(`editMemberCitizenID${userId}`).value;
+  let editMemberPassword = document.getElementById(`editMemberPassword${userId}`).value;
+  let editMemberTel = document.getElementById(`editMemberTel${userId}`).value;
+  let editMemberBirthDate = document.getElementById(`editMemberBirthDate${userId}`).value;
 }
 
 function saveMember() {
@@ -339,29 +355,31 @@ function delIDGenerate(dbID){
 
 }
 
-//idk just wait Ta
+//idk just wait
 
-function editIDGenerate(dbID){
-  let id = dbID;
-  let button = document.getElementById(`editList${id}`);
-  button.addEventListener('click',function(){
+// function editIDGenerate(dbID){
+//   let id = dbID;
+//   let button = document.getElementById(`editList${id}`);
+//   button.addEventListener('click',function(){
 
-
-    // if(DbEditID(dbID) !== null){
-    //   const del = document.getElementById(`memberList${id}`);
+//     if(DbEditID(dbID) !== null){
+//       const edit = document.getElementById(`memberList${id}`);
       
       
-    // }
-    // else{
-    //   window.alert("Failed to Edit from DB");
-    // }
-  });
-}
+//     }
+//     else{
+//       window.alert("Failed to update from DB");
+//     }
+
+//   });
+// }
+
+//wait
 
 // function DbEditID(m_id){
-//   let url = `http://localhost:8080/api/delete/member/${m_id}`;
+//   let url = `http://localhost:8080/api/update/member/${m_id}`;
 //   return fetch(url, {
-//       method: 'DELETE',
+//       method: 'PUT',
 //       headers: {
 //           'Content-Type': 'application/json',
 //           // Add any other headers if required

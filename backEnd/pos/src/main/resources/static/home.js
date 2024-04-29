@@ -270,11 +270,16 @@ logoutChange1.addEventListener('click', () => {
   }
 })
 
-var whichPayment = 0;
 
 var cash = document.getElementById('cash');
 var creditCard = document.getElementById('creditCard');
 var scan = document.getElementById('scan');
+
+var whichPayment = 1;
+
+cash.style.backgroundColor = '#E0115F';
+cash.style.color = '#FFFFFF';
+cash.style.borderRadius = '15px';
 
 takeAwayMode.style.backgroundColor = '#E6E6E6';
     takeAwayMode.style.color = 'black';
