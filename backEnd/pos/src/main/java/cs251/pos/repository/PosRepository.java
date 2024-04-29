@@ -45,6 +45,7 @@ public interface PosRepository {
     List<Promotion> findActivePromotion();
     List<MenuHavePromotion> findMenuHavePromotion(String Promotion_Code);
     List<PrintInvoice> printInvoice(int invoiceNo);
+
     int deletePromotionByCode(String Promotion_Code);
     int deleteMenuByName(String foodname);
     int deleteMenuHavePromotion(String Promotion_Code);

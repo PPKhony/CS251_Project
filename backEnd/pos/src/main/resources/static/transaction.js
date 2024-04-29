@@ -101,16 +101,46 @@ function saveTransaction(invoice) {
   memberList.push(invoice.invoiceNo);
   memberList.forEach(element => {
     delIDGenerate(element);
+    historyGenerate(element);
   });
 
 
-  console.log(table.innerHTML);
+ // console.log(table.innerHTML);
  
 }
-function updateTable(){
-  const table = document.getElementById('tableTransaction');
-  table
+// function getOrder(t_id){
+//     let url = "";
+//     return fetch(url)
+//       .then(response => {
+//         if (!response.ok) {
+//           throw new Error('Network response was not ok');
+//         }
+//         return response.json();
+//       })
+//       .catch(error => {
+//         console.error('There was a problem with the fetch operation:', error);
+//         return null;
+//       });
+  
+
+// }
+function historyGenerate(index){
+  const id = index;
+  const button = document.getElementById(`edit-transaction${id}`);
+  button.addEventListener('click',()=>{
+    
+    let popup = document.getElementById('order-popup');
+    popup.style.display='block';
+    //editTraGenerate(id);
+    console.log("Now history show!");
+  });
 }
+
+// function updateTable(){
+//   const table = document.getElementById('tableTransaction');
+//   table
+// }
+
 // var test = document.getElementById("testcard");
 // test.addEventListener('click',function(){
 //   saveMember();
@@ -269,132 +299,132 @@ previousPage.addEventListener('click', () => {
      
  });
 
- function editTraGenerate(dbID) {
-  const id = dbID;
-  const button = document.getElementById(`edit-transaction${id}`);
+//  function editTraGenerate(dbID) {
+//   const id = dbID;
+//   const button = document.getElementById(`edit-transaction${id}`);
 
-  button.addEventListener('click', () => {
+//   button.addEventListener('click', () => {
 
-    const card = `
-                  <div class="edit-transaction-popup">
-                  <div class="edit-transaction-popup-container">
-                      <div class="edit-transaction-popup-con">
+//     const card = `
+//                   <div class="edit-transaction-popup">
+//                   <div class="edit-transaction-popup-container">
+//                       <div class="edit-transaction-popup-con">
 
-                          <div class="order-and-quit">
-                              <h3>Order #xxx</h3>
-                              <div class="exit">X</div>
-                          </div>
-                          <div class="order-info">
-                              <p>Date Thu, Mar 14 2024</p>
-                              <p>Dine in Table 3</p>
-                              <p>Cashier: xxxxxx xxxxxx xx</p>
-                              <p>Member Name</p>
-                          </div>
-                          <div class="item">
-                              <div class="item-container">
-                                <div class="item-con">
+//                           <div class="order-and-quit">
+//                               <h3>Order #xxx</h3>
+//                               <div class="exit">X</div>
+//                           </div>
+//                           <div class="order-info">
+//                               <p>Date Thu, Mar 14 2024</p>
+//                               <p>Dine in Table 3</p>
+//                               <p>Cashier: xxxxxx xxxxxx xx</p>
+//                               <p>Member Name</p>
+//                           </div>
+//                           <div class="item">
+//                               <div class="item-container">
+//                                 <div class="item-con">
                   
-                                  <div class="item-add-con">
-                                    <div class="item-qty">
-                                      <h2>Item: <span id="itemCount">0</span></h2>
-                                    </div>
-                                  </div>
+//                                   <div class="item-add-con">
+//                                     <div class="item-qty">
+//                                       <h2>Item: <span id="itemCount">0</span></h2>
+//                                     </div>
+//                                   </div>
                                   
-                                  <div class="qty-item-container" id="itemSlideCon">
+//                                   <div class="qty-item-container" id="itemSlideCon">
                   
-                                    <div class="item-card" id="item-card-${index}">
-                                      <div class="item-card-con">
-                                          <div class="item-card-pic-container">
-                                              <img src="${menu_data[index].image_url}">
-                                          </div>
-                                          <h3 id="name-item-${index}">1</h3>
-                                          <h3 id="count-item-${index}" class="count-item">2</h3>
-                                          <h3 id="price-item-${index}" class="price-item">3</h3>
-                                          <h3 id="qty-item-${index}">QTY:4</h3>
+//                                     <div class="item-card" id="item-card-${index}">
+//                                       <div class="item-card-con">
+//                                           <div class="item-card-pic-container">
+//                                               <img src="${menu_data[index].image_url}">
+//                                           </div>
+//                                           <h3 id="name-item-${index}">1</h3>
+//                                           <h3 id="count-item-${index}" class="count-item">2</h3>
+//                                           <h3 id="price-item-${index}" class="price-item">3</h3>
+//                                           <h3 id="qty-item-${index}">QTY:4</h3>
 
-                                          <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-                                      </div>
-                                    </div>
+//                                           <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+//                                       </div>
+//                                     </div>
                   
-                                    <div class="item-card" id="item-card-${index}">
-                                      <div class="item-card-con">
-                                          <div class="item-card-pic-container">
-                                              <img src="${menu_data[index].image_url}">
-                                          </div>
-                                          <h3 id="name-item-${index}">1</h3>
-                                          <h3 id="count-item-${index}" class="count-item">2</h3>
-                                          <h3 id="price-item-${index}" class="price-item">3</h3>
-                                          <h3 id="qty-item-${index}">QTY:4</h3>
+//                                     <div class="item-card" id="item-card-${index}">
+//                                       <div class="item-card-con">
+//                                           <div class="item-card-pic-container">
+//                                               <img src="${menu_data[index].image_url}">
+//                                           </div>
+//                                           <h3 id="name-item-${index}">1</h3>
+//                                           <h3 id="count-item-${index}" class="count-item">2</h3>
+//                                           <h3 id="price-item-${index}" class="price-item">3</h3>
+//                                           <h3 id="qty-item-${index}">QTY:4</h3>
 
-                                          <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-                                      </div>
-                                    </div>
+//                                           <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+//                                       </div>
+//                                     </div>
                   
-                                    <div class="item-card" id="item-card-${index}">
-                                      <div class="item-card-con">
-                                          <div class="item-card-pic-container">
-                                              <img src="${menu_data[index].image_url}">
-                                          </div>
-                                          <h3 id="name-item-${index}">1</h3>
-                                          <h3 id="count-item-${index}" class="count-item">2</h3>
-                                          <h3 id="price-item-${index}" class="price-item">3</h3>
-                                          <h3 id="qty-item-${index}">QTY:4</h3>
+//                                     <div class="item-card" id="item-card-${index}">
+//                                       <div class="item-card-con">
+//                                           <div class="item-card-pic-container">
+//                                               <img src="${menu_data[index].image_url}">
+//                                           </div>
+//                                           <h3 id="name-item-${index}">1</h3>
+//                                           <h3 id="count-item-${index}" class="count-item">2</h3>
+//                                           <h3 id="price-item-${index}" class="price-item">3</h3>
+//                                           <h3 id="qty-item-${index}">QTY:4</h3>
 
-                                          <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-                                      </div>
-                                    </div>
+//                                           <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+//                                       </div>
+//                                     </div>
                   
-                                    <div class="item-card" id="item-card-${index}">
-                                      <div class="item-card-con">
-                                          <div class="item-card-pic-container">
-                                              <img src="${menu_data[index].image_url}">
-                                          </div>
-                                          <h3 id="name-item-${index}">1</h3>
-                                          <h3 id="count-item-${index}" class="count-item">2</h3>
-                                          <h3 id="price-item-${index}" class="price-item">3</h3>
-                                          <h3 id="qty-item-${index}">QTY:4</h3>
+//                                     <div class="item-card" id="item-card-${index}">
+//                                       <div class="item-card-con">
+//                                           <div class="item-card-pic-container">
+//                                               <img src="${menu_data[index].image_url}">
+//                                           </div>
+//                                           <h3 id="name-item-${index}">1</h3>
+//                                           <h3 id="count-item-${index}" class="count-item">2</h3>
+//                                           <h3 id="price-item-${index}" class="price-item">3</h3>
+//                                           <h3 id="qty-item-${index}">QTY:4</h3>
 
-                                          <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-                                      </div>
-                                    </div>
+//                                           <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+//                                       </div>
+//                                     </div>
                   
-                                  </div>
+//                                   </div>
                   
-                                </div>
-                              </div>
-                          </div>
+//                                 </div>
+//                               </div>
+//                           </div>
 
-                          <div class="paymentslip-container">
-                              <div class="sub-total">
-                                  <h2>Sub total</h2>
-                                  <h2 id="paymentTotal">$0</h2>
-                              </div>
-                              <div class="tax">
-                                  <h2 id="paymentTax">Tax 7%(VAT included)</h2>
-                                  <h2 id="paymentTaxTotal">$0</h2>
-                              </div>
-                              <div class="discount">
-                                  <h2>Discount</h2>
-                                  <h2 id="paymentDiscountTotal">$0</h2>
-                              </div>
-                              <div class="total">
-                                  <h2>Total</h2>
-                                  <h2 id="allTotal">$0</h2>
-                              </div>
-                          </div>
+//                           <div class="paymentslip-container">
+//                               <div class="sub-total">
+//                                   <h2>Sub total</h2>
+//                                   <h2 id="paymentTotal">$0</h2>
+//                               </div>
+//                               <div class="tax">
+//                                   <h2 id="paymentTax">Tax 7%(VAT included)</h2>
+//                                   <h2 id="paymentTaxTotal">$0</h2>
+//                               </div>
+//                               <div class="discount">
+//                                   <h2>Discount</h2>
+//                                   <h2 id="paymentDiscountTotal">$0</h2>
+//                               </div>
+//                               <div class="total">
+//                                   <h2>Total</h2>
+//                                   <h2 id="allTotal">$0</h2>
+//                               </div>
+//                           </div>
 
-                          <p class="payment-method">Payment Method : Scan</p>
+//                           <p class="payment-method">Payment Method : Scan</p>
 
-                      </div>
-                  </div>
-              </div>
-              `;
+//                       </div>
+//                   </div>
+//               </div>
+//               `;
 
-    const container = document.createElement('div');
-    container.innerHTML = card;
+//     const container = document.createElement('div');
+//     container.innerHTML += card;
 
-    document.body.appendChild(container);
-  });
-}
+//     document.body.appendChild(container);
+//   });
+// }
 
 

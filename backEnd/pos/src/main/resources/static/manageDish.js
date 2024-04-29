@@ -134,10 +134,11 @@ async function loadMenu(){
 }
 loadMenu();
 
-function loadMenuCard(){
-  menu_data.forEach(elm=>{
-    addMenuCard(elm);
+async function loadMenuCard(){
+  await menu_data.forEach(elm=>{
+   addMenuCard(elm);
   });
+  await updateDeleteMenuButton();
 }
 
 /* <div class="menu-popup" style="display: none;" id="menuPopup">

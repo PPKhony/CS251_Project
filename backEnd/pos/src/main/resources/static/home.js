@@ -37,6 +37,7 @@ var food_category = [
 ]
 
 var menu_data = [];
+var orderMenu = [];
 async function loadMenu(){
   await fetch("http://localhost:8080/api/menu")
   .then(response => {
@@ -79,7 +80,7 @@ async function loadMenuCard(){
             <div class="menu-desc">
               <h3>${item.foodname}</h3>
               <h3 class="h3-qty" id="qty-${index}">QTY: ${item.amount}</h3>
-              <h3><span class="dollar-sign">$</span>: ${item.price}</h3>
+              <h3><span class="dollar-sign">฿</span>: ${item.price}</h3>
               <button type="button" id="menu-add-button-${index}" class="menu-add-button">ADD</button>
             </div>
           </div>
@@ -447,6 +448,8 @@ function addItem(index) {
     itemAdd.innerHTML += card;
 
     itemNum.push(index);
+    orderMenu.push([menu_data[index],1]);
+    console.log(orderMenu);
     
     var cardv = document.getElementById(`item-card-${index}`);
     cardv.value = index;
@@ -487,6 +490,7 @@ function addItem(index) {
 var totalPay = 0;
 
 function updatedPay() {
+
   let total = 0;
   for(let j=0;j<itemNum.length;j++){
     let priceItems = document.getElementById(`price-item-${itemNum[j]}`);
@@ -538,7 +542,13 @@ function rmPrice(index) {
   currentValue = currentValue-menu_data[index].price;
   rmPrice.textContent = '$'+currentValue;
 }
-
+function updateOrderMenu(index,qty){
+  orderMenu.forEach((elm)=>{
+    if(elm[0] == menu_data[index]){
+      elm[1] = qty;
+    }
+  });
+}
 function addQty(index) {
   console.log("addqty index:",index);
   let countItem = document.getElementById(`count-item-${index}`);
@@ -549,6 +559,7 @@ function addQty(index) {
   let currentQty = parseInt(countItem.textContent);
   if(currentQty < currentQtyLeft){
     currentQty++;
+    updateOrderMenu(index,currentQty);
     addPrice(index);
   }else{
     console.log(currentItemName+' = หมด');
@@ -574,8 +585,11 @@ function rmQty(index) {
     itemCount.textContent = currentValue;
     console.log(currentItemName + ': นำออก');
     itemNum = itemNum.filter(item => item !== index);
+    orderMenu = orderMenu.filter(item => item[0] !== menu_data[index]);
+    console.log(orderMenu);
   }else{
     currentQty--;
+    updateOrderMenu(index,currentQty);
     rmPrice(index);
   }
   countItem.textContent = currentQty;
@@ -659,7 +673,7 @@ var placeOrder = document.getElementById('placeOrder');
 var orderListCount = 0;
 
 
-placeOrder.addEventListener('click', () => {
+placeOrder.addEventListener('click', async () => {
   orderListCount++;
   const orderlistCardContainer = document.querySelector('.popup-order-list-slide-con');
   let orderNumber = document.getElementById('orderNumber').textContent;
@@ -669,7 +683,15 @@ placeOrder.addEventListener('click', () => {
   let countItem = document.getElementById('itemCount').textContent;
   let tableNum = document.getElementById('served-table').value;
 
-
+  let t_takehome;
+  let dineinbutton = document.getElementById('dine-in');
+  if(dineinbutton.style == "background-color: rgb(230, 230, 230); color: black;"){
+    t_takehome = 1;
+  }
+  else{
+    t_takehome = 0;
+  }
+  
 
   console.log(orderNumberValue);
 
@@ -679,7 +701,7 @@ placeOrder.addEventListener('click', () => {
 
   let card = `
               <div class="list-card-wait">
-                <div class="list-card-con">
+                <div class="list-card-con" id="order-${orderNumber}">
                   <h3>${orderNumber}</h3>
                   <h3>Table ${tableNum}</h3>
                   <h3>Order: ${countItem} item</h3>
@@ -689,11 +711,71 @@ placeOrder.addEventListener('click', () => {
               </div>
             `
 
-  orderlistCardContainer.innerHTML += card;
+   orderlistCardContainer.innerHTML += card;
+  let currentDate = new Date();
+
+  let Payment = 1000;
+  let PaymentMethod = "Cash";
+  let DBformattedDate = currentDate.toISOString().replace('Z', '+07:00');
+  let TotalDiscountelement = document.getElementById('paymentDiscountTotal');
+  let stringTotalDiscount = TotalDiscountelement.textContent;
+  let TotalDiscount = parseFloat(stringTotalDiscount.replace("$", ""));
+  let NetPriceElm = document.getElementById('allTotal');
+  let stringTotalNetPrice  = NetPriceElm.textContent; 
+  let NetPrice = parseFloat(stringTotalNetPrice.replace("$",""));
+  let IsTakeHome = t_takehome;
+  let MemberID = null;
+
+  //"InvoiceNo" : orderNumberValue,
+  let invoicedb = {
+   
+    "Payment" : Payment,
+    "PaymentMethod" : PaymentMethod,
+    "DateTime" : DBformattedDate,
+    "TotalDiscount":TotalDiscount,
+    "NetPrice":NetPrice,
+    "IsTakeHome":IsTakeHome,
+    "MemberID":MemberID,
+    "i_change": 1000-NetPrice
+
+  };
+  let jsoninvoice = JSON.stringify(invoicedb);
+  function updateDBInvoice(jsonInvoice){
+    console.log(jsonInvoice);
+  let url = 'http://localhost:8080/api/add/invoice';
+  return fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          // Add any other headers if required
+      },
+      body: jsonInvoice,
+  })
+  .then(response => {
+      if (response.ok) {
+          return response.json(); // Return parsed JSON for successful response
+      } else {
+          console.error('Network response was not ok');
+          return null; // Return null for non-success response
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      //throw error; // Re-throw the error for further handling
+  });
+  }
+  if(updateDBInvoice(jsoninvoice)){
+
+  }
+  else
+  {window.alert("Update invoice error due to Database");}
+  let OrderMenudb = {};
 
   orderCon1.style.display = 'block';
   orderCon2.style.display = 'none';
+  orderMenu = [];
   updateQty();
+  
 
 });
 function updateMemuQty(item){
@@ -724,6 +806,7 @@ function updateMemuQty(item){
 }
 
 function updateQty () {
+  
   let itemCard = document.querySelectorAll('.item-card');
   itemCard.forEach(() => {
     let index = itemNum[0];
