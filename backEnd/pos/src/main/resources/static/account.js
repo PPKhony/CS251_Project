@@ -71,7 +71,7 @@ dailySales.addEventListener('click', () => {
 monthlySales.addEventListener('click', () => {
   changeGraph.style.opacity = '0'; 
   setTimeout(() => {
-    changeGraph.src = './component/CS251 Component/icon/yuji.jpg';
+    changeGraph.src = './component/CS251 Component/icon/graph1.png';
     changeGraph.style.opacity = '1';
   }, 800);
 });

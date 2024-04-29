@@ -452,7 +452,7 @@ input:focus {
 /* menu section */
 .menu-container {
   margin-top: 20px;
-  height: 60vh;
+  height: 67vh;
   width: 78vw;
   margin-left: 40px;
   overflow: hidden;
@@ -664,6 +664,7 @@ input:focus {
   :nth-child(3) {
     border: 1px var(--text) solid;
     border-radius: 25px;
+    padding: 4px;
   }
 }
 
@@ -819,6 +820,10 @@ input:focus {
   background-color: var(--white);
   border-radius: 15px;
   transform: translate(-324%, 82%);
+
+  input {
+    padding: 0 5px;
+  }
 
   .menu-popup-top {
     display: flex;
@@ -1092,6 +1097,10 @@ input:focus {
   background-color: var(--white);
   border-radius: 15px;
   transform: translate(-325%, 45%);
+
+  input {
+    padding: 0 5px;
+  }
 
   .promotion-popup-top {
     display: flex;

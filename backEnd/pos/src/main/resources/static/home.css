@@ -341,9 +341,9 @@ input:focus {
         font-weight: 500;
     }
     margin-top: 10px;
-    height: 45.5vh;
+    height: 67vh;
     width: 60.5vw;
-    margin-left: 40px;
+    margin-left: 9px;
     overflow: hidden;
 }
 
@@ -721,6 +721,10 @@ input:focus {
             top: 6px;
             left: 7px;
         }
+
+        input {
+            padding: 0 0 0 24px;
+        }
     }
 }
 
@@ -747,8 +751,10 @@ input:focus {
             font-weight: 400;
         }
 
-        span {
-            margin-left: 5px;
+        input {
+            padding: 0 5px;
+            width: 160px;
+            height: 20px;
         }
     }
 
@@ -768,8 +774,10 @@ input:focus {
             font-weight: 400;
         }
 
-        span {
-            margin-left: 5px;
+        input {
+            padding: 0 5px;
+            width: 65px;
+            height: 20px;
         }
     }
 }
@@ -1085,6 +1093,7 @@ input:focus {
     :nth-child(3) {
         border: 1px var(--text) solid;
         border-radius: 25px;
+        padding: 4px;
     }
 }
 
