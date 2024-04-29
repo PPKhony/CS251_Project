@@ -388,6 +388,7 @@ button:hover {
     :nth-child(3) {
         border: 1px var(--text) solid;
         border-radius: 25px;
+        padding: 4px;
     }
 }
 
