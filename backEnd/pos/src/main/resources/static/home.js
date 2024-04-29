@@ -685,11 +685,15 @@ placeOrder.addEventListener('click', async () => {
 
   let t_takehome;
   let dineinbutton = document.getElementById('dine-in');
-  if(dineinbutton.style == "background-color: rgb(230, 230, 230); color: black;"){
-    t_takehome = 1;
+  
+  let computedStyle = window.getComputedStyle(dineinbutton);
+  let color = computedStyle.backgroundColor;
+  console.log("BG dine-in color ",color);
+  if(color == "rgb(230, 230, 230)"){
+    t_takehome = true;
   }
   else{
-    t_takehome = 0;
+    t_takehome = false;
   }
   
 
@@ -729,13 +733,13 @@ placeOrder.addEventListener('click', async () => {
   //"InvoiceNo" : orderNumberValue,
   let invoicedb = {
    
-    "Payment" : Payment,
-    "PaymentMethod" : PaymentMethod,
-    "DateTime" : DBformattedDate,
-    "TotalDiscount":TotalDiscount,
-    "NetPrice":NetPrice,
-    "IsTakeHome":IsTakeHome,
-    "MemberID":MemberID,
+    "payment" : Payment,
+    "paymentMethod" : PaymentMethod,
+    "dateTime" : DBformattedDate,
+    "totalDiscount":TotalDiscount,
+    "netPrice":NetPrice,
+    "isTakeHome":IsTakeHome,
+    "memberID":MemberID,
     "i_change": 1000-NetPrice
 
   };
@@ -766,15 +770,16 @@ placeOrder.addEventListener('click', async () => {
   }
   if(updateDBInvoice(jsoninvoice)){
 
+    orderCon1.style.display = 'block';
+    orderCon2.style.display = 'none';
+    orderMenu = [];
+    updateQty();
   }
   else
   {window.alert("Update invoice error due to Database");}
   let OrderMenudb = {};
 
-  orderCon1.style.display = 'block';
-  orderCon2.style.display = 'none';
-  orderMenu = [];
-  updateQty();
+  
   
 
 });

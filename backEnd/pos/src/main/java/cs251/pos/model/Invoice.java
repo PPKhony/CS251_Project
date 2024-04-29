@@ -15,6 +15,7 @@ public class Invoice {
     public Invoice(){}
 
     public Invoice(double payment, String paymentMethod, Timestamp dateTime, double totalDiscount, double netPrice, boolean isTakeHome, String memberID, double i_change) {
+        System.out.println(isTakeHome + " " + dateTime + " " + memberID);
         Payment = payment;
         PaymentMethod = paymentMethod;
         DateTime = dateTime;

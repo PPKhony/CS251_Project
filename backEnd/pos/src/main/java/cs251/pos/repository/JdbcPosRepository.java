@@ -37,11 +37,12 @@ public class JdbcPosRepository implements PosRepository{
 
     @Override
     public int insertInvoice(Invoice invoice) {
-
+        System.out.println(invoice.isTakeHome());
+        System.out.println(((invoice.isTakeHome()) ? 1:0));
         return jdbcTemplate.update("INSERT INTO Invoice (Payment, PaymentMethod, DateTime, TotalDiscount, NetPrice, " +
                 "IsTakeHome, MemberID, i_change) VALUES (?,?,?,?,?,?,?,?)",
                 new Object[] {invoice.getPayment(), invoice.getPaymentMethod(), invoice.getDateTime(), invoice.getTotalDiscount(),
-                invoice.getNetPrice(), invoice.isTakeHome(), invoice.getMemberID(), invoice.getI_change()});
+                invoice.getNetPrice(), ((invoice.isTakeHome()) ? 1:0), invoice.getMemberID(), invoice.getI_change()});
     }
 
     @Override
