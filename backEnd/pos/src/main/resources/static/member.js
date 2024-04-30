@@ -244,6 +244,7 @@ function addEditCardList(newMember) {
     memberEditInfoList.push(newMember);
     let userId = newMember.m_id;
     let user = newMember;
+    let newBD = convertDateFormat(user.m_birthdate);
     let card = `
                 <div class="edit-member-popup" id="edit-member-popup${userId}" style="display:none;">
                 <div class="edit-member-popup-container">
@@ -267,7 +268,7 @@ function addEditCardList(newMember) {
                                 <label for="tel">Tel</label><input type="text" name="tel" id="editMemberTel${userId}" value="ExampleTel">
                             </div>
                             <div class="info-box">
-                                <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="editMemberBirthDate${userId}" value="${user.m_birthdate}">
+                                <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="editMemberBirthDate${userId}" value="${newBD}">
                             </div>
                         </div>
                         <div class="button-save">
@@ -319,20 +320,21 @@ function saveEditMember(userId, e) {
   var currentDate = new Date();
   let memberCurrentPoint = e.m_points;
   let memberCurrentRank = e.m_rank;
-  let memberCurrentBD = e.m_birthdate;
   
   var DBformattedDate = currentDate.toISOString().replace('Z', '+07:00');
 
+   function formatBD(dateString) {
+    // Split the date string into day, month, and year components
+     const [day, month, year] = dateString.split('/');
 
-  //  function formatBD(dateString) {
-  //   // Split the date string into day, month, and year components
-  //    const [day, month, year] = dateString.split('/');
+    // Reorder the components to YYYY-MM-DD format
+      const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 
-  //   // Reorder the components to YYYY-MM-DD format
-  //     const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      return formattedDate;
+    }
 
-  //     return formattedDate;
-  //   }
+    let memberCurrentBD = formatBD(editMemberBirthDate);
+
 
 let editMember = {
     "m_password": editMemberPassword,
@@ -350,11 +352,7 @@ let editMember = {
     console.log(jsonMember);
       dbEditMember(jsonMember, userId).then(result=>{
       if(result !== null){
-        // addCardList(newMember);
-        // addEditCardList(newMember);
-        // clearAddmemberBox();
-        editMemberBox(userId, editMemberPassword, memberCurrentRank, editMemberCitizenID, editMemberName, memberCurrentPoint, DBformattedDate, memberCurrentBD);
-        console.log('edit member complete!!');
+        
       }
       else{
         window.alert("Failue due to database error");
@@ -372,8 +370,17 @@ let editMember = {
     userPopup.style.display = 'none';
 }
 
-function editMemberBox(userId, password, rank, citizenID, name, point, enroll, bd){
-  
+function convertDateFormat(inputDate) {
+  // แยกปี เดือน วัน จากข้อความ inputDate (รูปแบบ "yyyy-mm-dd")
+  var parts = inputDate.split("-");
+  var year = parts[0];
+  var month = parts[1];
+  var day = parts[2];
+
+  // สร้างวันที่ใหม่ในรูปแบบ "dd/mm/yyyy"
+  var formattedDate = day + '/' + month + '/' + year;
+
+  return formattedDate;
 }
 
 function saveMember() {
