@@ -154,6 +154,61 @@ function dbAddMemberTel(jsontel){
   });
 }
 
+function dbEditMember(json, id) {
+  console.log(json);
+  let url = `http://localhost:8080/api/update/member/${id}`;
+  
+  // กำหนด request headers และ body ด้วย JSON.stringify(json)
+  const requestOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: json
+  };
+
+  // ส่ง request โดยใช้ fetch API
+  return fetch(url, requestOptions)
+    .then(response => {
+      if (!response.ok) {
+        return null;
+        //throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Member updated successfully:', data);
+      return data;
+      // จัดการกับการอัปเดตข้อมูลต่อไปเมื่อทำสำเร็จ
+    })
+    .catch(error => {
+      console.error('Error updating member:', error);
+      // จัดการกับข้อผิดพลาดที่เกิดขึ้น
+    });
+}
+
+function dbEditMemberTel(jsontel, id){
+  let telurl = '#' //รอ backend
+  return fetch(telurl,{
+    method: 'POST',
+    headers:{
+      'Content-Type': 'application/json',
+    },
+    body : jsontel,
+  }).then(res =>{
+    if(res.ok){
+      return res.json();
+    }
+    else{
+      console.error('Network response was not ok');
+      return null;
+    }
+    
+  }).catch(err =>{
+    console.error('Error : ',err);
+  });
+}
+
 function addCardList(newMember){
   memberInfoList.push(newMember);
   let userId = newMember.m_id;
@@ -181,7 +236,6 @@ function addCardList(newMember){
     memberList.push(userId);
     memberList.forEach(element => {
       delIDGenerate(element);
-      // editIDGenerate(element);
     });
 
 }
@@ -258,6 +312,60 @@ function saveEditMember(id) {
   let editMemberPassword = document.getElementById(`editMemberPassword${userId}`).value;
   let editMemberTel = document.getElementById(`editMemberTel${userId}`).value;
   let editMemberBirthDate = document.getElementById(`editMemberBirthDate${userId}`).value;
+
+  var currentDate = new Date();
+  let memberCurrentPoint = e.m_points;
+  let memberCurrentRank = e.m_rank;
+  let memberCurrentBD = e.m_birthdate;
+  
+  var DBformattedDate = currentDate.toISOString().replace('Z', '+07:00');
+
+
+  //  function formatBD(dateString) {
+  //   // Split the date string into day, month, and year components
+  //    const [day, month, year] = dateString.split('/');
+
+  //   // Reorder the components to YYYY-MM-DD format
+  //     const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+
+  //     return formattedDate;
+  //   }
+
+let editMember = {
+    "m_password": editMemberPassword,
+    "m_rank": memberCurrentRank,
+    "m_citizenId": editMemberCitizenID,
+    "m_name": editMemberName,
+    "m_points": memberCurrentPoint,
+    "m_enroll" : DBformattedDate,
+    "m_birthdate": memberCurrentBD,
+  };
+
+
+  if(validating(editMember)){
+    let jsonMember = JSON.stringify(editMember);
+    console.log(jsonMember);
+      dbEditMember(jsonMember, userId).then(result=>{
+      if(result !== null){
+        // addCardList(newMember);
+        // addEditCardList(newMember);
+        // clearAddmemberBox();
+        console.log('edit member complete!!');
+      }
+      else{
+        window.alert("Failue due to database error");
+      }
+     });
+    
+  }
+  else{
+    window.alert("Invalid format. Cancel Adding...");
+  }
+   
+    //console.log(table.innerHTML);
+   
+    let userPopup = document.getElementById(`edit-member-popup${userId}`);
+    userPopup.style.display = 'none';
 }
 
 function saveMember() {
