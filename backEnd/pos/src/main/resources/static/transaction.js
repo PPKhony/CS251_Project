@@ -27,6 +27,8 @@ var idCount = 1;
 var idAuto = 1;
 var memberList=[];
 var memberInfoList=[];
+var memberEditInfoList=[];
+
 function loadTransaction(){
   fetch("http://localhost:8080/api/invoice/list/0/100")
   .then(response => {
@@ -41,8 +43,9 @@ function loadTransaction(){
 
     // Data retrieved successfully, do something with it
     //console.log(data);
-    data.forEach((invoice)=>{
-      saveTransaction(invoice);
+    data.forEach(async (invoice)=>{
+      await saveTransaction(invoice);
+      await addEditCardList(invoice);
     });
   })
   .catch(error => {
@@ -112,7 +115,7 @@ function saveTransaction(invoice) {
   memberList.push(invoice.invoiceNo);
   memberList.forEach(element => {
     delIDGenerate(element);
-    historyGenerate(element);
+    // historyGenerate(element);
   });
 
 
@@ -206,48 +209,6 @@ function delIDGenerate(index){
   });
 }
 
-// function editMember(index){
-  
-//   let card = `<div class="add-member-popup">
-//                 <div class="add-member-popup-container">
-//                     <div class="add-member-popup-con">
-//                         <div class="membertext-and-quit">
-//                             <h3>Member Form</h3>
-//                             <div class="exit">X</div>
-//                         </div>
-//                         <div class="member-name">
-//                             <p>Member Name</p>
-//                             <input type="text" id="addMemberName">
-//                         </div>
-//                         <div class="member-info">
-//                             <div class="info-box">
-//                                 <label for="password">password</label><input type="text" name="password" id="addMemberPassword">
-//                             </div>
-//                             <div class="info-box">
-//                                 <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID">
-//                             </div>
-//                             <div class="info-box">
-//                                 <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel">
-//                             </div>
-//                             <div class="info-box">
-//                                 <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate">
-//                             </div>
-//                         </div>
-//                         <div class="button-save">
-//                             <button type="button" onclick="saveMember()">SAVE</button>
-//                         </div>
-//                     </div>
-//                 </div>
-//               </div>`;
-
-// }
-
-// const exit = document.querySelector('.exit');
-
-// exit.addEventListener('click', () => {
-//   popup.style.display = 'none';
-// });
-
 const inputSearchMember = document.querySelector('.arrow');
 
 inputSearchMember.addEventListener('click', () => {
@@ -317,141 +278,135 @@ previousPage.addEventListener('click', () => {
      
  });
 
-//  function editTraGenerate(dbID) {
-//   const id = dbID;
-//   const button = document.getElementById(`edit-transaction${id}`);
+function addEditCardList(newMember) {
+  memberEditInfoList.push(newMember);
 
-//   button.addEventListener('click', () => {
+  // dateTime : "2024-04-29T00:51:34.000+00:00"
+  // i_change : 919.75
+  // invoiceNo : 464
+  // memberID : null
+  // netPrice : 80.25
+  // payment : 1000
+  // paymentMethod : "Cash"
+  // takeHome : false
+  // totalDiscount : 0
 
-//     const card = `
-//                   <div class="edit-transaction-popup">
-//                   <div class="edit-transaction-popup-container">
-//                       <div class="edit-transaction-popup-con">
+  let dataTime = newMember.dataTime;
+  let iChange = newMember.i_change;
+  let invoiceNo = newMember.invoiceNo;
+  let memberID = newMember.memberID;
+  let netPrice = newMember.netPrice;
+  let payment = newMember.payment;
+  let paymentMethod = newMember.paymentMethod;
+  let takeHome = newMember.takeHome;
+  let totalDiscount = newMember.totalDiscount;
 
-//                           <div class="order-and-quit">
-//                               <h3>Order #xxx</h3>
-//                               <div class="exit">X</div>
-//                           </div>
-//                           <div class="order-info">
-//                               <p>Date Thu, Mar 14 2024</p>
-//                               <p>Dine in Table 3</p>
-//                               <p>Cashier: xxxxxx xxxxxx xx</p>
-//                               <p>Member Name</p>
-//                           </div>
-//                           <div class="item">
-//                               <div class="item-container">
-//                                 <div class="item-con">
-                  
-//                                   <div class="item-add-con">
-//                                     <div class="item-qty">
-//                                       <h2>Item: <span id="itemCount">0</span></h2>
-//                                     </div>
-//                                   </div>
-                                  
-//                                   <div class="qty-item-container" id="itemSlideCon">
-                  
-//                                     <div class="item-card" id="item-card-${index}">
-//                                       <div class="item-card-con">
-//                                           <div class="item-card-pic-container">
-//                                               <img src="${menu_data[index].image_url}">
-//                                           </div>
-//                                           <h3 id="name-item-${index}">1</h3>
-//                                           <h3 id="count-item-${index}" class="count-item">2</h3>
-//                                           <h3 id="price-item-${index}" class="price-item">3</h3>
-//                                           <h3 id="qty-item-${index}">QTY:4</h3>
+  let idString = String(invoiceNo).padStart(10,'0');
+  let eatAt;
+  let cashierID = "pongsatorn sripli";
+  let memberIDString;
 
-//                                           <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-//                                       </div>
-//                                     </div>
-                  
-//                                     <div class="item-card" id="item-card-${index}">
-//                                       <div class="item-card-con">
-//                                           <div class="item-card-pic-container">
-//                                               <img src="${menu_data[index].image_url}">
-//                                           </div>
-//                                           <h3 id="name-item-${index}">1</h3>
-//                                           <h3 id="count-item-${index}" class="count-item">2</h3>
-//                                           <h3 id="price-item-${index}" class="price-item">3</h3>
-//                                           <h3 id="qty-item-${index}">QTY:4</h3>
+  if(takeHome === true){
+    eatAt = "take home";
+  }else{
+    eatAt = "Dine in";
+  }
 
-//                                           <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-//                                       </div>
-//                                     </div>
-                  
-//                                     <div class="item-card" id="item-card-${index}">
-//                                       <div class="item-card-con">
-//                                           <div class="item-card-pic-container">
-//                                               <img src="${menu_data[index].image_url}">
-//                                           </div>
-//                                           <h3 id="name-item-${index}">1</h3>
-//                                           <h3 id="count-item-${index}" class="count-item">2</h3>
-//                                           <h3 id="price-item-${index}" class="price-item">3</h3>
-//                                           <h3 id="qty-item-${index}">QTY:4</h3>
+  if(memberID === null){
+    memberIDString = "-";
+  }else{
+    memberIDString = memberID;
+  }
 
-//                                           <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-//                                       </div>
-//                                     </div>
-                  
-//                                     <div class="item-card" id="item-card-${index}">
-//                                       <div class="item-card-con">
-//                                           <div class="item-card-pic-container">
-//                                               <img src="${menu_data[index].image_url}">
-//                                           </div>
-//                                           <h3 id="name-item-${index}">1</h3>
-//                                           <h3 id="count-item-${index}" class="count-item">2</h3>
-//                                           <h3 id="price-item-${index}" class="price-item">3</h3>
-//                                           <h3 id="qty-item-${index}">QTY:4</h3>
+  let card = `
+                    <div class="edit-transaction-popup" id="editTransactionPopup${invoiceNo}" style="display:none;">
+                    <div class="edit-transaction-popup-container">
+                        <div class="edit-transaction-popup-con">
+  
+                            <div class="order-and-quit">
+                                <h3>Order #${idString}</h3>
+                                <div class="exit" id="exit${invoiceNo}">X</div>
+                            </div>
+                            <div class="order-info">
+                                <p>${dataTime}</p>
+                                <p>${eatAt}</p>
+                                <p>Cashier:${cashierID}</p>
+                                <p>${memberIDString}</p>
+                            </div>
+                            <div class="item">
+                                <div class="item-container">
+                                  <div class="item-con">
+                    
+                                    <div class="item-add-con">
+                                      <div class="item-qty">
+                                        <h2>Item: <span id="itemCount">0</span></h2>
+                                      </div>
+                                    </div>
+                                    
+                                    <div class="qty-item-container" id="itemSlideCon">
+                    
+                                      <div class="item-card" id="item-card-${1}">
+                                        <div class="item-card-con">
+                                            <div class="item-card-pic-container">
+                                                <img src="${1}">
+                                            </div>
+                                            <h3 id="name-item-${1}">1</h3>
+                                            <h3 id="count-item-${1}" class="count-item">2</h3>
+                                            <h3 id="price-item-${1}" class="price-item">3</h3>
+                                            <h3 id="qty-item-${1}">QTY:4</h3>
+  
+                                            <img id="rm-all-item-${1}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+                                        </div>
+                                      </div>
 
-//                                           <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-//                                       </div>
-//                                     </div>
-                  
-//                                   </div>
-                  
-//                                 </div>
-//                               </div>
-//                           </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+  
+                            <div class="paymentslip-container">
+                                <div class="sub-total">
+                                    <h2>Sub total</h2>
+                                    <h2 id="paymentTotal">$${netPrice}</h2>
+                                </div>
+                                <div class="tax">
+                                    <h2 id="paymentTax">Tax 7%(VAT included)</h2>
+                                    <h2 id="paymentTaxTotal">$0</h2>
+                                </div>
+                                <div class="discount">
+                                    <h2>Discount</h2>
+                                    <h2 id="paymentDiscountTotal">$${totalDiscount}</h2>
+                                </div>
+                                <div class="total">
+                                    <h2>Total</h2>
+                                    <h2 id="allTotal">$${netPrice}</h2>
+                                </div>
+                            </div>
+  
+                            <p class="payment-method">Payment Method : ${paymentMethod}</p>
+  
+                        </div>
+                    </div>
+                </div>
+                `;
+    let editTransactionCon = document.getElementById('editTransactionPopupContainer');
+    editTransactionCon.innerHTML += card;
 
-//                           <div class="paymentslip-container">
-//                               <div class="sub-total">
-//                                   <h2>Sub total</h2>
-//                                   <h2 id="paymentTotal">$0</h2>
-//                               </div>
-//                               <div class="tax">
-//                                   <h2 id="paymentTax">Tax 7%(VAT included)</h2>
-//                                   <h2 id="paymentTaxTotal">$0</h2>
-//                               </div>
-//                               <div class="discount">
-//                                   <h2>Discount</h2>
-//                                   <h2 id="paymentDiscountTotal">$0</h2>
-//                               </div>
-//                               <div class="total">
-//                                   <h2>Total</h2>
-//                                   <h2 id="allTotal">$0</h2>
-//                               </div>
-//                           </div>
+    historyMemberButton();
+}
 
-//                           <p class="payment-method">Payment Method : Scan</p>
+function historyMemberButton(){
+  memberEditInfoList.forEach(e => {
+    let id = e.invoiceNo;
+    let historyButton = document.getElementById(`edit-transaction${id}`);
+    historyButton.addEventListener('click', () => {
+      let transactionHistory = document.getElementById(`editTransactionPopup${id}`);
+      transactionHistory.style.display = 'block';
 
-//                       </div>
-//                   </div>
-//               </div>
-//               `;
-
-//     const container = document.createElement('div');
-//     container.innerHTML += card;
-
-//     document.body.appendChild(container);
-//   });
-// }
-
-
-
-//ยัง error อยู่สำหรับ edit
-// const exit = document.querySelector('.exit');
-
-// exit.addEventListener('click', () => {
-//   popup.style.display = 'none';
-// });
-
-
+      let exitButton = document.getElementById(`exit${id}`);
+      exitButton.addEventListener('click', () => {
+        transactionHistory.style.display = 'none';
+      });
+    });
+  });
+}
