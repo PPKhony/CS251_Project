@@ -679,13 +679,15 @@ var orderListCount = 0;
 
 
 placeOrder.addEventListener('click', async () => {
+  let countItem = document.getElementById('itemCount').textContent;
+  if(countItem === '0') return;
   orderListCount++;
   const orderlistCardContainer = document.querySelector('.popup-order-list-slide-con');
   let orderNumber = document.getElementById('orderNumber').textContent;
   let orderNumberValue = parseInt(((orderNumber).match(/\d+/)[0]));
   orderNumberValue = orderListCount;
   orderNumber = 'order #' + orderNumberValue;
-  let countItem = document.getElementById('itemCount').textContent;
+
   let tableNum = document.getElementById('served-table').value;
 
   let t_takehome;
@@ -700,7 +702,27 @@ placeOrder.addEventListener('click', async () => {
   else{
     t_takehome = false;
   }
-  
+  let methodSelect;
+  let scanhtml = document.getElementById('scan');
+  let credithtml = document.getElementById('creditCard'); 
+  let scanstyle = window.getComputedStyle(scanhtml);
+  let scancolor = scanstyle.background;
+  let creditstyle = window.getComputedStyle(credithtml);
+  let creditcolor = creditstyle.background;
+  console.log("BG Scan",scancolor);
+  console.log("BG credit",creditcolor);
+ 
+
+  if(whichPayment === 3){
+    methodSelect = "Scan";
+  }
+  else if(whichPayment === 2){
+    methodSelect = "Credit Card";
+  }
+  else{
+    methodSelect = "Cash";
+  }
+  console.log("Method is" , methodSelect);
 
   console.log(orderNumberValue);
 
@@ -724,7 +746,7 @@ placeOrder.addEventListener('click', async () => {
   let currentDate = new Date();
 
   let Payment = 1000;
-  let PaymentMethod = "Cash";
+  let PaymentMethod = methodSelect;
   let DBformattedDate = currentDate.toISOString().replace('Z', '+00:00');
   let TotalDiscountelement = document.getElementById('paymentDiscountTotal');
   let stringTotalDiscount = TotalDiscountelement.textContent;
@@ -733,7 +755,17 @@ placeOrder.addEventListener('click', async () => {
   let stringTotalNetPrice  = NetPriceElm.textContent; 
   let NetPrice = parseFloat(stringTotalNetPrice.replace("$",""));
   let IsTakeHome = t_takehome;
-  let MemberID = null;
+  let MemberID;
+  let checkMemberhtml = document.getElementById('checkMember');
+  let checkMember = checkMemberhtml.checked;
+  if(checkMember){
+    let idBox = document.getElementById('member-input');
+    MemberID = idBox.value;
+  }
+  else{
+    MemberID = null;
+  }
+  
 
   //"InvoiceNo" : orderNumberValue,
   let invoicedb = {
@@ -948,72 +980,72 @@ function clearAddmemberBox(){
   birthDateBox.value="";
 }
 
-function saveMember() {
-  let name = document.getElementById('addMemberName').value;
-  let password = document.getElementById('addMemberPassword').value;
-  let citizenID = document.getElementById('addMemberCitizenID').value;
-  let tel = document.getElementById('addMemberTel').value;
-  let birthDate = document.getElementById('addMemberBirthDate').value;
+// function saveMember() {
+//   let name = document.getElementById('addMemberName').value;
+//   let password = document.getElementById('addMemberPassword').value;
+//   let citizenID = document.getElementById('addMemberCitizenID').value;
+//   let tel = document.getElementById('addMemberTel').value;
+//   let birthDate = document.getElementById('addMemberBirthDate').value;
 
-let newMember = {
-    "name": name,
-    "password": password,
-    "citizenID": citizenID,
-    "tel": tel,
-    "birthDate": birthDate
-  };
+// let newMember = {
+//     "name": name,
+//     "password": password,
+//     "citizenID": citizenID,
+//     "tel": tel,
+//     "birthDate": birthDate
+//   };
   
-  if(validating(newMember)){
-  console.log(newMember);
-  memberInfoList.push(newMember);
+//   if(validating(newMember)){
+//   console.log(newMember);
+//   memberInfoList.push(newMember);
 
-  var currentDate = new Date();
-  let idAutoString = String(idAuto).padStart(10,'0');
-// Days of the week and months array
-  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-// Get day, month, and year
-  var day = daysOfWeek[currentDate.getDay()];
-  var month = months[currentDate.getMonth()];
-  var date = currentDate.getDate();
-  var year = currentDate.getFullYear();
-  var senddel = idAuto;
+//   var currentDate = new Date();
+//   let idAutoString = String(idAuto).padStart(10,'0');
+// // Days of the week and months array
+//   var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+//   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// // Get day, month, and year
+//   var day = daysOfWeek[currentDate.getDay()];
+//   var month = months[currentDate.getMonth()];
+//   var date = currentDate.getDate();
+//   var year = currentDate.getFullYear();
+//   var senddel = idAuto;
 
-// Format the date
-  var formattedDate = day + ", " + month + " " + date + " " + year;
-  let card = `
-              <tr id = "memberList${idAuto}">
-                <td>${idCount}</td>
-                <td>${idAutoString}</td>
-                <td>${formattedDate}</td>
-                <td>0</td>
-                <td><div class="member-edit-icon">
-                <img src="./component/CS251 Component/icon/trash.png" id = "removeList${idAuto}">
-                <img src="./component/CS251 Component/icon/setting.png" id="editList${idAuto}">
-                 </div></td>
-              </tr>
-            `;
+// // Format the date
+//   var formattedDate = day + ", " + month + " " + date + " " + year;
+//   let card = `
+//               <tr id = "memberList${idAuto}">
+//                 <td>${idCount}</td>
+//                 <td>${idAutoString}</td>
+//                 <td>${formattedDate}</td>
+//                 <td>0</td>
+//                 <td><div class="member-edit-icon">
+//                 <img src="./component/CS251 Component/icon/trash.png" id = "removeList${idAuto}">
+//                 <img src="./component/CS251 Component/icon/setting.png" id="editList${idAuto}">
+//                  </div></td>
+//               </tr>
+//             `;
   
-  const table = document.getElementById('tableMember');
-  table.innerHTML += card;
-  idCount++;
-  idAuto++;
-  memberList.push(senddel);
-  memberList.forEach(element => {
-    delIDGenerate(element);
-  });
+//   const table = document.getElementById('tableMember');
+//   table.innerHTML += card;
+//   idCount++;
+//   idAuto++;
+//   memberList.push(senddel);
+//   memberList.forEach(element => {
+//     delIDGenerate(element);
+//   });
 
-  clearAddmemberBox();
-}
-else{
-  window.alert("Invalid format. Cancel Adding...");
-}
+//   clearAddmemberBox();
+// }
+// else{
+//   window.alert("Invalid format. Cancel Adding...");
+// }
  
-  //console.log(table.innerHTML);
+//   //console.log(table.innerHTML);
  
   
-  popup.style.display = 'none';
-}
+//   popup.style.display = 'none';
+// }
 
 const exit = document.querySelector('.exit');
 
