@@ -185,6 +185,21 @@ function addMenuCard(menudata){
   
 }
 function addPromoCard(promodata){
+  function formatDate(inputDate) {
+    // Parse the input date string
+    const date = new Date(inputDate);
+    
+    // Extract day, month, and year components
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Adding 1 because months are zero-based
+    const year = date.getFullYear();
+    
+    // Format components as DD/MM/YYYY
+    const formattedDate = `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+    
+    return formattedDate;
+}
+  let promoformatdate = formatDate(promodata.promotion_Expire);
   let container = document.getElementById('promotionSlideCon');
   let card = `<div class="promotion-card" id="promo-${promodata.promotion_Code}">
       <div class="promotion-add-pic">
@@ -192,7 +207,7 @@ function addPromoCard(promodata){
       <div class="promotion-card-con">
         <h3>${promodata.promotion_Name}</h3>
       <div class="member-edit-icon">
-        <h3>${promodata.promotion_Expire}</h3>
+        <h3>${promoformatdate}</h3>
         <img src="./component/CS251 Component/icon/trash.png" id="del-promo-${promodata.promotion_Code}"/>
         <img src="./component/CS251 Component/icon/setting.png" id="edit-promo-${promodata.promotion_Code}"/>
       </div>
@@ -226,8 +241,8 @@ function updateDeletePromoButton(){
     let button = document.getElementById(`del-promo-${elm.promotion_Code}`);
     button.addEventListener("click", function(){
       delDBPromo(elm).then((result)=>{
-        if (result != null) {
-          let del = document.getElementById(`promo-${promodata.promotion_Code}`);
+        if (result !== null) {
+          let del = document.getElementById(`promo-${elm.promotion_Code}`);
           del.parentNode.removeChild(del);
           promotion_data = promotion_data.filter(item => item != elm);
         }

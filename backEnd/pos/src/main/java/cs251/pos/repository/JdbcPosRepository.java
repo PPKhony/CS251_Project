@@ -354,37 +354,48 @@ public class JdbcPosRepository implements PosRepository{
     @Override
     public List<PrintInvoice> printInvoice(int invoiceNo) {
         try {
-            String q = "SELECT \n" +
-                    "    Invoice.*,\n" +
-                    "    OrderMenu.foodname AS OrderedFood,\n" +
-                    "    OrderMenu.m_amount AS OrderedAmount,\n" +
-                    "    INT AS PromotionCode,\n" +
-                    "    INT AS PromotionAmount\n" +
-                    "FROM \n" +
-                    "    Invoice\n" +
-                    "LEFT JOIN \n" +
-                    "    OrderMenu ON Invoice.InvoiceNo = OrderMenu.InvoiceNo\n" +
-                    "LEFT JOIN \n" +
-                    "    OrderPromotion ON Invoice.InvoiceNo = OrderPromotion.InvoiceNo\n" +
-                    "WHERE \n" +
-                    "    Invoice.InvoiceNo = " + Integer.toString(invoiceNo) +
-                    "\n" +
-                    "UNION ALL\n" +
-                    "\n" +
-                    "SELECT \n" +
-                    "    Invoice.*,\n" +
-                    "    NULL AS OrderedFood,\n" +
-                    "    NULL AS OrderedAmount,\n" +
-                    "    OrderPromotion.Promotion_Code AS PromotionCode,\n" +
-                    "    OrderPromotion.p_amount AS PromotionAmount\n" +
-                    "FROM \n" +
-                    "    Invoice\n" +
-                    "LEFT JOIN \n" +
-                    "    OrderMenu ON Invoice.InvoiceNo = OrderMenu.InvoiceNo\n" +
-                    "LEFT JOIN \n" +
-                    "    OrderPromotion ON Invoice.InvoiceNo = OrderPromotion.InvoiceNo\n" +
-                    "WHERE \n" +
-                    "    Invoice.InvoiceNo = " + Integer.toString(invoiceNo);
+            String q = "SELECT " +
+                    "Invoice.InvoiceNo, " +
+                    "Invoice.DateTime, " +
+                    "Invoice.Payment, " +
+                    "Invoice.PaymentMethod, " +
+                    "Invoice.TotalDiscount, " +
+                    "Invoice.NetPrice, " +
+                    "Invoice.IsTakeHome, " +
+                    "Invoice.MemberID, " +
+                    "Invoice.i_change, " +
+                    "OrderMenu.foodname AS OrderedFood, " +
+                    "IFNULL(OrderMenu.m_amount,0) AS OrderedAmount, " +
+                    "NULL AS PromotionCode, " +
+                    "0 AS PromotionAmount " +
+                    "FROM " +
+                    "Invoice " +
+                    "LEFT JOIN " +
+                    "OrderMenu ON Invoice.InvoiceNo = OrderMenu.InvoiceNo " +
+                    "WHERE " +
+                    "Invoice.InvoiceNo = " +  + invoiceNo + " "+
+                    "UNION ALL " +
+                    "SELECT " +
+                    "Invoice.InvoiceNo, " +
+                    "Invoice.DateTime, " +
+                    "Invoice.Payment, " +
+                    "Invoice.PaymentMethod, " +
+                    "Invoice.TotalDiscount, " +
+                    "Invoice.NetPrice, " +
+                    "Invoice.IsTakeHome, " +
+                    "Invoice.MemberID, " +
+                    "Invoice.i_change, " +
+                    "NULL AS OrderedFood, " +
+                    "0 AS OrderedAmount, " +
+                    "OrderPromotion.Promotion_Code AS PromotionCode, " +
+                    "IFNULL(OrderPromotion.p_amount, 0)AS PromotionAmount " +
+                    "FROM " +
+                    "Invoice " +
+                    "LEFT JOIN " +
+                    "OrderPromotion ON Invoice.InvoiceNo = OrderPromotion.InvoiceNo " +
+                    "WHERE " +
+                    "Invoice.InvoiceNo = "+ invoiceNo + " ";
+            System.out.println(q);
             List<PrintInvoice> printInvoices = jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(PrintInvoice.class));
             return printInvoices;
         }catch (IncorrectResultSizeDataAccessException e){

@@ -53,6 +53,21 @@ function loadTransaction(){
     console.error('There was a problem with the fetch operation:', error);
   });
 }
+function loadTransactionHistory(t_id){
+  return fetch(`http://localhost:8080/api/print/invoice/${t_id}`)
+  .then(response =>{
+    if(!response.ok){
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data =>{
+    return data;
+  })
+  .catch(error =>{
+    console.error("Error while load PrintInvoice :",error);
+  });
+}
 function loadCurrentDate(){
   let currentDatehtml = document.getElementById('current-date');
   const date = new Date();
@@ -278,7 +293,8 @@ previousPage.addEventListener('click', () => {
      
  });
 
-function addEditCardList(newMember) {
+
+async function addEditCardList(newMember) {
   memberEditInfoList.push(newMember);
 
   // dateTime : "2024-04-29T00:51:34.000+00:00"
@@ -290,8 +306,21 @@ function addEditCardList(newMember) {
   // paymentMethod : "Cash"
   // takeHome : false
   // totalDiscount : 0
-
-  let dataTime = newMember.dataTime;
+  function formatDate(inputDate) {
+    // Parse the input date string
+    const date = new Date(inputDate);
+    
+    // Extract day, month, and year components
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Adding 1 because months are zero-based
+    const year = date.getFullYear();
+    
+    // Format components as DD/MM/YYYY
+    const formattedDate = `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+    
+    return formattedDate;
+  }
+  let dataTime = formatDate(newMember.dateTime);
   let iChange = newMember.i_change;
   let invoiceNo = newMember.invoiceNo;
   let memberID = newMember.memberID;
@@ -300,6 +329,9 @@ function addEditCardList(newMember) {
   let paymentMethod = newMember.paymentMethod;
   let takeHome = newMember.takeHome;
   let totalDiscount = newMember.totalDiscount;
+  
+
+
 
   let idString = String(invoiceNo).padStart(10,'0');
   let eatAt;
@@ -317,7 +349,47 @@ function addEditCardList(newMember) {
   }else{
     memberIDString = memberID;
   }
+  let invoiceData = await loadTransactionHistory(invoiceNo);
+  console.log("The data from ",invoiceNo ," is ",invoiceData);
+  let invoicePromo = invoiceData.filter(item => item.promotionAmount > 0);
+//Example invoicePromo
+//   {
+//     dateTime: "2024-04-29T11:28:09.000+00:00",
+//     i_change: 561.3,
+//     invoiceNo: 41,
+//     memberID: null,
+//     netPrice: 438.7,
+//     orderedAmount: 0,
+//     orderedFood: null,
+//     payment: "1000.0",
+//     paymentMethod: "Cash",
+//     promotionAmount: 2,
+//     promotionCode: "RH8I-31SS-LOPQ",
+//     takeHome: false,
+//     totalDiscount: 0
+// }
 
+
+  let invoiceMenu = invoiceData.filter(item => item.orderedAmount > 0);
+
+//example invoiceMenu
+//   {
+//     dateTime: "2024-04-29T12:16:54.000+00:00",
+//     i_change: 769.95,
+//     invoiceNo: 43,
+//     memberID: null,
+//     netPrice: 230.05,
+//     orderedAmount: 3,
+//     orderedFood: "Classic Margarita",
+//     payment: "1000.0",
+//     paymentMethod: "Cash",
+//     promotionAmount: 0,
+//     promotionCode: null,
+//     takeHome: false,
+//     totalDiscount: 0
+// }
+  console.log("List is Order menu id " ,invoiceNo," is ", invoiceMenu);
+  console.log("List of Promo id ", invoiceNo ," is ", invoicePromo);
   let card = `
                     <div class="edit-transaction-popup" id="editTransactionPopup${invoiceNo}" style="display:none;">
                     <div class="edit-transaction-popup-container">
@@ -391,6 +463,8 @@ function addEditCardList(newMember) {
                 `;
     let editTransactionCon = document.getElementById('editTransactionPopupContainer');
     editTransactionCon.innerHTML += card;
+    await new Promise(resolve => setTimeout(resolve, 0)); //wait Aboove line to run
+    
 
     historyMemberButton();
 }
