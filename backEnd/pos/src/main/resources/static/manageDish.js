@@ -133,17 +133,40 @@ async function loadPromotion(){
     }
     return response.json();
   })
-  .then(data =>{
-    data.forEach((promo)=>{
-      promotion_data.push(promo);
-    });
+  .then(async data =>{
+    console.log("Get data promo",data);
+    Promise.all(data.map(async (promo) => {
+      const menuPromo = await loadMenuPromo(promo.promotion_Code);
+      promotion_data.push([promo, menuPromo]);
+      console.log("Pushing Pro data ", [promo, menuPromo]);
+  })).then(() => {
+      loadPromoCard();
+  });
+    
   })
   .catch(error =>{
     console.error("There was problem while fething promotion: ",error);
   });
-  await loadPromoCard();
+
 }
 loadPromotion();
+
+function loadMenuPromo(promoCode){
+  let url = `http://localhost:8080/api/menuhavepromo/${promoCode}`;
+  console.log("Fetching url:",url);
+  return fetch(url)
+  .then(res => {
+    if (res.ok){
+      return res.json();
+    }
+    else{
+      return null;
+    }
+  }).then(
+    data => {return data;}
+  )
+  .catch(err =>{console.error(err);});
+}
 
 
 async function loadMenuCard(){
@@ -184,7 +207,7 @@ function addMenuCard(menudata){
   container.innerHTML += card;
   
 }
-function addPromoCard(promodata){
+function addPromoCard(promodata_array){
   function formatDate(inputDate) {
     // Parse the input date string
     const date = new Date(inputDate);
@@ -199,6 +222,7 @@ function addPromoCard(promodata){
     
     return formattedDate;
 }
+ let [promodata,promoMenu] = promodata_array;
   let promoformatdate = formatDate(promodata.promotion_Expire);
   let container = document.getElementById('promotionSlideCon');
   let card = `<div class="promotion-card" id="promo-${promodata.promotion_Code}">
