@@ -415,7 +415,7 @@ async function addEditCardList(newMember) {
                     
                                     <div class="item-add-con">
                                       <div class="item-qty">
-                                        <h2>Item: <span id="itemCount">0</span></h2>
+                                        <h2>Item: <span id="itemCount${invoiceNo}">0</span></h2>
                                       </div>
                                     </div>
                                     
@@ -461,12 +461,14 @@ async function addEditCardList(newMember) {
     let netPriceAll = 0;
     let totalDiscountAll = 0;
     let paymentAll = 0;
+    let countItem = 0;
 
     invoiceMenu.forEach((menu) => {
       addCardItemMenu(menu);
       netPriceAll += menu.netPrice;
       totalDiscountAll += menu.totalDiscount;
       paymentAll += menu.payment;
+      countItem++;
     })
 
     invoicePromo.forEach((promo) => {
@@ -474,7 +476,11 @@ async function addEditCardList(newMember) {
       netPriceAll += menu.netPrice;
       totalDiscountAll += menu.totalDiscount;
       paymentAll += menu.payment;
+      countItem++;
     })
+
+    let itemCount = document.getElementById(`itemCount${invoiceNo}`);
+    itemCount.textContent = countItem;
     
 
     historyMemberButton();
