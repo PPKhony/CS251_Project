@@ -372,6 +372,7 @@ button:hover {
     img {
         height: 70%;
         width: 70%;
+        cursor: pointer;
     }
 }
 
