@@ -246,36 +246,36 @@ function addEditCardList(newMember) {
     let user = newMember;
     let card = `
                 <div class="edit-member-popup" id="edit-member-popup${userId}" style="display:none;">
-                  <div class="edit-member-popup-container">
-                      <div class="edit-member-popup-con">
-                          <div class="membertext-and-quit">
-                              <h3>Member Form</h3>
-                              <div class="exit" id="exit${userId}">X</div>
-                          </div>
-                          <div class="member-name">
-                              <p>Member Name</p>
-                              <input type="text" id="editMemberName${userId}" placeholder="${user.m_name}">
-                          </div>
-                          <div class="member-info">
-                              <div class="info-box">
-                                  <label for="password">password</label><input type="text" name="password" id="editMemberPassword${userId}" placeholder="${user.m_password}">
-                              </div>
-                              <div class="info-box">
-                                  <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="editMemberCitizenID${userId}" placeholder="${user.m_citizenId}">
-                              </div>
-                              <div class="info-box">
-                                  <label for="tel">Tel</label><input type="text" name="tel" id="editMemberTel${userId}" placeholder="ExampleTel">
-                              </div>
-                              <div class="info-box">
-                                  <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="editMemberBirthDate${userId}" placeholder="${user.m_birthdate}">
-                              </div>
-                          </div>
-                          <div class="button-save">
-                              <button type="button" id="saveEditMember${userId}">SAVE</button>
-                          </div>
-                      </div>
-                  </div>
-              </div>
+                <div class="edit-member-popup-container">
+                    <div class="edit-member-popup-con">
+                        <div class="membertext-and-quit">
+                            <h3>Member Form</h3>
+                            <div class="exit" id="exit${userId}">X</div>
+                        </div>
+                        <div class="member-name">
+                            <p>Member Name</p>
+                            <input type="text" id="editMemberName${userId}" value="${user.m_name}">
+                        </div>
+                        <div class="member-info">
+                            <div class="info-box">
+                                <label for="password">password</label><input type="text" name="password" id="editMemberPassword${userId}" value="${user.m_password}">
+                            </div>
+                            <div class="info-box">
+                                <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="editMemberCitizenID${userId}" value="${user.m_citizenId}">
+                            </div>
+                            <div class="info-box">
+                                <label for="tel">Tel</label><input type="text" name="tel" id="editMemberTel${userId}" value="ExampleTel">
+                            </div>
+                            <div class="info-box">
+                                <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="editMemberBirthDate${userId}" value="${user.m_birthdate}">
+                            </div>
+                        </div>
+                        <div class="button-save">
+                            <button type="button" id="saveEditMember${userId}">SAVE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             `;
       let editMemberCon = document.getElementById('editMemberCon');
       editMemberCon.innerHTML += card;
@@ -285,7 +285,7 @@ function addEditCardList(newMember) {
 
 function editMemberButton() {
   memberEditInfoList.forEach(e => {
-    console.log(e.m_id + 'access edit');
+    console.log(e.m_id + ' access edit');
     let userId = e.m_id;
     let editButton = document.getElementById(`editList${userId}`);
     editButton.addEventListener('click', () => {
@@ -295,18 +295,21 @@ function editMemberButton() {
 
       let exit = document.getElementById(`exit${userId}`);
       exit.addEventListener('click', () => {
+      console.log(e.m_id + ' exit edit!!');
       userPopup.style.display = 'none';
+      });
 
       let save = document.getElementById(`saveEditMember${userId}`);
       save.addEventListener('click', () => {
-        saveEditMember(userId);
-      })
+        console.log(' save success!!');
+        saveEditMember(userId, e);
+      });
+    
     });
-    })
-  })
+  });
 }
 
-function saveEditMember(id) {
+function saveEditMember(userId, e) {
   let editMemberName = document.getElementById(`editMemberName${userId}`).value;
   let editMemberCitizenID = document.getElementById(`editMemberCitizenID${userId}`).value;
   let editMemberPassword = document.getElementById(`editMemberPassword${userId}`).value;
@@ -350,6 +353,7 @@ let editMember = {
         // addCardList(newMember);
         // addEditCardList(newMember);
         // clearAddmemberBox();
+        editMemberBox(userId, editMemberPassword, memberCurrentRank, editMemberCitizenID, editMemberName, memberCurrentPoint, DBformattedDate, memberCurrentBD);
         console.log('edit member complete!!');
       }
       else{
@@ -366,6 +370,10 @@ let editMember = {
    
     let userPopup = document.getElementById(`edit-member-popup${userId}`);
     userPopup.style.display = 'none';
+}
+
+function editMemberBox(userId, password, rank, citizenID, name, point, enroll, bd){
+  
 }
 
 function saveMember() {
