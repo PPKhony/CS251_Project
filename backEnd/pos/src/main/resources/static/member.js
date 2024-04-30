@@ -188,9 +188,9 @@ function dbEditMember(json, id) {
 }
 
 function dbEditMemberTel(jsontel, id){
-  let telurl = '#' //รอ backend
+  let telurl = `http://localhost:8080/api/update/tel/${id}`; //รอ backend
   return fetch(telurl,{
-    method: 'POST',
+    method: 'PUT',
     headers:{
       'Content-Type': 'application/json',
     },
