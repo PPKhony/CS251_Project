@@ -419,7 +419,7 @@ async function addEditCardList(newMember) {
                                       </div>
                                     </div>
                                     
-                                    <div class="qty-item-container" id="itemSlideCon">
+                                    <div class="qty-item-container" id="itemSlideCon${invoiceNo}">
                     
                                       
 
@@ -455,37 +455,32 @@ async function addEditCardList(newMember) {
                 `;
     let editTransactionCon = document.getElementById('editTransactionPopupContainer');
     editTransactionCon.innerHTML += card;
+
     await new Promise(resolve => setTimeout(resolve, 0)); //wait Aboove line to run
 
     let netPriceAll = 0;
     let totalDiscountAll = 0;
     let paymentAll = 0;
 
-    invoiceMenu.forEach((menu, index) => {
-      // addCardItemMenuAndPromo(menu, index, netPriceAll, totalDiscountAll, paymentAll);
+    invoiceMenu.forEach((menu) => {
+      addCardItemMenu(menu);
+      netPriceAll += menu.netPrice;
+      totalDiscountAll += menu.totalDiscount;
+      paymentAll += menu.payment;
     })
 
-    let cardItem = `
-                    <div class="item-card" id="item-card-${1}">
-                      <div class="item-card-con">
-                        <div class="item-card-pic-container">
-                            <img src="${1}">
-                        </div>
-                        <h3 id="name-item-${1}">1</h3>
-                        <h3 id="count-item-${1}" class="count-item">2</h3>
-                        <h3 id="price-item-${1}" class="price-item">3</h3>
-                        <h3 id="qty-item-${1}">QTY:4</h3>
-
-                        <img id="rm-all-item-${1}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-                    </div>
-                  </div>
-                  `;
+    invoicePromo.forEach((promo) => {
+      addCardItemPromo(promo);
+      netPriceAll += menu.netPrice;
+      totalDiscountAll += menu.totalDiscount;
+      paymentAll += menu.payment;
+    })
     
 
     historyMemberButton();
 }
 
-function addCardItemMenuAndPromo(menu, index, netPriceAll, totalDiscountAll, paymentAll) {
+function addCardItemMenu(menu) {
 
 //example invoiceMenu
 //   {
@@ -513,7 +508,7 @@ function addCardItemMenuAndPromo(menu, index, netPriceAll, totalDiscountAll, pay
                     <div class="item-card" id="item-card-${invoiceNo}">
                       <div class="item-card-con">
                         <div class="item-card-pic-container">
-                            <img src="./component/CS251 Component/HomeMenuDish/${orderedFood}">
+                            <img src="./component/CS251 Component/HomeMenuDish/${orderedFood}.png">
                         </div>
                         <h3 id="name-item-${invoiceNo}">${orderedFood}</h3>
                         <h3 id="count-item-${invoiceNo}" class="count-item">${orderedAmount}</h3>
@@ -522,10 +517,51 @@ function addCardItemMenuAndPromo(menu, index, netPriceAll, totalDiscountAll, pay
                   </div>
     `;
 
-  
-  
-  
+  let itemSlideCon = document.getElementById(`itemSlideCon${invoiceNo}`);
+  itemSlideCon.innerHTML += cardItem;
 }
+
+function addCardItemPromo(promo) {
+
+ //Example invoicePromo
+//   {
+//     dateTime: "2024-04-29T11:28:09.000+00:00",
+//     i_change: 561.3,
+//     invoiceNo: 41,
+//     memberID: null,
+//     netPrice: 438.7,
+//     orderedAmount: 0,
+//     orderedFood: null,
+//     payment: "1000.0",
+//     paymentMethod: "Cash",
+//     promotionAmount: 2,
+//     promotionCode: "RH8I-31SS-LOPQ",
+//     takeHome: false,
+//     totalDiscount: 0
+// }
+  
+    let invoiceNo = promo.invoiceNo;
+    let orderedFood = promo.promotionCode;
+    let orderedAmount = promo.promotionAmount;
+    let netPrice = promo.netPrice;
+  
+    let cardItem = `
+                      <div class="item-card" id="item-card-${invoiceNo}">
+                        <div class="item-card-con">
+                          <div class="item-card-pic-container">
+                              <img src="./component/CS251 Component/HomeMenuDish/Classic Margarita">
+                          </div>
+                          <h3 id="name-item-${invoiceNo}">${orderedFood}</h3>
+                          <h3 id="count-item-${invoiceNo}" class="count-item">${orderedAmount}</h3>
+                          <h3 id="price-item-${invoiceNo}" class="price-item">${netPrice}</h3>
+                      </div>
+                    </div>
+      `;
+  
+    let itemSlideCon = document.getElementById(`itemSlideCon${invoiceNo}`);
+    itemSlideCon.innerHTML += cardItem;
+  }
+
 
 function historyMemberButton(){
   memberEditInfoList.forEach(e => {
