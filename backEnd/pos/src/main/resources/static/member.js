@@ -355,7 +355,7 @@ let editMember = {
         
       }
       else{
-        window.alert("Failue due to database error");
+        window.alert("Failure due to database error");
       }
      });
     
@@ -440,7 +440,7 @@ let newMember = {
   //console.log(jsonMember,newMemberTeljson);
    dbAddmember(jsonMember).then(result=>{
     if(result === null){
-      window.alert("Failue due to add Member database error");
+      window.alert("Failure due to add Member database error");
     }
     else{
     dbAddMemberTel(newMemberTeljson).then((telresult)=>{
@@ -449,7 +449,7 @@ let newMember = {
         clearAddmemberBox();
       }
       else{
-        window.alert("Failue due to add Member tel database error");
+        window.alert("Failure due to add Member tel database error");
       }
     });
   }
@@ -499,15 +499,18 @@ function delIDGenerate(dbID){
   button.addEventListener('click',function(){
 
     //ADDING confirm code
-
-    if(DbDelID(dbID) !== null){
+    let delconfirm = confirm(`Do you want to delete member id ${id}?`);
+    if(delconfirm){
+      if(DbDelID(dbID) !== null){
       const del = document.getElementById(`memberList${id}`);
       del.parentNode.removeChild(del);
       memberList = memberList.filter(item => item !== id);
-    }
-    else{
+      }
+      else{
       window.alert("Failed to delete from DB");
+      }
     }
+    
   });
 
 }

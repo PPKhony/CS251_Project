@@ -1,41 +1,32 @@
-var promotion_data = [
-    {
-        "promotionName" : "you are my special!",
-        "promotionCode" : "12345",
-        "Expired" : "12/34/56",
-        "Price" : 900,
-        "image_url" : "https://example.com/classic_cheeseburger.jpg",
-        "menu_id_data" : [0, 1]
-    }
-  ]
+
   
-  var food_category = [
-    {
-      "name": "Burger",
-      "image_category": "./component/CS251 Component/Food category/burger.svg"
-    },
-    {
-      "name": "Chicken",
-      "image_category": "./component/CS251 Component/Food category/chicken.svg"
-    },
-    {
-      "name": "Taco",
-      "image_category": "./component/CS251 Component/Food category/taco.svg"
-    },
-    {
-      "name": "Fries",
-      "image_category": "./component/CS251 Component/Food category/fries.svg"
-    },
-    {
-      "name": "Dessert",
-      "image_category": "./component/CS251 Component/Food category/dessert.svg"
-    },
-    {
-      "name": "Drink",
-      "image_category": "./component/CS251 Component/Food category/soda.svg"
-    }
-  ]
-  
+  // var food_category = [
+  //   {
+  //     "name": "Burger",
+  //     "image_category": "./component/CS251 Component/Food category/burger.svg"
+  //   },
+  //   {
+  //     "name": "Chicken",
+  //     "image_category": "./component/CS251 Component/Food category/chicken.svg"
+  //   },
+  //   {
+  //     "name": "Taco",
+  //     "image_category": "./component/CS251 Component/Food category/taco.svg"
+  //   },
+  //   {
+  //     "name": "Fries",
+  //     "image_category": "./component/CS251 Component/Food category/fries.svg"
+  //   },
+  //   {
+  //     "name": "Dessert",
+  //     "image_category": "./component/CS251 Component/Food category/dessert.svg"
+  //   },
+  //   {
+  //     "name": "Drink",
+  //     "image_category": "./component/CS251 Component/Food category/soda.svg"
+  //   }
+  // ]
+  var promotion_data = [];
   var menu_data = [];
 
 const logoutChange1 = document.getElementById('logoutIcon1');
@@ -134,6 +125,27 @@ async function loadMenu(){
 }
 loadMenu();
 
+async function loadPromotion(){
+  await fetch('http://localhost:8080/api/active/promotion')
+  .then(response =>{
+    if(!response.ok){
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data =>{
+    data.forEach((promo)=>{
+      promotion_data.push(promo);
+    });
+  })
+  .catch(error =>{
+    console.error("There was problem while fething promotion: ",error);
+  });
+  await loadPromoCard();
+}
+loadPromotion();
+
+
 async function loadMenuCard(){
   await menu_data.forEach(elm=>{
    addMenuCard(elm);
@@ -141,70 +153,14 @@ async function loadMenuCard(){
   await updateDeleteMenuButton();
 }
 
-/* <div class="menu-popup" style="display: none;" id="menuPopup">
-      <div class="menu-popup-container">
-        <div class="menu-popup-top">
-          <h3>Dish #101</h3>
-          <div class="exit" id="exitMenu">X</div>
-        </div>
-        <div class="menu-info-name">
-          <p>Dish Name</p>
-          <input type="text">
-        </div>
-        <div class="menu-info-desc">
-          <p>Dish Description</p>
-          <input type="text">
-        </div>
-        <div class="menu-info-price-qty">
-          <div class="menu-info-price">
-            <h4>Price</h4>
-            <input type="text">
-          </div>
-          <div class="menu-info-qty">
-            <h4>QTY</h4>
-            <input type="text">
-          </div>
-        </div>
-        
-        <div class="menu-popup-bottom">
-          <div class="menu-popup-bottom-pic">
-            <p>Add Photo</p>
-            <img src="./component/CS251 Component/icon/image.png">
-          </div>
-          <button type="button" id="saveMenu" onclick="addMenuList()">SAVE</button>
-        </div>
-      </div>
-    </div> */
-
-  //   {
-  //     "unit": "piece",
-  //     "foodname": "Crispy Fish Taco",
-  //     "amount": 42,
-  //     "price": 110
-  //    }
-function  DBaddMenuList(json){
-  let url = 'http://localhost:8080/api/add/menu';
-  return fetch(url, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          // Add any other headers if required
-      },
-      body: json,
-  })
-  .then(response => {
-      if (response.ok) {
-          return response.json(); // Return parsed JSON for successful response
-      } else {
-          console.error('Network response was not ok');
-          return null; // Return null for non-success response
-      }
-  })
-  .catch(error => {
-      console.error('Error:', error);
-      //throw error; // Re-throw the error for further handling
+async function loadPromoCard(){
+  await promotion_data.forEach(elm=>{
+    addPromoCard(elm);
   });
+  await updateDeletePromoButton();
 }
+  
+
 function addMenuCard(menudata){
   let container = document.getElementById("menuSlideCon");
   let card = `<div class="menu-card" id="menu-${menudata.foodname}">
@@ -218,8 +174,8 @@ function addMenuCard(menudata){
         <h3 class="h3-qty" id="menu-${menudata.foodname}">QTY: ${menudata.amount}</h3>
         <h3><span class="dollar-sign">฿</span>:${menudata.price}</h3>
         <div class="member-edit-icon">
-          <img src="./component/CS251 Component/icon/trash.png" / id="del-${menudata.foodname}">
-          <img src="./component/CS251 Component/icon/setting.png" / id="edit-${menudata.foodname}">
+          <img src="./component/CS251 Component/icon/trash.png" id="del-${menudata.foodname}"/>
+          <img src="./component/CS251 Component/icon/setting.png" id="edit-${menudata.foodname}"/>
         </div>
       </div>
     </div>
@@ -228,6 +184,61 @@ function addMenuCard(menudata){
   container.innerHTML += card;
   
 }
+function addPromoCard(promodata){
+  let container = document.getElementById('promotionSlideCon');
+  let card = `<div class="promotion-card" id="promo-${promodata.promotion_Code}">
+      <div class="promotion-add-pic">
+        <img src="./component/CS251 Component/HomeMenuDish/${promodata.promotion_Code}.png" />
+      <div class="promotion-card-con">
+        <h3>${promodata.promotion_Name}</h3>
+      <div class="member-edit-icon">
+        <h3>${promodata.promotion_Expire}</h3>
+        <img src="./component/CS251 Component/icon/trash.png" id="del-promo-${promodata.promotion_Code}"/>
+        <img src="./component/CS251 Component/icon/setting.png" id="edit-promo-${promodata.promotion_Code}"/>
+      </div>
+    </div>
+  </div>
+</div>`
+  container.innerHTML += card;
+  console.log("Adding :",promodata.promotion_Name ,"!");
+}
+
+function updateDeleteMenuButton(){
+  menu_data.forEach(elm =>{
+    console.log("Updating ",elm.foodname);
+    var button = document.getElementById(`del-${elm.foodname}`);
+    button.addEventListener("click", function() {
+      delDBMenu(elm).then((result)=>{
+        if(result !== null){
+          var del = document.getElementById(`menu-${elm.foodname}`);
+          del.parentNode.removeChild(del);
+          menu_data = menu_data.filter(item => item !== elm);
+        }
+        else{
+          window.alert('Fail to delete the food');
+        }
+      });
+    });
+  });
+}
+function updateDeletePromoButton(){
+  promotion_data.forEach(elm=>{
+    let button = document.getElementById(`del-promo-${elm.promotion_Code}`);
+    button.addEventListener("click", function(){
+      delDBPromo(elm).then((result)=>{
+        if (result != null) {
+          let del = document.getElementById(`promo-${promodata.promotion_Code}`);
+          del.parentNode.removeChild(del);
+          promotion_data = promotion_data.filter(item => item != elm);
+        }
+        else{
+          window.alert('Fail to delete promotion');
+        }
+      });
+    });
+  });
+}
+
 function delDBMenu(data){
   console.log(data);
   let url = `http://localhost:8080/api/delete/menu/${data.foodname}`;
@@ -255,28 +266,65 @@ function delDBMenu(data){
       console.error('Error:', error);
       //throw error; // Re-throw the error for further handling
   });
- // console.log(data);
 
- //return true;
 }
-function updateDeleteMenuButton(){
-  menu_data.forEach(elm =>{
-    console.log("Updating ",elm.foodname);
-    var button = document.getElementById(`del-${elm.foodname}`);
-    button.addEventListener("click", function() {
-      delDBMenu(elm).then((result)=>{
-        if(result !== null){
-          var del = document.getElementById(`menu-${elm.foodname}`);
-          del.parentNode.removeChild(del);
-          menu_data = menu_data.filter(item => item !== elm);
-        }
-        else{
-          window.alert('Fail to delete the food');
-        }
-      });
-    });
+function delDBPromo(data){
+  let url = `http://localhost:8080/api/delete/promotion/${data.promotion_Code}`
+  return fetch(url,{
+     method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add any other headers if required
+     },
+  })
+  .then(response =>{
+    if(response.ok){
+      return response.json();
+    }
+    else{
+      console.error('Network response was not ok');
+      return null;
+    }
+
+  })
+  .catch(error=>{
+    console.error('Error: ',error);
+  })
+}
+
+
+function  DBaddMenuList(json){
+  //   {
+  //     "unit": "piece",
+  //     "foodname": "Crispy Fish Taco",
+  //     "amount": 42,
+  //     "price": 110
+  //    }
+  let url = 'http://localhost:8080/api/add/menu';
+  return fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          // Add any other headers if required
+      },
+      body: json,
+  })
+  .then(response => {
+      if (response.ok) {
+          return response.json(); // Return parsed JSON for successful response
+      } else {
+          console.error('Network response was not ok');
+          return null; // Return null for non-success response
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      //throw error; // Re-throw the error for further handling
   });
 }
+
+
+
 function clearAddmenu(){
   let unit = document.getElementById("menu-unit");
   let foodname = document.getElementById("menu-foodname");
@@ -314,5 +362,9 @@ function addMenuList(){
     }
   });
 }
+function addPromoList(){
+
+}
+
 
 

@@ -50,7 +50,17 @@ function loadTransaction(){
     console.error('There was a problem with the fetch operation:', error);
   });
 }
+function loadCurrentDate(){
+  let currentDatehtml = document.getElementById('current-date');
+  const date = new Date();
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const formattedDate = `${days[date.getUTCDay()]}, ${months[date.getUTCMonth()]} ${date.getUTCDate()} ${date.getUTCFullYear()}`;
+  currentDatehtml.textContent = formattedDate;
+
+}
 loadTransaction();
+loadCurrentDate();
 
 function saveTransaction(invoice) {
     //   {
@@ -177,17 +187,21 @@ function delIDGenerate(index){
   // console.log("Adding del ID",index);
   const id = index;
   const button = document.getElementById(`del-transaction${id}`);
-  button.addEventListener('click',function(){
+  button.addEventListener('click',async function(){
 
     //ADDING confirm code
-    if(DbDelID(id) !== null){
+    let delconfirm = confirm(`Do you want to delete transaction id ${id}?`);
+    if(delconfirm){
+      if(await DbDelID(id) !== null){
       const del = document.getElementById(`transaction${id}`);
       del.parentNode.removeChild(del);
      memberList = memberList.filter(item => item !== id);
-    }
-    else{
+      }
+      else{
       window.alert("Cannot delete Transaction due to Database Error");
+      }
     }
+    
     
   });
 }
