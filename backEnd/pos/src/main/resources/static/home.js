@@ -1,13 +1,4 @@
-var promotion_data = [
-  {
-      "promotionName" : "you are my special!",
-      "promotionCode" : "12345",
-      "Expired" : "12/34/56",
-      "Price" : 900,
-      "image_url" : "https://example.com/classic_cheeseburger.jpg",
-      "menu_id_data" : [[0,1], [1,2]]
-  }
-]
+var promotion_data = [];
 
 var food_category = [
   {
@@ -38,62 +29,8 @@ var food_category = [
 
 var menu_data = [];
 var orderMenu = [];
-async function loadMenu(){
-  await fetch("http://localhost:8080/api/menu")
-  .then(response => {
-    // Check if the response is successful (status code 200)
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    // Parse the JSON response
-    return response.json();
-  })
-  .then(data => {
-    // Data retrieved successfully, do something with it
-    console.log(data);
-    data.forEach((dish)=>{
-      menu_data.push(dish);
-      console.log("Pushing ",dish.foodname);
-      console.log("Menu data is" , menu_data);
-    });
-  })
-  .catch(error => {
-    // Handle any errors that occurred during the fetch
-    console.error('There was a problem with the fetch operation:', error);
-  });
 
-  await loadMenuCard();
-}
-loadMenu();
-async function loadMenuCard(){
-  const menuContainer = document.getElementById('menuSlideCon');
-//console.log("We in load Menu card fn");
-  // สร้างการ์ดสำหรับแต่ละรายการเมนู
-  await menu_data.forEach((item,index) => {
-    const card = `
-      <div class="menu-card">
-        <div class="menu-card-con">
-          <div class="menu-pic-container">
-            <img src="./component/CS251 Component/HomeMenuDish/${item.foodname}.png">
-          </div>
-          <div class="menu-desc-con">
-            <div class="menu-desc">
-              <h3>${item.foodname}</h3>
-              <h3 class="h3-qty" id="qty-${index}">QTY: ${item.amount}</h3>
-              <h3><span class="dollar-sign">฿</span>: ${item.price}</h3>
-              <button type="button" id="menu-add-button-${index}" class="menu-add-button">ADD</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    // เพิ่มการ์ดลงใน container
-    menuContainer.innerHTML += card;
-  });
-  var menuAdd = document.querySelectorAll('.menu-add-button');
-  await updateAddMenuButton(menuAdd);
-  
-}
+
 
 // promotion section
 
@@ -125,12 +62,150 @@ promotionSlider.addEventListener('mousemove', (e) => {
 });
 
 // promotion section
+loadPromotion();
+async function loadPromotion(){
+  await fetch('http://localhost:8080/api/active/promotion')
+  .then(response =>{
+    if(!response.ok){
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(async data =>{
+    console.log("Get data promo",data);
+    Promise.all(data.map(async (promo) => {
+      const menuPromo = await loadMenuPromo(promo.promotion_Code);
+      promotion_data.push([promo, menuPromo]);
+      console.log("Pushing Pro data ", [promo, menuPromo]);
+  })).then(() => {
+      loadPromoCard();
+  });
+    
+  })
+  .catch(error =>{
+    console.error("There was problem while fething promotion: ",error);
+  });
+  
+}
+
+async function loadPromoCard(){
+  console.log("Now Start loading card!");
+  await promotion_data.forEach(elm=>{
+    console.log("Add promo card :",elm);
+    addPromoCard(elm);
+  });
+}
+function loadMenuPromo(promoCode){
+  let url = `http://localhost:8080/api/menuhavepromo/${promoCode}`;
+  console.log("Fetching url:",url);
+  return fetch(url)
+  .then(res => {
+    if (res.ok){
+      return res.json();
+    }
+    else{
+      return null;
+    }
+  }).then(
+    data => {return data;}
+  )
+  .catch(err =>{console.error(err);});
+}
+
+function addPromoCard(promo_array){
+  console.log("Now adding card !");
+  let [promodata,promomenu] = promo_array;
+  function formatDate(inputDate) {
+    // Parse the input date string
+    const date = new Date(inputDate);
+    
+    // Extract day, month, and year components
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Adding 1 because months are zero-based
+    const year = date.getFullYear();
+    
+    // Format components as DD/MM/YYYY
+    const formattedDate = `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+    
+    return formattedDate;
+}
+  let promoformatdate = formatDate(promodata.promotion_Expire);
+  let container = document.getElementById('promotionSlideCon');
+  let card = `<div class="promotion-card">
+  <div class="promotion-add-pic">
+      <img src="./component/CS251 Component/HomeMenuDish/${promodata.promotion_Code}.png">
+  <button type="button">ADD</button>
+  </div>
+</div>`
+  container.innerHTML += card;
+  console.log("Adding :",promodata.promotion_Name ,"!");
+}
+
+
 
 // menu section
+loadMenu();
+async function loadMenu(){
+  await fetch("http://localhost:8080/api/menu")
+  .then(response => {
+    // Check if the response is successful (status code 200)
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Parse the JSON response
+    return response.json();
+  })
+  .then(data => {
+    // Data retrieved successfully, do something with it
+    console.log(data);
+    data.forEach((dish)=>{
+      menu_data.push(dish);
+      console.log("Pushing ",dish.foodname);
+      console.log("Menu data is" , menu_data);
+    });
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
+    console.error('There was a problem with the fetch operation:', error);
+  });
 
-const menu_item = [
+  await loadMenuCard();
+}
 
-]
+
+
+async function loadMenuCard(){
+  const menuContainer = document.getElementById('menuSlideCon');
+//console.log("We in load Menu card fn");
+  // สร้างการ์ดสำหรับแต่ละรายการเมนู
+  await menu_data.forEach((item,index) => {
+    const card = `
+      <div class="menu-card">
+        <div class="menu-card-con">
+          <div class="menu-pic-container">
+            <img src="./component/CS251 Component/HomeMenuDish/${item.foodname}.png">
+          </div>
+          <div class="menu-desc-con">
+            <div class="menu-desc">
+              <h3>${item.foodname}</h3>
+              <h3 class="h3-qty" id="qty-${index}">QTY: ${item.amount}</h3>
+              <h3><span class="dollar-sign">฿</span>: ${item.price}</h3>
+              <button type="button" id="menu-add-button-${index}" class="menu-add-button">ADD</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    // เพิ่มการ์ดลงใน container
+    menuContainer.innerHTML += card;
+  });
+  var menuAdd = document.querySelectorAll('.menu-add-button');
+  await updateAddMenuButton(menuAdd);
+  
+}
+
+
+var menu_item = [];
 
 const menuSlider = document.getElementById('menuSlideCon');
 let misDown = false;

@@ -513,6 +513,11 @@ public class PosController {
         List<Member> memberList = posRepository.getAllMember();
         return new ResponseEntity<>(memberList,HttpStatus.OK);
     }
+    @GetMapping(value = "/menuhavepromo/{p_id}")
+    public ResponseEntity<List<MenuHavePromotion>> getMenuHavePromo(@PathVariable("p_id") String p_id){
+        List<MenuHavePromotion> menuList = posRepository.findMenuHavePromotion(p_id);
+        return  new ResponseEntity<>(menuList,HttpStatus.OK);
+    }
 
     @GetMapping(value = "/member/tel/{m_id}")
     public ResponseEntity<List<Member_tel>> getMemberTelByMemberId(@PathVariable("m_id") String m_id) {
