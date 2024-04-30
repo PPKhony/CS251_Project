@@ -427,6 +427,7 @@ public class PosController {
             return new ResponseEntity<>("Cannot find Member with m_id=" + m_id, HttpStatus.NOT_FOUND);
         }
     }
+
     @PutMapping(value = "/add/member/points/{m_id}/{points}")
     public ResponseEntity<String> addMemberPoints(@PathVariable("m_id") String m_id, @PathVariable("points") int points) {
         Member _member = posRepository.findMemberByMemberId(m_id);
@@ -465,7 +466,37 @@ public class PosController {
             return new ResponseEntity<>("Noo!", HttpStatus.NOT_FOUND);
         }
     }
+    @PutMapping(value = "/update/member/tel/{m_tel}")
+    public  ResponseEntity<String> updateMemberTel(@PathVariable("m_tel") String m_tel, @RequestBody Member_tel member_tel){
+        Member_tel member_tel1;
+        try {
+            List<Member_tel> member_tels = posRepository.findMemberTelByMemberId(member_tel.getM_id());
+            for (Member_tel member_tel_ : member_tels){
+                if (member_tel_.getM_tel() == m_tel) {
+                    member_tel1 = member_tel_;
+                    break;
+                }
+            }
+            member_tel1 = new Member_tel(member_tel.getM_id(), member_tel.getM_tel());
+            //member_tel1.setM_tel(member_tel.getM_tel());
+            posRepository.updateMemberTel(member_tel1, m_tel);
+            return new ResponseEntity<>("Successfully", HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        /*Menu updateMenu = posRepository.findMenuByName(foodname);
 
+        if(updateMenu != null){
+            updateMenu.setUnit(menu.getUnit());
+            updateMenu.setAmount(menu.getAmount());
+            updateMenu.setPrice(menu.getPrice());
+
+            posRepository.updateMenu(updateMenu);
+            return new ResponseEntity<>("OK! Som-O Gang Muk", HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Noo!", HttpStatus.NOT_FOUND);
+        }*/
+    }
     @PutMapping(value = "/reduce/menu/promotion/{Promotion_Code}")
     public ResponseEntity<String> reduceMenuInPromotion(@PathVariable("Promotion_Code") String Promotion_Code) {
         try {
