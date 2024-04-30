@@ -25,6 +25,11 @@ function addMember() {
   popup.style.display = 'block';
 }
 
+exitAddMember = document.getElementById('exitAddMember');
+exitAddMember.addEventListener('click', () => {
+  popup.style.display = 'none';
+});
+
 var idCount = 1;
 var idAuto = 1;
 var memberList=[];
@@ -155,9 +160,39 @@ function dbAddMemberTel(jsontel){
 }
 
 function dbEditMember(json, id) {
-  console.log(json);
   let url = `http://localhost:8080/api/update/member/${id}`;
   
+  // กำหนด request headers และ body ด้วย JSON.stringify(json)
+  const requestOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: json
+  };
+
+  // ส่ง request โดยใช้ fetch API
+  return fetch(url, requestOptions)
+    .then(response => {
+      if (!response.ok) {
+        return null;
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Member updated successfully:', data);
+      return data;
+      // จัดการกับการอัปเดตข้อมูลต่อไปเมื่อทำสำเร็จ
+    })
+    .catch(error => {
+      console.error('Error updating member:', error);
+      // จัดการกับข้อผิดพลาดที่เกิดขึ้น
+    });
+}
+
+function dbEditMemberTel(json, tel){
+  let url = `http://localhost:8080/api/update/member/tel/${tel}`;
+
   // กำหนด request headers และ body ด้วย JSON.stringify(json)
   const requestOptions = {
     method: 'PUT',
@@ -185,28 +220,6 @@ function dbEditMember(json, id) {
       console.error('Error updating member:', error);
       // จัดการกับข้อผิดพลาดที่เกิดขึ้น
     });
-}
-
-function dbEditMemberTel(jsontel, id){
-  let telurl = `http://localhost:8080/api/update/tel/${id}`; //รอ backend
-  return fetch(telurl,{
-    method: 'PUT',
-    headers:{
-      'Content-Type': 'application/json',
-    },
-    body : jsontel,
-  }).then(res =>{
-    if(res.ok){
-      return res.json();
-    }
-    else{
-      console.error('Network response was not ok');
-      return null;
-    }
-    
-  }).catch(err =>{
-    console.error('Error : ',err);
-  });
 }
 
 function addCardList(newMember){
@@ -265,7 +278,7 @@ function addEditCardList(newMember) {
                                 <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="editMemberCitizenID${userId}" value="${user.m_citizenId}">
                             </div>
                             <div class="info-box">
-                                <label for="tel">Tel</label><input type="text" name="tel" id="editMemberTel${userId}" value="ExampleTel">
+                                <label for="tel">Tel</label><input type="text" name="tel" id="editMemberTel${userId}" value="0842633586">
                             </div>
                             <div class="info-box">
                                 <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="editMemberBirthDate${userId}" value="${newBD}">
@@ -346,13 +359,25 @@ let editMember = {
     "m_birthdate": memberCurrentBD,
   };
 
+  let editMemberTelJson = {
+    "m_id" : e.m_id,
+    "m_tel" : editMemberTel
+  }
+
 
   if(validating(editMember)){
     let jsonMember = JSON.stringify(editMember);
+    let jsonTel = JSON.stringify(editMemberTelJson);
     console.log(jsonMember);
       dbEditMember(jsonMember, userId).then(result=>{
       if(result !== null){
-        
+        dbEditMemberTel(jsonTel, editMemberTel).then(res=>{
+          if(res !== null){
+            
+          }else{
+            window.alert("Failure due to edit Member tel database error");
+          }
+        })
       }
       else{
         window.alert("Failure due to database error");

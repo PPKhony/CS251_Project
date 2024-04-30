@@ -99,6 +99,15 @@ public class JdbcPosRepository implements PosRepository{
     }
 
     @Override
+    public int updateMemberTel(Member_tel member_tel, String m_tel) {
+        /*return jdbcTemplate.update("UPDATE Member_tel SET m_tel=? WHERE m_id=? AND m_tel=?",
+                new Object[]{member_tel.getM_tel(), member_tel.getM_tel()}, m_tel);*/
+        String q = "UPDATE Member_tel SET m_tel='" + member_tel.getM_tel() + "' WHERE m_id='" + member_tel.getM_id() +"' " +
+                "AND m_tel='" + m_tel + "'";
+        return jdbcTemplate.update(q);
+    }
+
+    @Override
     public int updateMember(Member member) {
         return jdbcTemplate.update("UPDATE Member SET m_password=?, m_rank=?, m_citizenId=?, m_name=?, m_points=?, m_enroll=?, m_birthdate=? " +
                         "WHERE m_id=?",
