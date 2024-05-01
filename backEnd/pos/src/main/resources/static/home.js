@@ -1,15 +1,6 @@
-const promotion_data = [
-  {
-      "promotionName" : "you are my special!",
-      "promotionCode" : "12345",
-      "Expired" : "12/34/56",
-      "Price" : 900,
-      "image_url" : "https://example.com/classic_cheeseburger.jpg",
-      "menu_id_data" : [[0,1], [1,2]]
-  }
-]
+var promotion_data = [];
 
-const food_category = [
+var food_category = [
   {
     "name": "Burger",
     "image_category": "./component/CS251 Component/Food category/burger.svg"
@@ -36,98 +27,10 @@ const food_category = [
   }
 ]
 
-const menu_data = [
-  {
-    "id": "0",
-    "name": "Classic Cheeseburger",
-    "food_category": "Burger",
-    "quantity": 10,
-    "price": 120,
-    "description": "A classic cheeseburger with cheddar cheese, lettuce, tomato, and pickles.",
-    "image_url": "https://example.com/classic_cheeseburger.jpg"
-  },
-  {
-    "id": "1",
-    "name": "Crispy Chicken Wings",
-    "food_category": "Chicken",
-    "quantity": 3,
-    "price": 150,
-    "description": "Crispy chicken wings served with your choice of dipping sauce.",
-    "image_url": "https://example.com/crispy_chicken_wings.jpg"
-  },
-  {
-    "id": "2",
-    "name": "Taco Supreme",
-    "food_category": "Taco",
-    "quantity": 6,
-    "price": 100,
-    "description": "A supreme taco filled with seasoned ground beef, lettuce, cheese, and tomato.",
-    "image_url": "https://example.com/taco_supreme.jpg"
-  },
-  {
-    "id": "3",
-    "name": "Loaded Fries",
-    "food_category": "Fries",
-    "quantity": 8,
-    "price": 90,
-    "description": "Fries loaded with melted cheese, crispy bacon, and green onions.",
-    "image_url": "https://example.com/loaded_fries.jpg"
-  },
-  {
-    "id": "4",
-    "name": "Chocolate Brownie Sundae",
-    "food_category": "Dessert",
-    "quantity": 2,
-    "price": 80,
-    "description": "A decadent chocolate brownie topped with vanilla ice cream and chocolate sauce.",
-    "image_url": "https://example.com/chocolate_brownie_sundae.jpg"
-  },
-  {
-    "id": "5",
-    "name": "Classic Margarita",
-    "food_category": "Drink",
-    "quantity": 3,
-    "price": 70,
-    "description": "A classic margarita made with tequila, lime juice, and triple sec.",
-    "image_url": "https://example.com/classic_margarita.jpg"
-  },
-  {
-    "id": "6",
-    "name": "All American Burger",
-    "food_category": "Burger",
-    "quantity": 4,
-    "price": 130,
-    "description": "A burger with all the classic fixings: lettuce, tomato, onion, and pickles.",
-    "image_url": "https://example.com/all_american_burger.jpg"
-  },
-  {
-    "id": "7",
-    "name": "Spicy Chicken Sandwich",
-    "food_category": "Chicken",
-    "quantity": 99,
-    "price": 140,
-    "description": "A spicy chicken sandwich served on a toasted bun with lettuce and mayo.",
-    "image_url": "https://example.com/spicy_chicken_sandwich.jpg"
-  },
-  {
-    "id": "8",
-    "name": "Crispy Fish Taco",
-    "food_category": "Taco",
-    "quantity": 3,
-    "price": 110,
-    "description": "A crispy fish taco with shredded cabbage and tangy tartar sauce.",
-    "image_url": "https://example.com/crispy_fish_taco.jpg"
-  },
-  {
-    "id": "9",
-    "name": "Sweet Potato Fries",
-    "food_category": "Fries",
-    "quantity": 69,
-    "price": 100,
-    "description": "Sweet potato fries seasoned with cinnamon and sugar.",
-    "image_url": "https://example.com/sweet_potato_fries.jpg"
-  }
-];
+var menu_data = [];
+var orderMenu = [];
+
+
 
 // promotion section
 
@@ -159,12 +62,150 @@ promotionSlider.addEventListener('mousemove', (e) => {
 });
 
 // promotion section
+loadPromotion();
+async function loadPromotion(){
+  await fetch('http://localhost:8080/api/active/promotion')
+  .then(response =>{
+    if(!response.ok){
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(async data =>{
+    console.log("Get data promo",data);
+    Promise.all(data.map(async (promo) => {
+      const menuPromo = await loadMenuPromo(promo.promotion_Code);
+      promotion_data.push([promo, menuPromo]);
+      console.log("Pushing Pro data ", [promo, menuPromo]);
+  })).then(() => {
+      loadPromoCard();
+  });
+    
+  })
+  .catch(error =>{
+    console.error("There was problem while fething promotion: ",error);
+  });
+  
+}
+
+async function loadPromoCard(){
+  console.log("Now Start loading card!");
+  await promotion_data.forEach(elm=>{
+    console.log("Add promo card :",elm);
+    addPromoCard(elm);
+  });
+}
+function loadMenuPromo(promoCode){
+  let url = `http://localhost:8080/api/menuhavepromo/${promoCode}`;
+  console.log("Fetching url:",url);
+  return fetch(url)
+  .then(res => {
+    if (res.ok){
+      return res.json();
+    }
+    else{
+      return null;
+    }
+  }).then(
+    data => {return data;}
+  )
+  .catch(err =>{console.error(err);});
+}
+
+function addPromoCard(promo_array){
+  console.log("Now adding card !");
+  let [promodata,promomenu] = promo_array;
+  function formatDate(inputDate) {
+    // Parse the input date string
+    const date = new Date(inputDate);
+    
+    // Extract day, month, and year components
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Adding 1 because months are zero-based
+    const year = date.getFullYear();
+    
+    // Format components as DD/MM/YYYY
+    const formattedDate = `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+    
+    return formattedDate;
+}
+  let promoformatdate = formatDate(promodata.promotion_Expire);
+  let container = document.getElementById('promotionSlideCon');
+  let card = `<div class="promotion-card">
+  <div class="promotion-add-pic">
+      <img src="./component/CS251 Component/HomeMenuDish/${promodata.promotion_Code}.png">
+  <button type="button">ADD</button>
+  </div>
+</div>`
+  container.innerHTML += card;
+  console.log("Adding :",promodata.promotion_Name ,"!");
+}
+
+
 
 // menu section
+loadMenu();
+async function loadMenu(){
+  await fetch("http://localhost:8080/api/menu")
+  .then(response => {
+    // Check if the response is successful (status code 200)
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Parse the JSON response
+    return response.json();
+  })
+  .then(data => {
+    // Data retrieved successfully, do something with it
+    console.log(data);
+    data.forEach((dish)=>{
+      menu_data.push(dish);
+      console.log("Pushing ",dish.foodname);
+      console.log("Menu data is" , menu_data);
+    });
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
+    console.error('There was a problem with the fetch operation:', error);
+  });
 
-const menu_item = [
+  await loadMenuCard();
+}
 
-]
+
+
+async function loadMenuCard(){
+  const menuContainer = document.getElementById('menuSlideCon');
+//console.log("We in load Menu card fn");
+  // สร้างการ์ดสำหรับแต่ละรายการเมนู
+  await menu_data.forEach((item,index) => {
+    const card = `
+      <div class="menu-card">
+        <div class="menu-card-con">
+          <div class="menu-pic-container">
+            <img src="./component/CS251 Component/HomeMenuDish/${item.foodname}.png">
+          </div>
+          <div class="menu-desc-con">
+            <div class="menu-desc">
+              <h3>${item.foodname}</h3>
+              <h3 class="h3-qty" id="qty-${index}">QTY: ${item.amount}</h3>
+              <h3><span class="dollar-sign">฿</span>: ${item.price}</h3>
+              <button type="button" id="menu-add-button-${index}" class="menu-add-button">ADD</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    // เพิ่มการ์ดลงใน container
+    menuContainer.innerHTML += card;
+  });
+  var menuAdd = document.querySelectorAll('.menu-add-button');
+  await updateAddMenuButton(menuAdd);
+  
+}
+
+
+var menu_item = [];
 
 const menuSlider = document.getElementById('menuSlideCon');
 let misDown = false;
@@ -304,11 +345,16 @@ logoutChange1.addEventListener('click', () => {
   }
 })
 
-var whichPayment = 0;
 
 var cash = document.getElementById('cash');
 var creditCard = document.getElementById('creditCard');
 var scan = document.getElementById('scan');
+
+var whichPayment = 1;
+
+cash.style.backgroundColor = '#E0115F';
+cash.style.color = '#FFFFFF';
+cash.style.borderRadius = '15px';
 
 takeAwayMode.style.backgroundColor = '#E6E6E6';
     takeAwayMode.style.color = 'black';
@@ -388,22 +434,22 @@ scan.addEventListener('click', () => {
 
 
 
-  const categoryCon = document.querySelector('.category-con');
+  // const categoryCon = document.querySelector('.category-con');
 
-  // สร้างการ์ดสำหรับแต่ละรายการเมนู
-  food_category.forEach((item, index) => {
-    const card = `
-        <div class="category-food" id= "categoryFood-${index}">
-            <div class="icon-container">
-                <img src="${item.image_category}">
-            </div>
-            <p>${item.name}</p>
-        </div>
-    `;
+  // // สร้างการ์ดสำหรับแต่ละรายการเมนู
+  // food_category.forEach((item, index) => {
+  //   const card = `
+  //       <div class="category-food" id= "categoryFood-${index}">
+  //           <div class="icon-container">
+  //               <img src="${item.image_category}">
+  //           </div>
+  //           <p>${item.name}</p>
+  //       </div>
+  //   `;
     
-    // เพิ่มการ์ดลงใน container
-    categoryCon.innerHTML += card;
-  });
+  //   // เพิ่มการ์ดลงใน container
+  //   categoryCon.innerHTML += card;
+  // });
 
 const promotionSlideCon = document.querySelector('.promotion-slide-con');
 
@@ -422,31 +468,7 @@ const promotionSlideCon = document.querySelector('.promotion-slide-con');
     promotionSlideCon.innerHTML += card;
   });
   
-  const menuContainer = document.querySelector('.menu-con');
 
-  // สร้างการ์ดสำหรับแต่ละรายการเมนู
-  menu_data.forEach((item, index) => {
-    const card = `
-      <div class="menu-card">
-        <div class="menu-card-con">
-          <div class="menu-pic-container">
-            <img src="./component/CS251 Component/HomeMenuDish/Dish${index+1}.png">
-          </div>
-          <div class="menu-desc-con">
-            <div class="menu-desc">
-              <h3>${item.name}</h3>
-              <h3 class="h3-qty" id="qty-${index}">QTY: ${item.quantity}</h3>
-              <h3><span class="dollar-sign">$</span>: ${item.price}</h3>
-              <button type="button" id="menu-add-button-${index}" class="menu-add-button">ADD</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    // เพิ่มการ์ดลงใน container
-    menuContainer.innerHTML += card;
-  });
 const categoryFoods = document.querySelectorAll('.category-food'); 
 
 function selectCategory(index) {
@@ -479,23 +501,21 @@ function selectCategory(index) {
       });
   });
 
-const menuAdd = document.querySelectorAll('.menu-add-button');
+
 var itemNum = [];
 
 function addItem(index) {
-
-  
 
     const card = `
         <div class="item-card" id="item-card-${index}">
             <div class="item-card-con">
                 <div class="item-card-pic-container">
-                    <img src="${menu_data[index].image_url}">
+                    <img src="./component/CS251 Component/HomeMenuDish/${menu_data[index].foodname}.png">
                 </div>
-                <h3 id="name-item-${index}">${menu_data[index].name}</h3>
+                <h3 id="name-item-${index}">${menu_data[index].foodname}</h3>
                 <h3 id="count-item-${index}" class="count-item">${1}</h3>
-                <h3 id="price-item-${index}" class="price-item">$${menu_data[index].price}</h3>
-                <h3 id="qty-item-${index}">QTY:${menu_data[index].quantity}</h3>
+                <h3 id="price-item-${index}" class="price-item">฿${menu_data[index].price}</h3>
+                <h3 id="qty-item-${index}">QTY:${menu_data[index].amount}</h3>
                 <h3 id="add-item-${index}" class="add-item-icon">+</h3>
                 <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
                 <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
@@ -508,6 +528,8 @@ function addItem(index) {
     itemAdd.innerHTML += card;
 
     itemNum.push(index);
+    orderMenu.push([menu_data[index],1]);
+    console.log(orderMenu);
     
     var cardv = document.getElementById(`item-card-${index}`);
     cardv.value = index;
@@ -531,7 +553,7 @@ function addItem(index) {
     }
 
     for(let j=0;j<itemNum.length;j++){
-      var rmAllItemIcon = document.getElementById(`rm-all-item-${index}`);
+      var rmAllItemIcon = document.getElementById(`rm-all-item-${itemNum[j]}`);
       rmAllItemIcon.addEventListener('click', () => {
         let rmNum = document.getElementById(`count-item-${index}`);
         rmNum.textContent = 1;
@@ -548,6 +570,7 @@ function addItem(index) {
 var totalPay = 0;
 
 function updatedPay() {
+
   let total = 0;
   for(let j=0;j<itemNum.length;j++){
     let priceItems = document.getElementById(`price-item-${itemNum[j]}`);
@@ -599,7 +622,13 @@ function rmPrice(index) {
   currentValue = currentValue-menu_data[index].price;
   rmPrice.textContent = '$'+currentValue;
 }
-
+function updateOrderMenu(index,qty){
+  orderMenu.forEach((elm)=>{
+    if(elm[0] == menu_data[index]){
+      elm[1] = qty;
+    }
+  });
+}
 function addQty(index) {
   console.log("addqty index:",index);
   let countItem = document.getElementById(`count-item-${index}`);
@@ -610,6 +639,7 @@ function addQty(index) {
   let currentQty = parseInt(countItem.textContent);
   if(currentQty < currentQtyLeft){
     currentQty++;
+    updateOrderMenu(index,currentQty);
     addPrice(index);
   }else{
     console.log(currentItemName+' = หมด');
@@ -635,18 +665,22 @@ function rmQty(index) {
     itemCount.textContent = currentValue;
     console.log(currentItemName + ': นำออก');
     itemNum = itemNum.filter(item => item !== index);
+    orderMenu = orderMenu.filter(item => item[0] !== menu_data[index]);
+    console.log(orderMenu);
   }else{
     currentQty--;
+    updateOrderMenu(index,currentQty);
     rmPrice(index);
   }
   countItem.textContent = currentQty;
   updatedPay();
 }
-
-menuAdd.forEach((add, index) => {
+function updateAddMenuButton(menuAdd){
+    
+  menuAdd.forEach((add,index) => {
 
     add.addEventListener('click', () => {
-      let qty = menu_data[index].quantity;
+      let qty = menu_data[index].amount;
       if(qty > 0){
         let checkItem = document.getElementById(`count-item-${index}`);
       if(checkItem !== null){
@@ -670,6 +704,8 @@ menuAdd.forEach((add, index) => {
       }
     })
 });
+}
+
 
 const promotionAdd = document.querySelectorAll('.promotion-add-button');
 
@@ -684,11 +720,11 @@ promotionAdd.forEach((pro, index) => {
       if(ordering){
         orderingVal = parseInt(ordering.textContent);
       }
-      if(menu_data[menu[0]].quantity < menu[1] + orderingVal){
+      if(menu_data[menu[0]].amount < menu[1] + orderingVal){
         pass = false;
       }
     });
-    promotion_data[index].menu_id_data.forEach((menu, index) => {
+    promotion_data[index].menu_id_data.forEach((menu) => {
       if(pass){
         for(let i = 0 ; i < menu[1] ; i++){
           let checkItem = document.getElementById(`count-item-${menu[0]}`);
@@ -717,17 +753,51 @@ var placeOrder = document.getElementById('placeOrder');
 var orderListCount = 0;
 
 
-placeOrder.addEventListener('click', () => {
+placeOrder.addEventListener('click', async () => {
+  let countItem = document.getElementById('itemCount').textContent;
+  if(countItem === '0') return;
   orderListCount++;
   const orderlistCardContainer = document.querySelector('.popup-order-list-slide-con');
   let orderNumber = document.getElementById('orderNumber').textContent;
   let orderNumberValue = parseInt(((orderNumber).match(/\d+/)[0]));
   orderNumberValue = orderListCount;
   orderNumber = 'order #' + orderNumberValue;
-  let countItem = document.getElementById('itemCount').textContent;
+
   let tableNum = document.getElementById('served-table').value;
 
+  let t_takehome;
+  let dineinbutton = document.getElementById('dine-in');
+  
+  let computedStyle = window.getComputedStyle(dineinbutton);
+  let color = computedStyle.backgroundColor;
+  console.log("BG dine-in color ",color);
+  if(color == "rgb(230, 230, 230)"){
+    t_takehome = true;
+  }
+  else{
+    t_takehome = false;
+  }
+  let methodSelect;
+  let scanhtml = document.getElementById('scan');
+  let credithtml = document.getElementById('creditCard'); 
+  let scanstyle = window.getComputedStyle(scanhtml);
+  let scancolor = scanstyle.background;
+  let creditstyle = window.getComputedStyle(credithtml);
+  let creditcolor = creditstyle.background;
+  console.log("BG Scan",scancolor);
+  console.log("BG credit",creditcolor);
+ 
 
+  if(whichPayment === 3){
+    methodSelect = "Scan";
+  }
+  else if(whichPayment === 2){
+    methodSelect = "Credit Card";
+  }
+  else{
+    methodSelect = "Cash";
+  }
+  console.log("Method is" , methodSelect);
 
   console.log(orderNumberValue);
 
@@ -737,7 +807,7 @@ placeOrder.addEventListener('click', () => {
 
   let card = `
               <div class="list-card-wait">
-                <div class="list-card-con">
+                <div class="list-card-con" id="order-${orderNumber}">
                   <h3>${orderNumber}</h3>
                   <h3>Table ${tableNum}</h3>
                   <h3>Order: ${countItem} item</h3>
@@ -747,26 +817,195 @@ placeOrder.addEventListener('click', () => {
               </div>
             `
 
-  orderlistCardContainer.innerHTML += card;
+   orderlistCardContainer.innerHTML += card;
+  let currentDate = new Date();
 
-  orderCon1.style.display = 'block';
-  orderCon2.style.display = 'none';
-  updateQty();
+  let Payment = 1000;
+  let PaymentMethod = methodSelect;
+  let DBformattedDate = currentDate.toISOString().replace('Z', '+00:00');
+  let TotalDiscountelement = document.getElementById('paymentDiscountTotal');
+  let stringTotalDiscount = TotalDiscountelement.textContent;
+  let TotalDiscount = parseFloat(stringTotalDiscount.replace("$", ""));
+  let NetPriceElm = document.getElementById('allTotal');
+  let stringTotalNetPrice  = NetPriceElm.textContent; 
+  let NetPrice = parseFloat(stringTotalNetPrice.replace("$",""));
+  let IsTakeHome = t_takehome;
+  let MemberID;
+  let checkMemberhtml = document.getElementById('checkMember');
+  let checkMember = checkMemberhtml.checked;
+  if(checkMember){
+    let idBox = document.getElementById('member-input');
+    MemberID = idBox.value;
+  }
+  else{
+    MemberID = null;
+  }
+  
+
+  //"InvoiceNo" : orderNumberValue,
+  let invoicedb = {
+   
+    "payment" : Payment,
+    "paymentMethod" : PaymentMethod,
+    "dateTime" : DBformattedDate,
+    "totalDiscount":TotalDiscount,
+    "netPrice":NetPrice,
+    "takeHome":IsTakeHome,
+    "memberID":MemberID,
+    "i_change": Payment-NetPrice
+
+  };
+  let jsoninvoice = JSON.stringify(invoicedb);
+  function updateDBInvoice(jsonInvoice){
+    console.log(jsonInvoice);
+  let url = 'http://localhost:8080/api/add/invoice';
+  return fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          // Add any other headers if required
+      },
+      body: jsonInvoice,
+  })
+  .then(response => {
+      if (response.ok) {
+          return response.json(); // Return parsed JSON for successful response
+      } else {
+          console.error('Network response was not ok');
+          return null; // Return null for non-success response
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      //throw error; // Re-throw the error for further handling
+  });
+  }
+  let pass = 0;
+  function getInvoice(){
+    fetch("http://localhost:8080/api/invoice/list/0/1")
+    .then(response => {
+    // Check if the response is successful (status code 200)
+    if (!response.ok) {
+      return null;
+      //throw new Error('Network response was not ok');
+    }
+    // Parse the JSON response
+    return response.json();
+  })
+  .then(async data => {
+    // Data retrieved successfully, do something with it
+    console.log("Invoice in data: ",data);
+    await orderMenu.forEach(async (menu)=>{
+      console.log("Menu is ", menu);
+      console.log("Data[0] is ", data[0]);
+      let dbUpdateMenu ={
+        "invoiceNo" : data[0].invoiceNo,
+        "foodname" : menu[0].foodname,
+        "m_amount" : menu[1]
+      };
+      let jsonUpdateOrderMenu = JSON.stringify(dbUpdateMenu);
+      console.log("Json order menu before send :",jsonUpdateOrderMenu);
+      await updateOrderMenu(jsonUpdateOrderMenu);
+      
+   
+    });
+    await updateQty();
+    orderCon1.style.display = 'block';
+    orderCon2.style.display = 'none';
+    return data;
+    
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
+    console.error('There was a problem with the fetch operation:', error);
+  });
+
+  }
+  function updateOrderMenu(jsonMenu){
+    console.log("Now we in update with json :",jsonMenu);
+    let url = 'http://localhost:8080/api/add/order/menu';
+  return fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          // Add any other headers if required
+      },
+      body: jsonMenu,
+  })
+  .then(response => {
+      if (response.ok) {
+        console.log("Update OrderMenu pass!");
+          return response.json(); // Return parsed JSON for successful response
+      } else {
+          console.error('Network response was not ok');
+          return null; // Return null for non-success response
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      //throw error; // Re-throw the error for further handling
+  });
+
+  }
+
+  if(await updateDBInvoice(jsoninvoice) !== null){
+   
+    await getInvoice();
+
+  }
+  else
+  {window.alert("Update invoice error due to Database");}
 
 });
+function updateMemuQty(item){
+  let url = `/api/update/menu/${item.foodname}`
+  let itemjson = JSON.stringify(item);
+  return fetch(url, {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+        // You might need to include other headers like authentication token if required
+    },
+    body: itemjson,
+})
+.then(response => {
+    if (!response.ok) {
+        return null; // Return null if response is not OK
+    }
+    return response.json();
+})
+.then(updatedFood => {
+    console.log('Food updated successfully:', updatedFood);
+    return updatedFood; // Optionally, you can return the updated food object
+})
+.catch(error => {
+    console.error('Error updating food:', error);
+    return -1; // Return null in case of any other error
+});
+}
 
 function updateQty () {
+  
   let itemCard = document.querySelectorAll('.item-card');
   itemCard.forEach(() => {
     let index = itemNum[0];
     let val = document.getElementById(`count-item-${index}`);
     let upd = val.textContent;
-    menu_data[index].quantity -= parseInt(upd);
+    let toUpdate = menu_data[index];
+    toUpdate.amount -= parseInt(upd);
+    if(updateMemuQty(toUpdate) !== null){
+      //menu_data[index].amount -= parseInt(upd);
     let menu = document.getElementById(`qty-${index}`);
-    menu.textContent = "QTY: " + menu_data[index].quantity
+    menu.textContent = "QTY: " + menu_data[index].amount;
     val.textContent = 1;
     const idx = itemNum[0];
     rmQty(idx);
+    }
+    else{
+      toUpdate.amount += parseInt(upd);
+      window.alert("Fail to Update DB");
+    }
+    
  
   });
 }
@@ -816,74 +1055,72 @@ function clearAddmemberBox(){
   birthDateBox.value="";
 }
 
-function saveMember() {
-  let name = document.getElementById('addMemberName').value;
-  let password = document.getElementById('addMemberPassword').value;
-  let citizenID = document.getElementById('addMemberCitizenID').value;
-  let tel = document.getElementById('addMemberTel').value;
-  let birthDate = document.getElementById('addMemberBirthDate').value;
+// function saveMember() {
+//   let name = document.getElementById('addMemberName').value;
+//   let password = document.getElementById('addMemberPassword').value;
+//   let citizenID = document.getElementById('addMemberCitizenID').value;
+//   let tel = document.getElementById('addMemberTel').value;
+//   let birthDate = document.getElementById('addMemberBirthDate').value;
 
-let newMember = {
-    "name": name,
-    "password": password,
-    "citizenID": citizenID,
-    "tel": tel,
-    "birthDate": birthDate
-  };
+// let newMember = {
+//     "name": name,
+//     "password": password,
+//     "citizenID": citizenID,
+//     "tel": tel,
+//     "birthDate": birthDate
+//   };
   
-  if(validating(newMember)){
-  console.log(newMember);
-  memberInfoList.push(newMember);
+//   if(validating(newMember)){
+//   console.log(newMember);
+//   memberInfoList.push(newMember);
 
-  var currentDate = new Date();
-  let idAutoString = String(idAuto).padStart(10,'0');
-// Days of the week and months array
-  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-// Get day, month, and year
-  var day = daysOfWeek[currentDate.getDay()];
-  var month = months[currentDate.getMonth()];
-  var date = currentDate.getDate();
-  var year = currentDate.getFullYear();
-  var senddel = idAuto;
+//   var currentDate = new Date();
+//   let idAutoString = String(idAuto).padStart(10,'0');
+// // Days of the week and months array
+//   var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+//   var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// // Get day, month, and year
+//   var day = daysOfWeek[currentDate.getDay()];
+//   var month = months[currentDate.getMonth()];
+//   var date = currentDate.getDate();
+//   var year = currentDate.getFullYear();
+//   var senddel = idAuto;
 
-// Format the date
-  var formattedDate = day + ", " + month + " " + date + " " + year;
-  let card = `
-              <tr id = "memberList${idAuto}">
-                <td>${idCount}</td>
-                <td>${idAutoString}</td>
-                <td>${formattedDate}</td>
-                <td>0</td>
-                <td><div class="member-edit-icon">
-                <img src="./component/CS251 Component/icon/trash.png" id = "removeList${idAuto}">
-                <img src="./component/CS251 Component/icon/setting.png" id="editList${idAuto}">
-                 </div></td>
-              </tr>
-            `;
+// // Format the date
+//   var formattedDate = day + ", " + month + " " + date + " " + year;
+//   let card = `
+//               <tr id = "memberList${idAuto}">
+//                 <td>${idCount}</td>
+//                 <td>${idAutoString}</td>
+//                 <td>${formattedDate}</td>
+//                 <td>0</td>
+//                 <td><div class="member-edit-icon">
+//                 <img src="./component/CS251 Component/icon/trash.png" id = "removeList${idAuto}">
+//                 <img src="./component/CS251 Component/icon/setting.png" id="editList${idAuto}">
+//                  </div></td>
+//               </tr>
+//             `;
   
-  const table = document.getElementById('tableMember');
-  table.innerHTML += card;
-  idCount++;
-  idAuto++;
-  memberList.push(senddel);
-  memberList.forEach(element => {
-    delIDGenerate(element);
-  });
-  memberList.forEach(element => {
-    delIDGenerate(element);
-  });
-  clearAddmemberBox();
-}
-else{
-  window.alert("Invalid format. Cancel Adding...");
-}
+//   const table = document.getElementById('tableMember');
+//   table.innerHTML += card;
+//   idCount++;
+//   idAuto++;
+//   memberList.push(senddel);
+//   memberList.forEach(element => {
+//     delIDGenerate(element);
+//   });
+
+//   clearAddmemberBox();
+// }
+// else{
+//   window.alert("Invalid format. Cancel Adding...");
+// }
  
-  //console.log(table.innerHTML);
+//   //console.log(table.innerHTML);
  
   
-  popup.style.display = 'none';
-}
+//   popup.style.display = 'none';
+// }
 
 const exit = document.querySelector('.exit');
 

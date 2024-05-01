@@ -210,6 +210,36 @@ public class PosController {
             return new ResponseEntity<>("Cannot delete promotion", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @DeleteMapping(value = "/delete/member/{m_id}")
+    public ResponseEntity<String> deleteMember(@PathVariable("m_id") String m_id){
+        try{
+            int result = posRepository.deleteMember(m_id);
+            if(result == 0){
+                return new ResponseEntity<>("Cannot find Member with id= "+ m_id,HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Delete user "+ m_id+" successfully",HttpStatus.OK);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return  new ResponseEntity<>("Cannot delete member",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+    @DeleteMapping(value = "/delete/invoice/{t_id}")
+    public ResponseEntity<String> deleteTransaction(@PathVariable("t_id") String t_id){
+        try{
+            int result = posRepository.deleteTransaction(t_id);
+            if (result == 0){
+                return new ResponseEntity<>("Cannot find Transaction id="+t_id,HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>("Delete Transaction id "+t_id+" Successfully",HttpStatus.OK);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Cannot Delete Transaction",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @DeleteMapping(value = "/delete/menu/{foodname}")
     public ResponseEntity<String> deleteMenuByName(@PathVariable("foodname") String foodname) {
         try {
@@ -289,7 +319,7 @@ public class PosController {
     @PostMapping(value = "/add/invoice")
     public ResponseEntity<String> createInvoice(@RequestBody Invoice invoice) {
         try {
-            posRepository.insertInvoice(new Invoice(invoice.getPayment(), invoice.getPaymentMethod(), invoice.getDateTime(),
+             posRepository.insertInvoice(new Invoice(invoice.getPayment(), invoice.getPaymentMethod(), invoice.getDateTime(),
                     invoice.getTotalDiscount(), invoice.getNetPrice(), invoice.isTakeHome(), invoice.getMemberID(), invoice.getI_change()));
             return new ResponseEntity<>("Invoice was created successfully", HttpStatus.CREATED);
         }catch (Exception e) {
@@ -302,6 +332,7 @@ public class PosController {
         try {
             posRepository.insertOrderPromotion(new OrderPromotion(orderPromotion.getInvoiceNo(),
                     orderPromotion.getPromotion_Code(), orderPromotion.getP_amount()));
+
             return new ResponseEntity<>("Successfully", HttpStatus.CREATED);
         }catch (Exception e){
             e.printStackTrace();
@@ -396,6 +427,7 @@ public class PosController {
             return new ResponseEntity<>("Cannot find Member with m_id=" + m_id, HttpStatus.NOT_FOUND);
         }
     }
+
     @PutMapping(value = "/add/member/points/{m_id}/{points}")
     public ResponseEntity<String> addMemberPoints(@PathVariable("m_id") String m_id, @PathVariable("points") int points) {
         Member _member = posRepository.findMemberByMemberId(m_id);
@@ -434,7 +466,37 @@ public class PosController {
             return new ResponseEntity<>("Noo!", HttpStatus.NOT_FOUND);
         }
     }
+    @PutMapping(value = "/update/member/tel/{m_tel}")
+    public  ResponseEntity<String> updateMemberTel(@PathVariable("m_tel") String m_tel, @RequestBody Member_tel member_tel){
+        Member_tel member_tel1;
+        try {
+            List<Member_tel> member_tels = posRepository.findMemberTelByMemberId(member_tel.getM_id());
+            for (Member_tel member_tel_ : member_tels){
+                if (member_tel_.getM_tel() == m_tel) {
+                    member_tel1 = member_tel_;
+                    break;
+                }
+            }
+            member_tel1 = new Member_tel(member_tel.getM_id(), member_tel.getM_tel());
+            //member_tel1.setM_tel(member_tel.getM_tel());
+            posRepository.updateMemberTel(member_tel1, m_tel);
+            return new ResponseEntity<>("Successfully", HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        /*Menu updateMenu = posRepository.findMenuByName(foodname);
 
+        if(updateMenu != null){
+            updateMenu.setUnit(menu.getUnit());
+            updateMenu.setAmount(menu.getAmount());
+            updateMenu.setPrice(menu.getPrice());
+
+            posRepository.updateMenu(updateMenu);
+            return new ResponseEntity<>("OK! Som-O Gang Muk", HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Noo!", HttpStatus.NOT_FOUND);
+        }*/
+    }
     @PutMapping(value = "/reduce/menu/promotion/{Promotion_Code}")
     public ResponseEntity<String> reduceMenuInPromotion(@PathVariable("Promotion_Code") String Promotion_Code) {
         try {
@@ -476,6 +538,16 @@ public class PosController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+    @GetMapping(value = "/member/all")
+    public  ResponseEntity<List<Member>> getAllMember(){
+        List<Member> memberList = posRepository.getAllMember();
+        return new ResponseEntity<>(memberList,HttpStatus.OK);
+    }
+    @GetMapping(value = "/menuhavepromo/{p_id}")
+    public ResponseEntity<List<MenuHavePromotion>> getMenuHavePromo(@PathVariable("p_id") String p_id){
+        List<MenuHavePromotion> menuList = posRepository.findMenuHavePromotion(p_id);
+        return  new ResponseEntity<>(menuList,HttpStatus.OK);
     }
 
     @GetMapping(value = "/member/tel/{m_id}")

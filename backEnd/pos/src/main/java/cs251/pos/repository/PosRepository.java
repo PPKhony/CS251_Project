@@ -18,6 +18,8 @@ public interface PosRepository {
     int insertOrderPromotion(OrderPromotion orderPromotion);
     int updateCheckin(Checkin checkin);
     int updateMember(Member member);
+    int updateMemberTel(Member_tel member_tel, String m_tel);
+    int deleteMember(String m_id);
     int addMemberPoint(int point, String m_id);
     int addMenuAmount(String foodname, int amount);
     int reduceMenuAmount(String foodname, int reduce);
@@ -34,6 +36,7 @@ public interface PosRepository {
     List<Invoice> getInvoiceByDay(String startDate, String endDate, int limit, int offset);
     List<Menu> findAmountMenuInPromotion(String Promotion_Code);
     Member findMemberByMemberId(String m_id);
+    List<Member> getAllMember();
     List<Member> findMemberByName(String name);
     List<Member_tel> findMemberTelByMemberId(String m_id);
     List<Checkin> findCheckinById(String s_workid);
@@ -43,9 +46,11 @@ public interface PosRepository {
     List<Promotion> findActivePromotion();
     List<MenuHavePromotion> findMenuHavePromotion(String Promotion_Code);
     List<PrintInvoice> printInvoice(int invoiceNo);
+
     int deletePromotionByCode(String Promotion_Code);
     int deleteMenuByName(String foodname);
     int deleteMenuHavePromotion(String Promotion_Code);
+    int deleteTransaction(String t_id);
     Seller login(String s_workid, String password);
 
     int insertBook(Book book);

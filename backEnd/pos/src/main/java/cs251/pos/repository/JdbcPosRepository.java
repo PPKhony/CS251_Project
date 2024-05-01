@@ -37,15 +37,17 @@ public class JdbcPosRepository implements PosRepository{
 
     @Override
     public int insertInvoice(Invoice invoice) {
+//        System.out.println(invoice.isTakeHome());
+//        System.out.println(((invoice.isTakeHome()) ? 1:0));
         return jdbcTemplate.update("INSERT INTO Invoice (Payment, PaymentMethod, DateTime, TotalDiscount, NetPrice, " +
                 "IsTakeHome, MemberID, i_change) VALUES (?,?,?,?,?,?,?,?)",
                 new Object[] {invoice.getPayment(), invoice.getPaymentMethod(), invoice.getDateTime(), invoice.getTotalDiscount(),
-                invoice.getNetPrice(), invoice.isTakeHome(), invoice.getMemberID(), invoice.getI_change()});
+                invoice.getNetPrice(), ((invoice.isTakeHome()) ? 1:0), invoice.getMemberID(), invoice.getI_change()});
     }
 
     @Override
     public int insertMember(Member member) {
-        return jdbcTemplate.update("INSERT INTO member (m_id, m_password, m_rank, m_citizenId, m_name, m_points, m_enroll, m_birthdate) " +
+        return jdbcTemplate.update("INSERT INTO Member (m_id, m_password, m_rank, m_citizenId, m_name, m_points, m_enroll, m_birthdate) " +
                 "VALUES (?,?,?,?,?,?,?,?)",
                 new Object[] {member.getM_id(), member.getM_password(), member.getM_rank(), member.getM_citizenId(), member.getM_name(), member.getM_points(),
                 member.getM_enroll(), member.getM_birthdate()});
@@ -97,13 +99,37 @@ public class JdbcPosRepository implements PosRepository{
     }
 
     @Override
+    public int updateMemberTel(Member_tel member_tel, String m_tel) {
+        /*return jdbcTemplate.update("UPDATE Member_tel SET m_tel=? WHERE m_id=? AND m_tel=?",
+                new Object[]{member_tel.getM_tel(), member_tel.getM_tel()}, m_tel);*/
+        String q = "UPDATE Member_tel SET m_tel='" + member_tel.getM_tel() + "' WHERE m_id='" + member_tel.getM_id() +"' " +
+                "AND m_tel='" + m_tel + "'";
+        return jdbcTemplate.update(q);
+    }
+
+    @Override
     public int updateMember(Member member) {
         return jdbcTemplate.update("UPDATE Member SET m_password=?, m_rank=?, m_citizenId=?, m_name=?, m_points=?, m_enroll=?, m_birthdate=? " +
                         "WHERE m_id=?",
                 new Object[]{member.getM_password(), member.getM_rank(), member.getM_citizenId(), member.getM_name(), member.getM_points(),
                 member.getM_enroll(), member.getM_birthdate(), member.getM_id()});
     }
+    @Override
+    public List<Member> getAllMember(){
+        try {
+            List<Member> members = jdbcTemplate.query("SELECT * FROM Member",
+                    BeanPropertyRowMapper.newInstance(Member.class));
+            return members;
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null; // จัดการและคืนค่า null หากพบข้อมูลมากกว่าหนึ่งแถว
+        }
 
+    }
+
+    @Override
+    public int deleteMember(String m_id) {
+            return (jdbcTemplate.update("DELETE FROM Member_tel WHERE m_id = ?",m_id)*jdbcTemplate.update("DELETE FROM Member WHERE m_id =?", m_id));
+    }
 
     @Override
     public int addMemberPoint(int point, String m_id) {
@@ -196,11 +222,30 @@ public class JdbcPosRepository implements PosRepository{
         }
     }
 
+
     @Override
     public List<Invoice> getInvoice(int limit, int offset) {
-        String q = "SELECT * FROM Invoice ORDER BY DateTime DESC LIMIT " + Integer.toString(limit) + " OFFSET " + Integer.toString(offset);
-        return jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(Invoice.class));
+        String q = "SELECT *, IF(IsTakeHome = 1, TRUE, FALSE) AS IsTakeHomeBool FROM Invoice ORDER BY InvoiceNo DESC LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(q, new Object[]{limit, offset}, (rs, rowNum) -> {
+            Invoice invoice = new Invoice();
+            invoice.setInvoiceNo(rs.getInt("InvoiceNo"));
+            invoice.setPayment(rs.getDouble("Payment"));
+            invoice.setPaymentMethod(rs.getString("PaymentMethod"));
+            invoice.setDateTime(rs.getTimestamp("DateTime"));
+            invoice.setTotalDiscount(rs.getDouble("TotalDiscount"));
+            invoice.setNetPrice(rs.getDouble("NetPrice"));
+            invoice.setTakeHome(rs.getBoolean("IsTakeHomeBool"));
+            invoice.setMemberID(rs.getString("MemberID"));
+            invoice.setI_change(rs.getDouble("i_change"));
+            return invoice;
+        });
     }
+// @Override
+//    public List<Invoice> getInvoice(int limit, int offset) {
+//        String q = "SELECT *, CASE WHEN IsTakeHome = 1 THEN TRUE ELSE FALSE END AS boolIsTakeHome FROM Invoice ORDER BY InvoiceNo DESC LIMIT " + Integer.toString(limit) + " OFFSET " + Integer.toString(offset);
+//
+//        return jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(Invoice.class));
+//    }
 
     @Override
     public List<Invoice> getInvoiceByDay(String startDate, String endDate, int limit, int offset) {
@@ -318,44 +363,57 @@ public class JdbcPosRepository implements PosRepository{
     @Override
     public List<PrintInvoice> printInvoice(int invoiceNo) {
         try {
-            String q = "SELECT \n" +
-                    "    Invoice.*,\n" +
-                    "    OrderMenu.foodname AS OrderedFood,\n" +
-                    "    OrderMenu.m_amount AS OrderedAmount,\n" +
-                    "    INT AS PromotionCode,\n" +
-                    "    INT AS PromotionAmount\n" +
-                    "FROM \n" +
-                    "    Invoice\n" +
-                    "LEFT JOIN \n" +
-                    "    OrderMenu ON Invoice.InvoiceNo = OrderMenu.InvoiceNo\n" +
-                    "LEFT JOIN \n" +
-                    "    OrderPromotion ON Invoice.InvoiceNo = OrderPromotion.InvoiceNo\n" +
-                    "WHERE \n" +
-                    "    Invoice.InvoiceNo = " + Integer.toString(invoiceNo) +
-                    "\n" +
-                    "UNION ALL\n" +
-                    "\n" +
-                    "SELECT \n" +
-                    "    Invoice.*,\n" +
-                    "    NULL AS OrderedFood,\n" +
-                    "    NULL AS OrderedAmount,\n" +
-                    "    OrderPromotion.Promotion_Code AS PromotionCode,\n" +
-                    "    OrderPromotion.p_amount AS PromotionAmount\n" +
-                    "FROM \n" +
-                    "    Invoice\n" +
-                    "LEFT JOIN \n" +
-                    "    OrderMenu ON Invoice.InvoiceNo = OrderMenu.InvoiceNo\n" +
-                    "LEFT JOIN \n" +
-                    "    OrderPromotion ON Invoice.InvoiceNo = OrderPromotion.InvoiceNo\n" +
-                    "WHERE \n" +
-                    "    Invoice.InvoiceNo = " + Integer.toString(invoiceNo);
+            String q = "SELECT " +
+                    "Invoice.InvoiceNo, " +
+                    "Invoice.DateTime, " +
+                    "Invoice.Payment, " +
+                    "Invoice.PaymentMethod, " +
+                    "Invoice.TotalDiscount, " +
+                    "Invoice.NetPrice, " +
+                    "Invoice.IsTakeHome, " +
+                    "Invoice.MemberID, " +
+                    "Invoice.i_change, " +
+                    "OrderMenu.foodname AS OrderedFood, " +
+                    "IFNULL(OrderMenu.m_amount,0) AS OrderedAmount, " +
+                    "NULL AS PromotionCode, " +
+                    "0 AS PromotionAmount " +
+                    "FROM " +
+                    "Invoice " +
+                    "LEFT JOIN " +
+                    "OrderMenu ON Invoice.InvoiceNo = OrderMenu.InvoiceNo " +
+                    "WHERE " +
+                    "Invoice.InvoiceNo = " +  + invoiceNo + " "+
+                    "UNION ALL " +
+                    "SELECT " +
+                    "Invoice.InvoiceNo, " +
+                    "Invoice.DateTime, " +
+                    "Invoice.Payment, " +
+                    "Invoice.PaymentMethod, " +
+                    "Invoice.TotalDiscount, " +
+                    "Invoice.NetPrice, " +
+                    "Invoice.IsTakeHome, " +
+                    "Invoice.MemberID, " +
+                    "Invoice.i_change, " +
+                    "NULL AS OrderedFood, " +
+                    "0 AS OrderedAmount, " +
+                    "OrderPromotion.Promotion_Code AS PromotionCode, " +
+                    "IFNULL(OrderPromotion.p_amount, 0)AS PromotionAmount " +
+                    "FROM " +
+                    "Invoice " +
+                    "LEFT JOIN " +
+                    "OrderPromotion ON Invoice.InvoiceNo = OrderPromotion.InvoiceNo " +
+                    "WHERE " +
+                    "Invoice.InvoiceNo = "+ invoiceNo + " ";
             List<PrintInvoice> printInvoices = jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(PrintInvoice.class));
             return printInvoices;
         }catch (IncorrectResultSizeDataAccessException e){
             return null;
         }
     }
-
+    @Override
+    public int deleteTransaction(String t_id){
+        return (jdbcTemplate.update("DELETE FROM OrderMenu WHERE InvoiceNo = ?",t_id)*jdbcTemplate.update("DELETE FROM Invoice WHERE InvoiceNo = ?",t_id));
+    }
     @Override
     public int deletePromotionByCode(String Promotion_Code) {
         return jdbcTemplate.update("DELETE FROM Promotion WHERE Promotion_Code =?", Promotion_Code);

@@ -153,4 +153,7 @@ public class PrintInvoice {
     public void setPromotionAmount(int promotionAmount) {
         PromotionAmount = promotionAmount;
     }
+    public void setPromotionAmount(String promotionAmount){
+        PromotionAmount = 0;
+    }
 }

@@ -62,6 +62,7 @@ public class Invoice {
     }
 
     public String getPaymentMethod() {
+        //System.out.println("Sending Payment Method! " + PaymentMethod);
         return PaymentMethod;
     }
 

@@ -81,9 +81,10 @@
     </nav>
 
     <main>
+
       <div class="promotion">
         <h1>Promotion</h1>
-        <div class="promotion-slide-container">
+        <div class="promotion-slide-container" >
           <div class="promotion-slide-con" id="promotionSlideCon">
 
             <div class="promotion-add-card">
@@ -93,24 +94,26 @@
               </div>
             </div>
 
-            <div class="promotion-card">
+            <div class="promotion-card" id="promo-${promodata.promotion_Code}">
               <div class="promotion-add-pic">
-                <img src="./component/CS251 Component/Menu Photos/Dish1.jpeg" />
-                <div class="promotion-card-con">
-                  <h3>PromotionName</h3>
-                  <div class="member-edit-icon">
-                    <h3>PromotionExpired</h3>
-                    <img src="./component/CS251 Component/icon/trash.png" />
-                    <img src="./component/CS251 Component/icon/setting.png" />
+                <img src="./component/CS251 Component/HomeMenuDish/${promodata.promotion_Code}.png" />
+                  <div class="promotion-card-con">
+                    <h3>FoodName</h3>
+                    <div class="member-edit-icon">
+                      <h3>2024-08-03</h3>
+                      <img src="./component/CS251 Component/icon/trash.png" id="del-promo-${promodata.promotion_Code}"/>
+                      <img src="./component/CS251 Component/icon/setting.png" id="edit-promo-${promodata.promotion_Code}"/>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+
+
           </div>
         </div>
       </div>
 
-      <div class="category">
+      <!-- <div class="category">
         <h1>Food Category</h1>
         <div class="category-container">
           <div class="category-con">
@@ -124,7 +127,7 @@
 
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="menu">
         <div class="menu-container">
@@ -133,46 +136,6 @@
               <div class="menu-card-add-container">
                 <button type="submit" onclick="openPopupMenu()">ADD</button>
                 <h2>Add New Dish</h2>
-              </div>
-            </div>
-
-            <div class="menu-card">
-              <div class="menu-card-con">
-                <div class="menu-pic-container">
-                  <img src="./component/CS251 Component/Menu Photos/Dish13.jpg" />
-                </div>
-                <div class="menu-desc-con">
-                  <div class="menu-desc">
-                    <h3>Pizza Cheese</h3>
-                    <h3 class="h3-qty" id="qty-${index}">QTY: 1</h3>
-                    <h3><span class="dollar-sign">$</span>: 11</h3>
-                    <div class="member-edit-icon">
-                      <img src="./component/CS251 Component/icon/trash.png" />
-                      <img src="./component/CS251 Component/icon/setting.png" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-card">
-              <div class="menu-card-con">
-                <div class="menu-pic-container">
-                  <img src="./component/CS251 Component/Menu Photos/Dish2.jpg" />
-                </div>
-                <div class="menu-desc-con">
-                  <div class="menu-desc">
-                    <h3>Burger set1</h3>
-                    <h3 class="h3-qty" id="qty-${index}">
-                      QTY: 5
-                    </h3>
-                    <h3><span class="dollar-sign">$</span>: 69</h3>
-                    <div class="member-edit-icon">
-                        <img src="./component/CS251 Component/icon/trash.png" />
-                        <img src="./component/CS251 Component/icon/setting.png" />
-                      </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -229,38 +192,29 @@
         </div>
         <div class="menu-info-name">
           <p>Dish Name</p>
-          <input type="text">
+          <input type="text" id="menu-foodname">
         </div>
         <div class="menu-info-desc">
-          <p>Dish Description</p>
-          <input type="text">
+          <p>Unit</p>
+          <input type="text" id="menu-unit">
         </div>
         <div class="menu-info-price-qty">
           <div class="menu-info-price">
             <h4>Price</h4>
-            <input type="text">
+            <input type="text" id="menu-price">
           </div>
           <div class="menu-info-qty">
             <h4>QTY</h4>
-            <input type="text">
+            <input type="text" id="menu-amount">
           </div>
         </div>
-        <div class="menu-info-category">
-          <h4>Category</h4>
-          <div class="select-container">
-            <select id="">
-            <option value="Fries"></option>
-            <option value="Burger"></option>
-            <option value="Chicken"></option>
-          </select>
-          </div>
-        </div>
+        
         <div class="menu-popup-bottom">
           <div class="menu-popup-bottom-pic">
             <p>Add Photo</p>
             <img src="./component/CS251 Component/icon/image.png">
           </div>
-          <button type="button" id="saveMenu">SAVE</button>
+          <button type="button" id="saveMenu" onclick="addMenuList()">SAVE</button>
         </div>
       </div>
     </div>
@@ -273,20 +227,20 @@
         </div>
         <div class="promotion-info-name">
           <p>Promotion Name</p>
-          <input type="text">
+          <input type="text" id="promotionName">
         </div>
         <div class="promotion-info-code">
           <p>Promotion Code</p>
-          <input type="text">
+          <input type="text" id="promotionCode">
         </div>
         <div class="promotion-info-exp-price">
           <div class="promotion-info-exp">
             <h4>EXP</h4>
-            <input type="text">
+            <input type="text" id="promotionExpired">
           </div>
           <div class="promotion-info-price">
             <h4>Price</h4>
-            <input type="text">
+            <input type="text" id="promotionPrice">
           </div>
         </div>
           <div class="promotion-item">
@@ -303,7 +257,7 @@
                 
                 <div class="qty-item-container" id="itemSlideCon">
 
-                  <div class="item-card" id="item-card-${index}">
+                  <!-- <div class="item-card" id="item-card-${index}">
                     <div class="item-card-con">
                         <div class="item-card-pic-container">
                             <img src="${menu_data[index].image_url}">
@@ -316,9 +270,9 @@
                         <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
                         <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
                     </div>
-                  </div>
+                  </div> -->
 
-                  <div class="item-card" id="item-card-${index}">
+                  <!-- <div class="item-card" id="item-card-${index}">
                     <div class="item-card-con">
                         <div class="item-card-pic-container">
                             <img src="${menu_data[index].image_url}">
@@ -331,7 +285,7 @@
                         <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
                         <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
                     </div>
-                  </div>
+                  </div> -->
 
                   <div class="item-card" id="item-card-${index}">
                     <div class="item-card-con">
@@ -374,10 +328,14 @@
             <p>Add Photo</p>
             <img src="./component/CS251 Component/icon/image.png">
           </div>
-          <button type="button" id="savePromotion">SAVE</button>
+          <button type="button" id="savePromotion" onclick="addPromoList()">SAVE</button>
         </div>
       </div>
     </div>
+
+
+    <div class="menu-edit-popup-container" id="menuEditPopupContainer"></div>
+    <div class="promotion-edit-popup-container" id="promotionEditPopupContainer"></div>
 
     <script src="manageDish.js"></script>
   </body>

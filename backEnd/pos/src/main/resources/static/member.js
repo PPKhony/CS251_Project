@@ -1,3 +1,5 @@
+
+
 const logoutChange1 = document.getElementById('logoutIcon1');
 const logoutChange2 = document.getElementById('logoutIcon2');
 
@@ -23,11 +25,42 @@ function addMember() {
   popup.style.display = 'block';
 }
 
+exitAddMember = document.getElementById('exitAddMember');
+exitAddMember.addEventListener('click', () => {
+  popup.style.display = 'none';
+});
+
 var idCount = 1;
 var idAuto = 1;
 var memberList=[];
 
 var memberInfoList=[];
+var memberEditInfoList=[];
+
+function loadUser(){
+  fetch("http://localhost:8080/api/member/all")
+  .then(response => {
+    // Check if the response is successful (status code 200)
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Parse the JSON response
+    return response.json();
+  })
+  .then(data => {
+    // Data retrieved successfully, do something with it
+    //console.log(data);
+    data.forEach(async (member)=>{
+      await addCardList(member);
+      await addEditCardList(member);
+    });
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
+    console.error('There was a problem with the fetch operation:', error);
+  });
+}
+loadUser();
 
 // let newMember = {
 //   "m_id" : randomTenDigitNumber,
@@ -82,6 +115,7 @@ function clearAddmemberBox(){
 function dbAddmember(json) {
   console.log(json);
   let url = 'http://localhost:8080/api/add/member';
+  
   return fetch(url, {
       method: 'POST',
       headers: {
@@ -102,12 +136,305 @@ function dbAddmember(json) {
       console.error('Error:', error);
       //throw error; // Re-throw the error for further handling
   });
-
- // window.alert(json);
-
+}
+function dbAddMemberTel(jsontel){
+  let telurl = 'http://localhost:8080/api/add/member/tel'
+  return fetch(telurl,{
+    method: 'POST',
+    headers:{
+      'Content-Type': 'application/json',
+    },
+    body : jsontel,
+  }).then(res =>{
+    if(res.ok){
+      return res.json();
+    }
+    else{
+      console.error('Network response was not ok');
+      return null;
+    }
+    
+  }).catch(err =>{
+    console.error('Error : ',err);
+  });
 }
 
- function saveMember() {
+function dbEditMember(json, id) {
+  let url = `http://localhost:8080/api/update/member/${id}`;
+  
+  // กำหนด request headers และ body ด้วย JSON.stringify(json)
+  const requestOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: json
+  };
+
+  // ส่ง request โดยใช้ fetch API
+  return fetch(url, requestOptions)
+    .then(response => {
+      if (!response.ok) {
+        return null;
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Member updated successfully:', data);
+      return data;
+      // จัดการกับการอัปเดตข้อมูลต่อไปเมื่อทำสำเร็จ
+    })
+    .catch(error => {
+      console.error('Error updating member:', error);
+      // จัดการกับข้อผิดพลาดที่เกิดขึ้น
+    });
+}
+
+function dbEditMemberTel(json, tel){
+  console.log(1+json+tel);
+  let url = `http://localhost:8080/api/update/member/tel/${tel}`;
+  console.log(2+json+tel);
+
+  // กำหนด request headers และ body ด้วย JSON.stringify(json)
+  const requestOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: json
+  };
+
+  // ส่ง request โดยใช้ fetch API
+  return fetch(url, requestOptions)
+    .then(response => {
+      if (!response.ok) {
+        return null;
+        //throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Member Tel updated successfully:', data);
+      return data;
+      // จัดการกับการอัปเดตข้อมูลต่อไปเมื่อทำสำเร็จ
+    })
+    .catch(error => {
+      console.error('Error updating member:', error);
+      // จัดการกับข้อผิดพลาดที่เกิดขึ้น
+    });
+}
+
+function addCardList(newMember){
+  memberInfoList.push(newMember);
+  let userId = newMember.m_id;
+  const date = new Date(newMember.m_enroll);
+  let userNo = userId%10000;
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const formattedDate = `${days[date.getUTCDay()]}, ${months[date.getUTCMonth()]} ${date.getUTCDate()} ${date.getUTCFullYear()}`;
+    let card = `
+                <tr id = "memberList${userId}">
+                  <td>${userNo}</td>
+                  <td>${userId}</td>
+                  <td>${formattedDate}</td>
+                  <td>${newMember.m_points}</td>
+                  <td><div class="member-edit-icon">
+                  <img src="./component/CS251 Component/icon/trash.png" id = "removeList${userId}">
+                  <img src="./component/CS251 Component/icon/setting.png" id="editList${userId}">
+                   </div></td>
+                </tr>
+              `;
+    
+    const table = document.getElementById('tableMember');
+    table.innerHTML += card;
+    memberList.push(userId);
+    memberEditInfoList.push
+    memberList.forEach(element => {
+      delIDGenerate(element);
+    });
+
+}
+function getTelById(m_id){
+  let url = `http://localhost:8080/api/member/tel/${m_id}`;
+  return fetch(url)
+  .then(response =>{
+    if(!response.ok){
+      throw new Error('Network response was not ok while getting tel');
+    }
+    return response.json();
+  })
+  .then(data =>{
+    return data;
+  })
+  .catch(error =>{
+    console.error("Error occur while getting tel number ",error);
+  });
+}
+async function addEditCardList(newMember) {
+
+    memberEditInfoList.push(newMember);
+    let MemberTels = await getTelById(newMember.m_id);
+    let firstTel = MemberTels[0].m_tel;
+    let userId = newMember.m_id;
+    let user = newMember;
+    let newBD = convertDateFormat(user.m_birthdate);
+    let card = `
+                <div class="edit-member-popup" id="edit-member-popup${userId}" style="display:none;">
+                <div class="edit-member-popup-container">
+                    <div class="edit-member-popup-con">
+                        <div class="membertext-and-quit">
+                            <h3>Member Form</h3>
+                            <div class="exit" id="exit${userId}">X</div>
+                        </div>
+                        <div class="member-name">
+                            <p>Member Name</p>
+                            <input type="text" id="editMemberName${userId}" value="${user.m_name}">
+                        </div>
+                        <div class="member-info">
+                            <div class="info-box">
+                                <label for="password">password</label><input type="text" name="password" id="editMemberPassword${userId}" value="${user.m_password}">
+                            </div>
+                            <div class="info-box">
+                                <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="editMemberCitizenID${userId}" value="${user.m_citizenId}">
+                            </div>
+                            <div class="info-box">
+                                <label for="tel">Tel</label><input type="text" name="tel" id="editMemberTel${userId}" value="${firstTel}">
+                            </div>
+                            <div class="info-box">
+                                <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="editMemberBirthDate${userId}" value="${newBD}">
+                            </div>
+                        </div>
+                        <div class="button-save">
+                            <button type="button" id="saveEditMember${userId}">SAVE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+      let editMemberCon = document.getElementById('editMemberCon');
+      editMemberCon.innerHTML += card;
+
+      editMemberButton();
+}
+
+function editMemberButton() {
+  memberEditInfoList.forEach(async e => {
+    console.log(e.m_id + ' access edit');
+    let MemberTels = await getTelById(e.m_id);
+    let firstTel = MemberTels[0].m_tel;
+    
+    let userId = e.m_id;
+    let editButton = document.getElementById(`editList${userId}`);
+    editButton.addEventListener('click', () => {
+
+      let userPopup = document.getElementById(`edit-member-popup${userId}`);
+      userPopup.style.display = 'block';
+
+      let exit = document.getElementById(`exit${userId}`);
+      exit.addEventListener('click', () => {
+      console.log(e.m_id + ' exit edit!!');
+      userPopup.style.display = 'none';
+      });
+
+      let save = document.getElementById(`saveEditMember${userId}`);
+      save.addEventListener('click', () => {
+        console.log('save success!!');
+        saveEditMember(userId, e,firstTel);
+      });
+    
+    });
+  });
+}
+
+function saveEditMember(userId, e,oldTel) {
+  let editMemberName = document.getElementById(`editMemberName${userId}`).value;
+  let editMemberCitizenID = document.getElementById(`editMemberCitizenID${userId}`).value;
+  let editMemberPassword = document.getElementById(`editMemberPassword${userId}`).value;
+  let editMemberTel = document.getElementById(`editMemberTel${userId}`).value;
+  let editMemberBirthDate = document.getElementById(`editMemberBirthDate${userId}`).value;
+
+  var currentDate = new Date();
+  let memberCurrentPoint = e.m_points;
+  let memberCurrentRank = e.m_rank;
+  
+  var DBformattedDate = currentDate.toISOString().replace('Z', '+07:00');
+
+   function formatBD(dateString) {
+    // Split the date string into day, month, and year components
+     const [day, month, year] = dateString.split('/');
+
+    // Reorder the components to YYYY-MM-DD format
+      const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+
+      return formattedDate;
+    }
+
+    let memberCurrentBD = formatBD(editMemberBirthDate);
+
+
+let editMember = {
+    "m_password": editMemberPassword,
+    "m_rank": memberCurrentRank,
+    "m_citizenId": editMemberCitizenID,
+    "m_name": editMemberName,
+    "m_points": memberCurrentPoint,
+    "m_enroll" : DBformattedDate,
+    "m_birthdate": memberCurrentBD,
+  };
+
+  let editMemberTelJson = {
+    "m_id" : e.m_id,
+    "m_tel" : document.getElementById(`editMemberTel${userId}`).value
+  }
+
+
+  if(validating(editMember)){
+    let jsonMember = JSON.stringify(editMember);
+    console.log(jsonMember);
+      dbEditMember(jsonMember, userId).then(result=>{
+      if(result !== null){
+        let jsonTel = JSON.stringify(editMemberTelJson);
+        dbEditMemberTel(jsonTel, oldTel).then(res=>{
+          if(res !== null){
+            editMemberButton();
+            
+
+          }else{
+            window.alert("Failure due to edit Member tel database error");
+          }
+        })
+      }
+      else{
+        window.alert("Failure due to database error");
+      }
+     });
+    
+  }
+  else{
+    window.alert("Invalid format. Cancel Adding...");
+  }
+   
+    //console.log(table.innerHTML);
+   
+    let userPopup = document.getElementById(`edit-member-popup${userId}`);
+    userPopup.style.display = 'none';
+}
+
+function convertDateFormat(inputDate) {
+  // แยกปี เดือน วัน จากข้อความ inputDate (รูปแบบ "yyyy-mm-dd")
+  var parts = inputDate.split("-");
+  var year = parts[0];
+  var month = parts[1];
+  var day = parts[2];
+
+  // สร้างวันที่ใหม่ในรูปแบบ "dd/mm/yyyy"
+  var formattedDate = day + '/' + month + '/' + year;
+
+  return formattedDate;
+}
+
+function saveMember() {
   let name = document.getElementById('addMemberName').value;
   let password = document.getElementById('addMemberPassword').value;
   let citizenID = document.getElementById('addMemberCitizenID').value;
@@ -119,35 +446,18 @@ function dbAddmember(json) {
 
 // Concatenate '42069' with the random number
   const randomTenDigitNumber = '42069' + randomNumber;
-  let idAutoString = String(randomTenDigitNumber).padStart(10,'0');
-
-  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-  var day = daysOfWeek[currentDate.getDay()];
-  var month = months[currentDate.getMonth()];
-  var date = currentDate.getDate();
-  var year = currentDate.getFullYear();
-  var senddel = idAuto;
-
-  const DBmonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-  const DBday = String(currentDate.getDate()).padStart(2, '0');
-  
-  // Format the date string as YYYY-MM-DD
-
-  var formattedDate = day + ", " + month + " " + date + " " + year;
-var DBformattedDate = currentDate.toISOString().replace('Z', '+07:00');
+  var DBformattedDate = currentDate.toISOString().replace('Z', '+07:00');
 
 
-function formatBD(dateString) {
-  // Split the date string into day, month, and year components
-  const [day, month, year] = dateString.split('/');
+   function formatBD(dateString) {
+    // Split the date string into day, month, and year components
+     const [day, month, year] = dateString.split('/');
 
-  // Reorder the components to YYYY-MM-DD format
-  const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    // Reorder the components to YYYY-MM-DD format
+      const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 
-  return formattedDate;
-}
+      return formattedDate;
+    }
 
 let newMember = {
     "m_id" : randomTenDigitNumber,
@@ -159,6 +469,11 @@ let newMember = {
     "m_enroll" : DBformattedDate,
     "m_birthdate": formatBD(birthDate),
   };
+  let newMemberTel = {
+    "m_id" : randomTenDigitNumber,
+    "m_tel" : tel
+  }
+  let newMemberTeljson = JSON.stringify(newMemberTel);
 
 //   let jsonexample = {
 //     "m_id": "6509681141",
@@ -172,42 +487,25 @@ let newMember = {
 //  }
   
   if(validating(newMember)){
-  //console.log(newMember);
   let jsonMember = JSON.stringify(newMember);
+  //console.log(jsonMember,newMemberTeljson);
    dbAddmember(jsonMember).then(result=>{
-   // console.log(result);
-    if(result !== null){
-      //console.log("We are in if statement!");
-      memberInfoList.push(newMember);
-    let card = `
-                <tr id = "memberList${idAuto}">
-                  <td>${idCount}</td>
-                  <td>${idAutoString}</td>
-                  <td>${formattedDate}</td>
-                  <td>0</td>
-                  <td><div class="member-edit-icon">
-                  <img src="./component/CS251 Component/icon/trash.png" id = "removeList${idAuto}">
-                  <img src="./component/CS251 Component/icon/setting.png" id="editList${idAuto}">
-                   </div></td>
-                </tr>
-              `;
-    
-    const table = document.getElementById('tableMember');
-    table.innerHTML += card;
-    idCount++;
-    idAuto++;
-    memberList.push(senddel);
-    memberList.forEach(element => {
-      delIDGenerate(element,dbID);
-    });
-    // memberList.forEach(element => {
-    //   delIDGenerate(element);
-    // });
-    clearAddmemberBox();
+    if(result === null){
+      window.alert("Failure due to add Member database error");
     }
     else{
-      window.alert("Failue due to database error");
-    }
+    dbAddMemberTel(newMemberTeljson).then((telresult)=>{
+      if(telresult !== null){
+        addCardList(newMember);
+        addEditCardList(newMember);
+        clearAddmemberBox();
+      }
+      else{
+        window.alert("Failure due to add Member tel database error");
+      }
+    });
+  }
+    
    });
   
 }
@@ -220,6 +518,7 @@ else{
   
   popup.style.display = 'none';
 }
+
 function DbDelID(m_id){
   let url = `http://localhost:8080/api/delete/member/${m_id}`;
   return fetch(url, {
@@ -242,69 +541,31 @@ function DbDelID(m_id){
       console.error('Error:', error);
       //throw error; // Re-throw the error for further handling
   });
+  // return true;
   
 }
-function delIDGenerate(index,dbID){
+function delIDGenerate(dbID){
   // console.log("Adding del ID",index);
-  const id = index;
+  const id = dbID;
   const button = document.getElementById(`removeList${id}`);
   button.addEventListener('click',function(){
 
     //ADDING confirm code
-
-    if(DbDelID(dbID) !== null){
+    let delconfirm = confirm(`Do you want to delete member id ${id}?`);
+    if(delconfirm){
+      if(DbDelID(dbID) !== null){
       const del = document.getElementById(`memberList${id}`);
       del.parentNode.removeChild(del);
       memberList = memberList.filter(item => item !== id);
-    }
-    else{
+      }
+      else{
       window.alert("Failed to delete from DB");
+      }
     }
     
   });
+
 }
-
-// function editMember(index){
-  
-//   let card = `<div class="add-member-popup">
-//                 <div class="add-member-popup-container">
-//                     <div class="add-member-popup-con">
-//                         <div class="membertext-and-quit">
-//                             <h3>Member Form</h3>
-//                             <div class="exit">X</div>
-//                         </div>
-//                         <div class="member-name">
-//                             <p>Member Name</p>
-//                             <input type="text" id="addMemberName">
-//                         </div>
-//                         <div class="member-info">
-//                             <div class="info-box">
-//                                 <label for="password">password</label><input type="text" name="password" id="addMemberPassword">
-//                             </div>
-//                             <div class="info-box">
-//                                 <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID">
-//                             </div>
-//                             <div class="info-box">
-//                                 <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel">
-//                             </div>
-//                             <div class="info-box">
-//                                 <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate">
-//                             </div>
-//                         </div>
-//                         <div class="button-save">
-//                             <button type="button" onclick="saveMember()">SAVE</button>
-//                         </div>
-//                     </div>
-//                 </div>
-//               </div>`;
-
-// }
-
-const exit = document.querySelector('.exit');
-
-exit.addEventListener('click', () => {
-  popup.style.display = 'none';
-});
 
 const inputSearchMember = document.querySelector('.arrow');
 
