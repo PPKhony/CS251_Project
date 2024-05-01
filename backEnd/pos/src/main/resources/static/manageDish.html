@@ -81,6 +81,7 @@
     </nav>
 
     <main>
+
       <div class="promotion">
         <h1>Promotion</h1>
         <div class="promotion-slide-container" >
@@ -93,19 +94,21 @@
               </div>
             </div>
 
-            <!-- <div class="promotion-card">
+            <div class="promotion-card" id="promo-${promodata.promotion_Code}">
               <div class="promotion-add-pic">
-                <img src="./component/CS251 Component/Menu Photos/Dish1.jpeg" />
-                <div class="promotion-card-con">
-                  <h3>PromotionName</h3>
-                  <div class="member-edit-icon">
-                    <h3>PromotionExpired</h3>
-                    <img src="./component/CS251 Component/icon/trash.png" />
-                    <img src="./component/CS251 Component/icon/setting.png" />
+                <img src="./component/CS251 Component/HomeMenuDish/${promodata.promotion_Code}.png" />
+                  <div class="promotion-card-con">
+                    <h3>FoodName</h3>
+                    <div class="member-edit-icon">
+                      <h3>2024-08-03</h3>
+                      <img src="./component/CS251 Component/icon/trash.png" id="del-promo-${promodata.promotion_Code}"/>
+                      <img src="./component/CS251 Component/icon/setting.png" id="edit-promo-${promodata.promotion_Code}"/>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div> -->
+
+
           </div>
         </div>
       </div>
@@ -224,20 +227,20 @@
         </div>
         <div class="promotion-info-name">
           <p>Promotion Name</p>
-          <input type="text">
+          <input type="text" id="promotionName">
         </div>
         <div class="promotion-info-code">
           <p>Promotion Code</p>
-          <input type="text">
+          <input type="text" id="promotionCode">
         </div>
         <div class="promotion-info-exp-price">
           <div class="promotion-info-exp">
             <h4>EXP</h4>
-            <input type="text">
+            <input type="text" id="promotionExpired">
           </div>
           <div class="promotion-info-price">
             <h4>Price</h4>
-            <input type="text">
+            <input type="text" id="promotionPrice">
           </div>
         </div>
           <div class="promotion-item">
@@ -254,7 +257,7 @@
                 
                 <div class="qty-item-container" id="itemSlideCon">
 
-                  <div class="item-card" id="item-card-${index}">
+                  <!-- <div class="item-card" id="item-card-${index}">
                     <div class="item-card-con">
                         <div class="item-card-pic-container">
                             <img src="${menu_data[index].image_url}">
@@ -267,9 +270,9 @@
                         <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
                         <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
                     </div>
-                  </div>
+                  </div> -->
 
-                  <div class="item-card" id="item-card-${index}">
+                  <!-- <div class="item-card" id="item-card-${index}">
                     <div class="item-card-con">
                         <div class="item-card-pic-container">
                             <img src="${menu_data[index].image_url}">
@@ -282,7 +285,7 @@
                         <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
                         <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
                     </div>
-                  </div>
+                  </div> -->
 
                   <div class="item-card" id="item-card-${index}">
                     <div class="item-card-con">
@@ -329,6 +332,10 @@
         </div>
       </div>
     </div>
+
+
+    <div class="menu-edit-popup-container" id="menuEditPopupContainer"></div>
+    <div class="promotion-edit-popup-container" id="promotionEditPopupContainer"></div>
 
     <script src="manageDish.js"></script>
   </body>

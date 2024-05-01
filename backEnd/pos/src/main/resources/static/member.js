@@ -191,7 +191,9 @@ function dbEditMember(json, id) {
 }
 
 function dbEditMemberTel(json, tel){
+  console.log(1+json+tel);
   let url = `http://localhost:8080/api/update/member/tel/${tel}`;
+  console.log(2+json+tel);
 
   // กำหนด request headers และ body ด้วย JSON.stringify(json)
   const requestOptions = {
@@ -212,7 +214,7 @@ function dbEditMemberTel(json, tel){
       return response.json();
     })
     .then(data => {
-      console.log('Member updated successfully:', data);
+      console.log('Member Tel updated successfully:', data);
       return data;
       // จัดการกับการอัปเดตข้อมูลต่อไปเมื่อทำสำเร็จ
     })
@@ -382,20 +384,21 @@ let editMember = {
 
   let editMemberTelJson = {
     "m_id" : e.m_id,
-    "m_tel" : editMemberTel
+    "m_tel" : document.getElementById(`editMemberTel${userId}`).value
   }
 
 
   if(validating(editMember)){
     let jsonMember = JSON.stringify(editMember);
-    let jsonTel = JSON.stringify(editMemberTelJson);
     console.log(jsonMember);
       dbEditMember(jsonMember, userId).then(result=>{
       if(result !== null){
+        let jsonTel = JSON.stringify(editMemberTelJson);
         dbEditMemberTel(jsonTel, oldTel).then(res=>{
           if(res !== null){
             editMemberButton();
             
+
           }else{
             window.alert("Failure due to edit Member tel database error");
           }
@@ -561,99 +564,6 @@ function delIDGenerate(dbID){
   });
 
 }
-
-//idk just wait
-
-// function editIDGenerate(dbID){
-//   let id = dbID;
-//   let button = document.getElementById(`editList${id}`);
-//   button.addEventListener('click',function(){
-
-//     if(DbEditID(dbID) !== null){
-//       const edit = document.getElementById(`memberList${id}`);
-      
-      
-//     }
-//     else{
-//       window.alert("Failed to update from DB");
-//     }
-
-//   });
-// }
-
-//wait
-
-// function DbEditID(m_id){
-//   let url = `http://localhost:8080/api/update/member/${m_id}`;
-//   return fetch(url, {
-//       method: 'PUT',
-//       headers: {
-//           'Content-Type': 'application/json',
-//           // Add any other headers if required
-//       },
-      
-//   })
-//   .then(response => {
-//       if (response.ok) {
-//           return response.json(); // Return parsed JSON for successful response
-//       } else {
-//           console.error('Network response was not ok');
-//           return null; // Return null for non-success response
-//       }
-//   })
-//   .catch(error => {
-//       console.error('Error:', error);
-//       //throw error; // Re-throw the error for further handling
-//   });
-//   // return true; 
-// }
-
-// function editIDGenerate(dbID) {
-//   const id = dbID;
-//   const button = document.getElementById(`editList${id}`);
-
-//   button.addEventListener('click', () => {
-
-//     const card = `
-//                   <div class="edit-member-popup" id="edit-member-popup${id}">
-//                     <div class="edit-member-popup-container">
-//                         <div class="edit-member-popup-con">
-//                             <div class="membertext-and-quit">
-//                                 <h3>Member Form</h3>
-//                                 <div class="exit">X</div>
-//                             </div>
-//                             <div class="member-name">
-//                                 <p>Member Name</p>
-//                                 <input type="text" id="editMemberName${id}" placeholder="ExampleMemberName">
-//                             </div>
-//                             <div class="member-info">
-//                                 <div class="info-box">
-//                                     <label for="password">password</label><input type="text" name="password" id="addMemberPassword${id}" placeholder="ExampleMemberPassword">
-//                                 </div>
-//                                 <div class="info-box">
-//                                     <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="addMemberCitizenID${id}" placeholder="ExampleMemberCitizenID">
-//                                 </div>
-//                                 <div class="info-box">
-//                                     <label for="tel">Tel</label><input type="text" name="tel" id="addMemberTel${id}" placeholder="ExampleMemberTel">
-//                                 </div>
-//                                 <div class="info-box">
-//                                     <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="addMemberBirthDate${id}" placeholder="ExampleMemberBD">
-//                                 </div>
-//                             </div>
-//                             <div class="button-save">
-//                                 <button type="button" onclick="saveEditMember(${id})">SAVE</button>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-//               `;
-
-//     const container = document.createElement('div');
-//     container.innerHTML = card;
-
-//     document.body.appendChild(container);
-//   });
-// }
 
 const inputSearchMember = document.querySelector('.arrow');
 
