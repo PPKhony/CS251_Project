@@ -207,7 +207,9 @@ function addMenuCard(menudata) {
 </div>`;
   container.innerHTML += card;
 }
+
 function addPromoCard(promodata_array) {
+  console.log(promodata_array);
   function formatDate(inputDate) {
     // Parse the input date string
     const date = new Date(inputDate);
@@ -226,20 +228,23 @@ function addPromoCard(promodata_array) {
   }
   let [promodata, promoMenu] = promodata_array;
   let promoformatdate = formatDate(promodata.promotion_Expire);
-  let container = document.getElementById("promotionSlideCon");
+  promoformatdate = promoformatdate.slice(0, 10);
+  
   let card = `<div class="promotion-card" id="promo-${promodata.promotion_Code}">
-      <div class="promotion-add-pic">
-        <img src="./component/CS251 Component/HomeMenuDish/${promodata.promotion_Code}.png" />
-      <div class="promotion-card-con">
-        <h3>${promodata.promotion_Name}</h3>
-      <div class="member-edit-icon">
-        <h3>${promoformatdate}</h3>
-        <img src="./component/CS251 Component/icon/trash.png" id="del-promo-${promodata.promotion_Code}"/>
-        <img src="./component/CS251 Component/icon/setting.png" id="edit-promo-${promodata.promotion_Code}"/>
-      </div>
-    </div>
-  </div>
-</div>`;
+                <div class="promotion-add-pic">
+                  <img src="./component/CS251 Component/HomeMenuDish/${promodata.promotion_Code}.png" />
+                    <div class="promotion-card-con">
+                      <h3>${promodata.promotion_Name}</h3>
+                      <div class="member-edit-icon">
+                        <h3>${promoformatdate}</h3>
+                        <img src="./component/CS251 Component/icon/trash.png" id="del-promo-${promodata.promotion_Code}"/>
+                        <img src="./component/CS251 Component/icon/setting.png" id="edit-promo-${promodata.promotion_Code}"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>`;
+
+  let container = document.getElementById("promotionSlideCon");              
   container.innerHTML += card;
   console.log("Adding :", promodata.promotion_Name, "!");
 }
@@ -320,22 +325,22 @@ async function addEditPromoCard(data) {
 
   await new Promise((resolve) => setTimeout(resolve, 0));
 
-  let cardItem = `
-                  <div class="item-card" id="item-card-${index}">
-                    <div class="item-card-con">
-                      <div class="item-card-pic-container">
-                        <img src="${menu_data[index].image_url}">
-                      </div>
-                      <h3 id="name-item-${index}">1</h3>
-                      <h3 id="count-item-${index}" class="count-item">2</h3>
-                      <h3 id="price-item-${index}" class="price-item">3</h3>
-                      <h3 id="qty-item-${index}">QTY:4</h3>
-                      <h3 id="add-item-${index}" class="add-item-icon">+</h3>
-                      <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
-                      <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-                    </div>
-                  </div>
-  `;
+  // let cardItem = `
+  //                 <div class="item-card" id="item-card-${index}">
+  //                   <div class="item-card-con">
+  //                     <div class="item-card-pic-container">
+  //                       <img src="${menu_data[index].image_url}">
+  //                     </div>
+  //                     <h3 id="name-item-${index}">1</h3>
+  //                     <h3 id="count-item-${index}" class="count-item">2</h3>
+  //                     <h3 id="price-item-${index}" class="price-item">3</h3>
+  //                     <h3 id="qty-item-${index}">QTY:4</h3>
+  //                     <h3 id="add-item-${index}" class="add-item-icon">+</h3>
+  //                     <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
+  //                     <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+  //                   </div>
+  //                 </div>
+  // `;
 }
 
 var countEditFood = 0;
