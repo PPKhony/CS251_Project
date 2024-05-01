@@ -182,10 +182,12 @@ async function loadMenuCard(){
 
 async function loadPromoCard(){
   for(const elm of promotion_data){
-    await addMenuCard(elm);
+    await addPromoCard(elm);
+    // await addEditPromoCard(elm);
   }
    
   await updateDeletePromoButton();
+  // await updateEditPromoButton();
 }
   
 
@@ -245,6 +247,101 @@ function addPromoCard(promodata_array){
 </div>`
   container.innerHTML += card;
   console.log("Adding :",promodata.promotion_Name ,"!");
+}
+
+async function addEditPromoCard(data) {
+
+  // let data = {
+  //   "promotionName": promotionName.value,
+  //   "promotionCode" : promotionCode.value,
+  //   "promotionExpired" :parseInt(promotionExpired.value),
+  //   "promotionPrice": parseInt(promotionPrice.value)
+  // }
+
+  let promotionName = data.promotionName;
+  let promotionCode = data.promotionCode;
+  let promotionExpired = data.promotionExpired;
+  let promotionPrice = data.promotionPrice;
+
+  let card = `
+              <div class="promotion-popup" style="display: none;" id="promotionPopup">
+                <div class="promotion-popup-container">
+                  <div class="promotion-popup-top">
+                    <h3>Promotion #10</h3>
+                    <div class="exit" id="exitPromotion">X</div>
+                  </div>
+                  <div class="promotion-info-name">
+                    <p>Promotion Name</p>
+                    <input type="text" id="promotionName">
+                  </div>
+                  <div class="promotion-info-code">
+                    <p>Promotion Code</p>
+                    <input type="text" id="promotionCode">
+                  </div>
+                  <div class="promotion-info-exp-price">
+                    <div class="promotion-info-exp">
+                      <h4>EXP</h4>
+                      <input type="text" id="promotionExpired">
+                    </div>
+                    <div class="promotion-info-price">
+                      <h4>Price</h4>
+                      <input type="text" id="promotionPrice">
+                    </div>
+                  </div>
+                    <div class="promotion-item">
+                      <div class="promotion-item-container">
+                        <div class="promotion-item-con">
+
+                          <div class="item-add-con">
+                            <div class="item-qty">
+                              <h2>Item: <span id="itemCount">0</span></h2>
+                            </div>
+
+                            <button type="button">ADD</button>
+                          </div>
+                        
+                          <div class="qty-item-container" id="itemSlideCon">
+
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                <div class="promotion-popup-bottom">
+                  <div class="promotion-popup-bottom-pic">
+                    <p>Add Photo</p>
+                    <img src="./component/CS251 Component/icon/image.png">
+                  </div>
+                  <button type="button" id="savePromotion" onclick="addPromoList()">SAVE</button>
+                </div>
+              </div>
+            </div>
+  `
+
+  let promotionEditPopupContainer = document.getElementById('promotionEditPopupContainer');
+  promotionEditPopupContainer.innerHTML += card;
+
+  await new Promise(resolve => setTimeout(resolve, 0));
+
+  // <div class="item-card" id="item-card-${z}">
+  //                             <div class="item-card-con">
+  //                                 <div class="item-card-pic-container">
+  //                                     <img src="${z}">
+  //                                 </div>
+  //                                 <h3 id="name-item-${z}">1</h3>
+  //                                 <h3 id="count-item-${z}" class="count-item">2</h3>
+  //                                 <h3 id="price-item-${z}" class="price-item">3</h3>
+  //                                 <h3 id="qty-item-${z}">QTY:4</h3>
+  //                                 <h3 id="add-item-${z}" class="add-item-icon">+</h3>
+  //                                 <h3 id="rm-item-${z}" class="rm-item-icon">-</h3>
+  //                                 <img id="rm-all-item-${z}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+  //                             </div>
+  //                           </div>
+
+
+
+
 }
 
 var countEditFood = 0;
@@ -533,6 +630,36 @@ function  DBaddMenuList(json){
   });
 }
 
+function DBaddPromoList(json){
+  //   {
+  //     "Promotion_Name": "myPromotion",
+  //     "Promotion_Price": 110,
+  //     "Promotion_Code": "TestCode",
+  //     "Promotion_Expire": "2024-06-03T05:30:00.000+00:00"
+  //    }
+  let url = 'http://localhost:8080/api/add/promotion';
+  return fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          // Add any other headers if required
+      },
+      body: json,
+  })
+  .then(response => {
+      if (response.ok) {
+          return response.json(); // Return parsed JSON for successful response
+      } else {
+          console.error('Network response was not ok');
+          return null; // Return null for non-success response
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      //throw error; // Re-throw the error for further handling
+  });
+}
+
 
 
 function clearAddmenu(){
@@ -544,6 +671,16 @@ function clearAddmenu(){
   foodname.value="";
   amount.value="";
   price.value="";
+}
+function clearAddpromo(){
+  let promotionName = document.getElementById("promotionName");
+  let promotionCode = document.getElementById("promotionCode");
+  let promotionExpired = document.getElementById("promotionExpired");
+  let promotionPrice = document.getElementById("promotionPrice");
+  promotionName.value="";
+  promotionCode.value="";
+  promotionExpired.value="";
+  promotionPrice.value="";
 }
 function addMenuList(){
  // console.log("Running!");
@@ -565,7 +702,6 @@ function addMenuList(){
       await addMenuCard(data);
       console.log(menu_data);
       await updateDeleteMenuButton();
-      // await updateEditMenuButton();
       
     }
     else{
@@ -573,7 +709,32 @@ function addMenuList(){
     }
   });
 }
-function addPromoList(){
 
+function addPromoList(){
+  // console.log("Running!");
+  let promotionName = document.getElementById("promotionName");
+  let promotionCode = document.getElementById("promotionCode");
+  let promotionExpired = document.getElementById("promotionExpired");
+  let promotionPrice = document.getElementById("promotionPrice");
+  let data = {
+    "promotionName": promotionName.value,
+    "promotionCode" : promotionCode.value,
+    "promotionExpired" :parseInt(promotionExpired.value),
+    "promotionPrice": parseInt(promotionPrice.value)
+  }
+  console.log(data);
+  let jsondata = JSON.stringify(data);
+  DBaddPromoList(jsondata).then(async (result)=>{
+    if (result !== null){
+      await promotion_data.push(data);
+      await addPromoCard(data);
+      console.log(promotion_data);
+      await updateDeletePromoButton();
+      
+    }
+    else{
+      window.alert("Fail to add menu due to database");
+    }
+  });
 }
 
