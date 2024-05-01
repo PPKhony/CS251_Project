@@ -170,17 +170,19 @@ function loadMenuPromo(promoCode){
 
 
 async function loadMenuCard(){
-  await menu_data.forEach(elm=>{
-   addMenuCard(elm);
+  await menu_data.forEach(async elm=>{
+   await addMenuCard(elm);
+   await updateDeleteMenuButton();
   });
-  await updateDeleteMenuButton();
+  
 }
 
 async function loadPromoCard(){
-  await promotion_data.forEach(elm=>{
-    addPromoCard(elm);
+  await promotion_data.forEach(async elm=>{
+    await addPromoCard(elm);
+    await updateDeletePromoButton();
   });
-  await updateDeletePromoButton();
+  
 }
   
 
