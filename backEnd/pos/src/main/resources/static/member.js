@@ -249,6 +249,7 @@ function addCardList(newMember){
     const table = document.getElementById('tableMember');
     table.innerHTML += card;
     memberList.push(userId);
+    memberEditInfoList.push
     memberList.forEach(element => {
       delIDGenerate(element);
     });
@@ -496,6 +497,7 @@ let newMember = {
     dbAddMemberTel(newMemberTeljson).then((telresult)=>{
       if(telresult !== null){
         addCardList(newMember);
+        addEditCardList(newMember);
         clearAddmemberBox();
       }
       else{
