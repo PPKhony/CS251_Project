@@ -1,3 +1,30 @@
+const promotionSlider = document.getElementById('promotionSlideCon');
+let pisDown = false;
+let pstartX;
+let pscrollLeft;
+
+promotionSlider.addEventListener('mousedown', (e) => {
+    pisDown = true;
+    pstartX = e.pageX - promotionSlider.offsetLeft;
+    pscrollLeft = promotionSlider.scrollLeft;
+});
+
+promotionSlider.addEventListener('mouseleave', () => {
+    pisDown = false;
+});
+
+promotionSlider.addEventListener('mouseup', () => {
+    pisDown = false;
+});
+
+promotionSlider.addEventListener('mousemove', (e) => {
+    if (!pisDown) return;
+    e.preventDefault();
+    const x = e.pageX - promotionSlider.offsetLeft;
+    const walk = (x - pstartX) * 1; // Adjust scroll speed
+    promotionSlider.scrollLeft = pscrollLeft - walk;
+});
+
 // var food_category = [
 //   {
 //     "name": "Burger",
@@ -238,18 +265,19 @@ function addPromoCard(promodata_array) {
                       <div class="member-edit-icon">
                         <h3>${promoformatdate}</h3>
                         <img src="./component/CS251 Component/icon/trash.png" id="del-promo-${promodata.promotion_Code}"/>
-                        <img src="./component/CS251 Component/icon/setting.png" id="edit-promo-${promodata.promotion_Code}"/>
                       </div>
                     </div>
                   </div>
                 </div>`;
+
+  // <img src="./component/CS251 Component/icon/setting.png" id="edit-promo-${promodata.promotion_Code}"/>
 
   let container = document.getElementById("promotionSlideCon");              
   container.innerHTML += card;
   console.log("Adding :", promodata.promotion_Name, "!");
 }
 
-async function addEditPromoCard(data) {
+async function addEditPromoCard(data_array) {
   // let data = {
   //   "promotionName": promotionName.value,
   //   "promotionCode" : promotionCode.value,
@@ -257,13 +285,21 @@ async function addEditPromoCard(data) {
   //   "promotionPrice": parseInt(promotionPrice.value)
   // }
 
-  let promotionName = data.promotionName;
-  let promotionCode = data.promotionCode;
-  let promotionExpired = data.promotionExpired;
-  let promotionPrice = data.promotionPrice;
+  // private String Promotion_Name;
+  //   private double Promotion_Price;
+  //   private String Promotion_Code;
+  //   private Timestamp Promotion_Expire;
+
+  let [data, menus] = data_array
+
+  let promotionName = data.promotion_Name;
+  let promotionCode = data.promotion_Code;
+  let promotionExpired = data.promotion_Expire;
+  let promotionPrice = data.promotion_Price;
+
 
   let card = `
-              <div class="promotion-popup" style="display: none;" id="promotionPopup${promotionName}">
+              <div class="promotion-popup" style="display: none;" id="promotionPopup${promotionCode}">
                 <div class="promotion-popup-container">
                   <div class="promotion-popup-top">
                     <h3>Promotion #10</h3>
@@ -325,22 +361,45 @@ async function addEditPromoCard(data) {
 
   await new Promise((resolve) => setTimeout(resolve, 0));
 
-  // let cardItem = `
-  //                 <div class="item-card" id="item-card-${index}">
-  //                   <div class="item-card-con">
-  //                     <div class="item-card-pic-container">
-  //                       <img src="${menu_data[index].image_url}">
-  //                     </div>
-  //                     <h3 id="name-item-${index}">1</h3>
-  //                     <h3 id="count-item-${index}" class="count-item">2</h3>
-  //                     <h3 id="price-item-${index}" class="price-item">3</h3>
-  //                     <h3 id="qty-item-${index}">QTY:4</h3>
-  //                     <h3 id="add-item-${index}" class="add-item-icon">+</h3>
-  //                     <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
-  //                     <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
-  //                   </div>
-  //                 </div>
-  // `;
+  // private String unit;
+  //   private String foodname;
+  //   private int amount;
+  //   private double price;
+
+  menus.forEach(elm => {
+    addCardItemMenuPromo(elm, promotionCode);
+  });
+
+
+}
+
+function addCardItemMenuPromo (item, promoCode) {
+
+  let unit = item.unit;
+  let amount = item.amount;
+  let price = item.price;
+  let foodname = item.foodname;
+
+  let cardItem = `
+                  <div class="item-card" id="item-card-${foodname}">
+                    <div class="item-card-con">
+                      <div class="item-card-pic-container">
+                        <img src="./component/CS251 Component/HomeMenuDish/${foodname}">
+                      </div>
+                      <h3 id="name-item-${foodname}">${foodname}</h3>
+                      <h3 id="count-item-${foodname}" class="count-item">${0}</h3>
+                      <h3 id="price-item-${foodname}" class="price-item">${price}</h3>
+                      <h3 id="qty-item-${foodname}">QTY:${amount}</h3>
+                      <h3 id="add-item-${foodname}" class="add-item-icon">+</h3>
+                      <h3 id="rm-item-${foodname}" class="rm-item-icon">-</h3>
+                      <img id="rm-all-item-${foodname}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+                    </div>
+                  </div>
+  `;
+
+  let itemSlideCon = document.getElementById(`itemSlideCon${promoCode}`);
+  itemSlideCon.innerHTML += cardItem;
+
 }
 
 var countEditFood = 0;
@@ -357,6 +416,7 @@ function addEditMenuCard(data) {
   let foodname = data.foodname;
   let amount = data.amount;
   let price = data.price;
+
 
   let card = `
               <div class="menu-popup" style="display: none;" id="menuEditPopup${foodname}">
@@ -419,8 +479,10 @@ function updateDeleteMenuButton() {
     });
   });
 }
+
 function updateDeletePromoButton() {
-  promotion_data.forEach((elm) => {
+  promotion_data.forEach((elm_array) => {
+    let [elm,elm_menu] = elm_array;
     console.log("Updating ", elm.promotion_Code);
     let button = document.getElementById(`del-promo-${elm.promotion_Code}`);
     button.addEventListener("click", function () {
@@ -476,6 +538,9 @@ function saveEditMenu(foodname) {
   EditDBMenu(json, foodname).then((res) => {
     if (res !== null) {
       console.log("edit complete!!");
+      // document.getElementById(`foodname${foodname}`).textContent = foodname;
+      // document.getElementById(`menu-${foodname}`).textContent = `QTY: ${amount}`;
+      // document.getElementById(`menuCardPrice${foodname}`).textContent = `:${price}`;
     } else {
       window.alert("Failure due to edit Menu database error");
     }
@@ -493,9 +558,7 @@ function saveEditMenu(foodname) {
   //       <h3 class="h3-qty" id="menu-${menudata.foodname}">QTY: ${menudata.amount}</h3>
   //       <h3><span class="dollar-sign">฿</span>:${menudata.price}</h3>
 
-  // document.getElementById(`foodname${foodname}`).textContent = foodname;
-  // document.getElementById(`menu-${foodname}`).textContent = `QTY: ${amount}`;
-  // document.getElementById(`menuCardPrice${foodname}`).textContent = `:${price}`;
+
   //idk what to do
 }
 
@@ -700,13 +763,13 @@ function addPromoList() {
     promotion_Code: promotionCode,
     promotion_Expire: promotionExpiredCheck
   };
-
+  let menu_list = [];
   console.log(data);
   let jsondata = JSON.stringify(data);
   DBaddPromoList(jsondata).then(async (result) => {
     if (result !== null) {
       await promotion_data.push(data);
-      await addPromoCard(data);
+      await addPromoCard([data,menu_list]);
       console.log(promotion_data);
       await updateDeletePromoButton();
     } else {
@@ -723,3 +786,16 @@ function validateDate(input) {
   const trimmedIsoString = isoString.replace('Z', '+00:00');
   return trimmedIsoString;
 }
+
+// function promotionEditButton () {
+//   promotion_data.forEach(elm => {
+//     let code = elm.promotion_Code;
+//     let edit = document.getElementById(`edit-promo-${code}`);
+//     edit.addEventListener('click', () => {
+//       let popup = document.getElementById(`promotionPopup${code}`);
+//       popup.style.display = 'none';
+      
+      
+//     });
+//   });
+// }
