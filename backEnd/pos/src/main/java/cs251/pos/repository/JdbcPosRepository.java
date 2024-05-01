@@ -404,7 +404,6 @@ public class JdbcPosRepository implements PosRepository{
                     "OrderPromotion ON Invoice.InvoiceNo = OrderPromotion.InvoiceNo " +
                     "WHERE " +
                     "Invoice.InvoiceNo = "+ invoiceNo + " ";
-            System.out.println(q);
             List<PrintInvoice> printInvoices = jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(PrintInvoice.class));
             return printInvoices;
         }catch (IncorrectResultSizeDataAccessException e){

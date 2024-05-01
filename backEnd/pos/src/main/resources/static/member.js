@@ -254,9 +254,27 @@ function addCardList(newMember){
     });
 
 }
+function getTelById(m_id){
+  let url = `http://localhost:8080/api/member/tel/${m_id}`;
+  return fetch(url)
+  .then(response =>{
+    if(!response.ok){
+      throw new Error('Network response was not ok while getting tel');
+    }
+    return response.json();
+  })
+  .then(data =>{
+    return data;
+  })
+  .catch(error =>{
+    console.error("Error occur while getting tel number ",error);
+  });
+}
+async function addEditCardList(newMember) {
 
-function addEditCardList(newMember) {
     memberEditInfoList.push(newMember);
+    let MemberTels = await getTelById(newMember.m_id);
+    let firstTel = MemberTels[0].m_tel;
     let userId = newMember.m_id;
     let user = newMember;
     let newBD = convertDateFormat(user.m_birthdate);
@@ -280,7 +298,7 @@ function addEditCardList(newMember) {
                                 <label for="citizenID">citizen ID</label><input type="text" name="citizenID" id="editMemberCitizenID${userId}" value="${user.m_citizenId}">
                             </div>
                             <div class="info-box">
-                                <label for="tel">Tel</label><input type="text" name="tel" id="editMemberTel${userId}" value="0842633586">
+                                <label for="tel">Tel</label><input type="text" name="tel" id="editMemberTel${userId}" value="${firstTel}">
                             </div>
                             <div class="info-box">
                                 <label for="birthDate">Birth Date</label><input type="text" name="birthDate" id="editMemberBirthDate${userId}" value="${newBD}">
@@ -300,8 +318,11 @@ function addEditCardList(newMember) {
 }
 
 function editMemberButton() {
-  memberEditInfoList.forEach(e => {
+  memberEditInfoList.forEach(async e => {
     console.log(e.m_id + ' access edit');
+    let MemberTels = await getTelById(e.m_id);
+    let firstTel = MemberTels[0].m_tel;
+    
     let userId = e.m_id;
     let editButton = document.getElementById(`editList${userId}`);
     editButton.addEventListener('click', () => {
@@ -317,15 +338,15 @@ function editMemberButton() {
 
       let save = document.getElementById(`saveEditMember${userId}`);
       save.addEventListener('click', () => {
-        console.log(' save success!!');
-        saveEditMember(userId, e);
+        console.log('save success!!');
+        saveEditMember(userId, e,firstTel);
       });
     
     });
   });
 }
 
-function saveEditMember(userId, e) {
+function saveEditMember(userId, e,oldTel) {
   let editMemberName = document.getElementById(`editMemberName${userId}`).value;
   let editMemberCitizenID = document.getElementById(`editMemberCitizenID${userId}`).value;
   let editMemberPassword = document.getElementById(`editMemberPassword${userId}`).value;
@@ -373,8 +394,10 @@ let editMember = {
       dbEditMember(jsonMember, userId).then(result=>{
       if(result !== null){
         let jsonTel = JSON.stringify(editMemberTelJson);
-        dbEditMemberTel(jsonTel, document.getElementById(`editMemberTel${userId}`).value).then(res=>{
+        dbEditMemberTel(jsonTel, document.getElementById(`oldTel${userId}`).value).then(res=>{
           if(res !== null){
+            editMemberButton();
+            
 
           }else{
             window.alert("Failure due to edit Member tel database error");
