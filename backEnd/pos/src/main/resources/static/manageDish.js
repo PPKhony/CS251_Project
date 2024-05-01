@@ -170,16 +170,21 @@ function loadMenuPromo(promoCode){
 
 
 async function loadMenuCard(){
-  await menu_data.forEach(elm=>{
-   addMenuCard(elm);
-  });
+  for(const elm of menu_data){
+    await addMenuCard(elm);
+    await addEditMenuCard(elm);
+  }
+   
   await updateDeleteMenuButton();
+  await updateEditMenuButton();
+ 
 }
 
 async function loadPromoCard(){
-  await promotion_data.forEach(elm=>{
-    addPromoCard(elm);
-  });
+  for(const elm of promotion_data){
+    await addMenuCard(elm);
+  }
+   
   await updateDeletePromoButton();
 }
   
@@ -242,6 +247,64 @@ function addPromoCard(promodata_array){
   console.log("Adding :",promodata.promotion_Name ,"!");
 }
 
+var countEditFood = 0;
+
+function addEditMenuCard(data) {
+
+  // let data = {
+  //   "unit": unit.value,
+  //   "foodname" : foodname.value,
+  //   "amount" :parseInt(amount.value),
+  //   "price": parseInt(price.value)
+  // }
+
+  let unit = data.unit;
+  let foodname = data.foodname;
+  let amount = data.amount;
+  let price = data.price;
+  
+  let card = `
+              <div class="menu-popup" style="display: none;" id="menuEditPopup${foodname}">
+                <div class="menu-popup-container">
+                  <div class="menu-popup-top">
+                    <h3>Dish ${++countEditFood}</h3>
+                    <div class="exit" id="exitMenu${foodname}">X</div>
+                  </div>
+                    <div class="menu-info-name">
+                      <p>Dish Name</p>
+                      <input type="text" id="menuFoodname${foodname}" value="${foodname}">
+                    </div>
+                    <div class="menu-info-desc">
+                      <p>Unit</p>
+                      <input type="text" id="menuUnit${foodname}" value="${unit}">
+                    </div>
+                    <div class="menu-info-price-qty">
+                      <div class="menu-info-price">
+                        <h4>Price</h4>
+                        <input type="text" id="menuPrice${foodname}" value="${price}">
+                      </div>
+                      <div class="menu-info-qty">
+                        <h4>QTY</h4>
+                        <input type="text" id="menuAmount${foodname}" value="${amount}">
+                      </div>
+                    </div>
+                    
+                    <div class="menu-popup-bottom">
+                      <div class="menu-popup-bottom-pic">
+                        <p>Add Photo</p>
+                        <img src="./component/CS251 Component/icon/image.png">
+                      </div>
+                        <button type="button" id="saveEditMenu${foodname}">SAVE</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  `;
+
+  let menuEditPopupContainer = document.getElementById('menuEditPopupContainer');
+  menuEditPopupContainer.innerHTML += card;
+}
+
 function updateDeleteMenuButton(){
   menu_data.forEach(elm =>{
     console.log("Updating ",elm.foodname);
@@ -277,10 +340,101 @@ function updateDeletePromoButton(){
     });
   });
 }
+function updateEditMenuButton(){
+  menu_data.forEach(elm=>{
+    let button = document.getElementById(`edit-${elm.foodname}`);
+    button.addEventListener('click', () => {
+      console.log(elm.foodname + "edit access");
+      let popup = document.getElementById(`menuEditPopup${elm.foodname}`);
+      popup.style.display = 'block';
+
+      let exit = document.getElementById(`exitMenu${elm.foodname}`);
+      exit.addEventListener('click', () => {
+      popup.style.display = 'none';
+      });
+
+      let save = document.getElementById(`saveEditMenu${elm.foodname}`);
+      save.addEventListener('click', () => {
+        console.log('save success!! ' + elm.foodname);
+        saveEditMenu(elm.foodname);
+      });
+
+    });
+  });
+}
+
+function saveEditMenu(foodname) {
+
+  // let data = {
+  //   "unit": unit.value,
+  //   "foodname" : foodname.value,
+  //   "amount" :parseInt(amount.value),
+  //   "price": parseInt(price.value)
+  // }
+
+  let unit = document.getElementById(`menuUnit${foodname}`).value;
+  let foodname = document.getElementById(`menuFoodname${foodname}`).value;
+  let amount = document.getElementById(`menuAmount${foodname}`).value;
+  let price = document.getElementById(`menuPrice${foodname}`).value;
+
+  let data = {
+    "unit": unit,
+    "foodname" : foodname,
+    "amount" :amount,
+    "price": price
+  }
+
+  let json = JSON.stringify(data);
+  console.log(json);
+
+  EditDBMenu(json, foodname).then(res=> {
+    if(res !== null){
+      console.log('edit complete!!');
+    }else{
+      window.alert("Failure due to edit Menu database error");
+    }
+  });
+
+  let popup = document.getElementById(`menuEditPopup${elm.foodname}`);
+  popup.style.display = 'none';
+
+}
+
+function EditDBMenu(json, foodname){
+  let url = `http://localhost:8080/api/update/menu/${foodname}`;
+  
+  // กำหนด request headers และ body ด้วย JSON.stringify(json)
+  const requestOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: json
+  };
+
+  // ส่ง request โดยใช้ fetch API
+  return fetch(url, requestOptions)
+    .then(response => {
+      if (!response.ok) {
+        return null;
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Menu updated successfully:', data);
+      return data;
+      // จัดการกับการอัปเดตข้อมูลต่อไปเมื่อทำสำเร็จ
+    })
+    .catch(error => {
+      console.error('Error updating Menu:', error);
+      // จัดการกับข้อผิดพลาดที่เกิดขึ้น
+    });
+}
 
 function delDBMenu(data){
   console.log(data);
   let url = `http://localhost:8080/api/delete/menu/${data.foodname}`;
+
   return fetch(url, {
       method: 'DELETE',
       headers: {
@@ -390,10 +544,11 @@ function addMenuList(){
   let jsondata = JSON.stringify(data);
   DBaddMenuList(jsondata).then(async (result)=>{
     if (result !== null){
-      menu_data.push(data);
+      await menu_data.push(data);
       await addMenuCard(data);
       console.log(menu_data);
       await updateDeleteMenuButton();
+      // await updateEditMenuButton();
       
     }
     else{
@@ -404,6 +559,4 @@ function addMenuList(){
 function addPromoList(){
 
 }
-
-
 

@@ -394,7 +394,7 @@ let editMember = {
       dbEditMember(jsonMember, userId).then(result=>{
       if(result !== null){
         let jsonTel = JSON.stringify(editMemberTelJson);
-        dbEditMemberTel(jsonTel, document.getElementById(`oldTel${userId}`).value).then(res=>{
+        dbEditMemberTel(jsonTel, oldTel).then(res=>{
           if(res !== null){
             editMemberButton();
             
