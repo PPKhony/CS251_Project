@@ -198,9 +198,9 @@ function addMenuCard(menudata){
     </div>
     <div class="menu-desc-con">
       <div class="menu-desc">
-        <h3>${menudata.foodname}</h3>
+        <h3 id="foodname${menudata.foodname}">${menudata.foodname}</h3>
         <h3 class="h3-qty" id="menu-${menudata.foodname}">QTY: ${menudata.amount}</h3>
-        <h3><span class="dollar-sign">฿</span>:${menudata.price}</h3>
+        <h3 id="menuCardPrice${menudata.foodname}"><span class="dollar-sign">฿</span>:${menudata.price}</h3>
         <div class="member-edit-icon">
           <img src="./component/CS251 Component/icon/trash.png" id="del-${menudata.foodname}"/>
           <img src="./component/CS251 Component/icon/setting.png" id="edit-${menudata.foodname}"/>
@@ -373,7 +373,6 @@ function saveEditMenu(foodname) {
   // }
 
   let unit = document.getElementById(`menuUnit${foodname}`).value;
-  let foodname = document.getElementById(`menuFoodname${foodname}`).value;
   let amount = document.getElementById(`menuAmount${foodname}`).value;
   let price = document.getElementById(`menuPrice${foodname}`).value;
 
@@ -395,10 +394,28 @@ function saveEditMenu(foodname) {
     }
   });
 
-  let popup = document.getElementById(`menuEditPopup${elm.foodname}`);
+  let popup = document.getElementById(`menuEditPopup${foodname}`);
   popup.style.display = 'none';
 
+  document.getElementById(`menuUnit${foodname}`).value = unit;
+  document.getElementById(`menuFoodname${foodname}`).value = foodname;
+  document.getElementById(`menuAmount${foodname}`).value = amount;
+  document.getElementById(`menuPrice${foodname}`).value = price;
+
+  // <h3>${menudata.foodname}</h3>
+  //       <h3 class="h3-qty" id="menu-${menudata.foodname}">QTY: ${menudata.amount}</h3>
+  //       <h3><span class="dollar-sign">฿</span>:${menudata.price}</h3>
+
+  // document.getElementById(`foodname${foodname}`).textContent = foodname;
+  // document.getElementById(`menu-${foodname}`).textContent = `QTY: ${amount}`;
+  // document.getElementById(`menuCardPrice${foodname}`).textContent = `:${price}`; 
+  //idk what to do
+
 }
+
+
+  
+
 
 function EditDBMenu(json, foodname){
   let url = `http://localhost:8080/api/update/menu/${foodname}`;
