@@ -29,7 +29,7 @@ var food_category = [
 
 var menu_data = [];
 var orderMenu = [];
-
+var orderPromo = [];
 
 
 // promotion section
@@ -90,10 +90,15 @@ async function loadPromotion(){
 
 async function loadPromoCard(){
   console.log("Now Start loading card!");
-  await promotion_data.forEach(elm=>{
-    console.log("Add promo card :",elm);
-    addPromoCard(elm);
-  });
+  // await promotion_data.forEach(async elm=>{
+  //   console.log("Add promo card :",elm);
+  //   await addPromoCard(elm);
+  // });
+  for(elm of promotion_data){
+    await addPromoCard(elm);
+  }
+  await addPromoCardButton();
+
 }
 function loadMenuPromo(promoCode){
   let url = `http://localhost:8080/api/menuhavepromo/${promoCode}`;
@@ -132,13 +137,199 @@ function addPromoCard(promo_array){
   let promoformatdate = formatDate(promodata.promotion_Expire);
   let container = document.getElementById('promotionSlideCon');
   let card = `<div class="promotion-card">
-  <div class="promotion-add-pic">
-      <img src="./component/CS251 Component/HomeMenuDish/${promodata.promotion_Code}.png">
-  <button type="button">ADD</button>
-  </div>
-</div>`
+                <div class="promotion-add-pic">
+                  <img src="./component/CS251 Component/HomeMenuDish/${promodata.promotion_Code}.png">
+                  <button type="button" id="addPromotion${promodata.promotion_Code}">ADD</button>
+                </div>
+              </div>`;
   container.innerHTML += card;
   console.log("Adding :",promodata.promotion_Name ,"!");
+
+
+}
+
+
+
+async function AddPromoCardItem(promotionDataSet){
+  let [promotionData,menus_promo] = promotionDataSet;
+
+// private String Promotion_Name;
+// private double Promotion_Price;
+// private String Promotion_Code;
+// private Timestamp Promotion_Expire;
+  for (menu of menus_promo){
+    let menu_withIndex = [];
+   
+    menu_data.forEach((elm,index) =>{
+      menu_withIndex.push([elm,index]);
+    });
+    let currentstockList = menu_withIndex.filter(item => item[0].foodname === menu.foodname);
+    let currentstock = currentstockList[0];
+    let itemhtml = document.getElementById(`count-item-${currentstock[1]}`);
+    let ordercounthtml = document.getElementById(`promo-count-item-${promotionData.promotion_Code}`);
+    let ordercount = 0;
+    if(ordercounthtml){
+      ordercount = parseInt(ordercounthtml.textContent)+1;
+    }
+    else{
+      ordercount = 1;
+    }
+    console.log('OrderCount : ',ordercount);
+    if(itemhtml){
+      let checkqty = parseInt(itemhtml.textContent);
+      let orderingNum = menu.amount;
+      console.log("Menu :",menu , "Ordering num" , orderingNum);
+      if(ordercount*orderingNum + checkqty > currentstock[0].amount){
+        await console.log("Promotion out of order...");
+        return;
+      }
+      else{
+        
+        console.log("Order :", ordercount*orderingNum + checkqty , "Stock :",currentstock[0].amount);
+
+      }
+    }
+    else{
+      let orderingNum = menu.amount;
+      console.log("Menu :",menu , "Ordering num" , orderingNum);
+      if(orderingNum*ordercount > currentstock[0].amount){
+        await console.log("Promotion out of order...");
+        return;
+      }
+      else{
+        console.log("Order :", orderingNum*ordercount , "Stock :",currentstock[0].amount);
+        
+      }
+    }
+  }
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  let check = document.getElementById(`promo-item-card-${promotionData.promotion_Code}`);
+  if(check){
+    let qtyhtml = document.getElementById(`promo-count-item-${promotionData.promotion_Code}`);
+    let qty = qtyhtml.textContent;
+    qty = parseInt(qty) + 1;
+    qtyhtml.textContent = qty;
+    orderPromo.forEach((elm_set,index) =>{
+      let [promo,menus] = elm_set
+      if(promo.promotion_Code === promotionData.promotion_Code){
+        orderPromo[index][1] = qty; 
+      }
+      
+    });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await AddPromoPrice(promotionData);
+    await updatedPay();
+  }else{
+    let itemCounthtml = document.getElementById('itemCount');
+    let itemCount = parseInt(itemCounthtml.textContent) + 1;
+    itemCounthtml.textContent = itemCount;
+
+    let promoName = promotionData.promotion_Name;
+    let promoPrice = promotionData.promotion_Price;
+    let promoCode = promotionData.promotion_Code;
+
+    const card = `
+                  <div class="item-card" id="promo-item-card-${promoCode}">
+                    <div class="item-card-con">
+                      <div class="item-card-pic-container">
+                          <img src="./component/CS251 Component/HomeMenuDish/${promoCode}.png">
+                      </div>
+                      <h3 id="promo-name-item-${promoCode}">${promoName}</h3>
+                      <h3 id="promo-count-item-${promoCode}" class="count-item">${1}</h3>
+                      <h3 id="promo-price-item-${promoCode}" class="price-item">฿${promoPrice}</h3>
+                      <h3></h3>
+                      <h3 id="promo-add-item-${promoCode}" class="add-item-icon">+</h3>
+                      <h3 id="promo-rm-item-${promoCode}" class="rm-item-icon">-</h3>
+                      
+                    </div>
+                </div>
+    `;
+/* <img id="promo-rm-all-item-${promoCode}" src="./component/CS251 Component/icon/trash.png" class="item-bin"> */
+    let itemAdd = document.getElementById('itemSlideCon');
+    itemAdd.innerHTML += card;
+    orderPromo.push([promotionDataSet,1]);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await updateAddPromoButton();
+    await updatedPay();
+  }
+
+}
+async function rmPromoCardItem(promotionDataSet){
+  let [promotionData,menus_promo] = promotionDataSet;
+
+  console.log('already to delete card item' + promotionData.promotion_Code);
+  let valuehtml = document.getElementById(`promo-count-item-${promotionData.promotion_Code}`);
+  let value;
+  if(valuehtml){
+    value = parseInt(valuehtml.textContent);
+    if(value == 1){
+      valuehtml.textContent = value-1;
+      await updatedPay();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      let del = document.getElementById(`promo-item-card-${promotionData.promotion_Code}`);
+      del.parentElement.removeChild(del);
+      let counthtml = document.getElementById(`itemCount`);
+      let count = parseInt(counthtml.textContent)-1;
+      counthtml.textContent = count;
+      orderPromo = orderPromo.filter(item => item[0][0].promotion_Code !== promotionData.promotion_Code);
+    }
+    else{
+      valuehtml.textContent = value-1;
+    }
+  }
+  
+
+}
+
+// function updatermPromoCardButton() {
+//   promotion_data.forEach(elm_set => {
+//     let [elm,elm_menus] = elm_set;
+//     let button = document.getElementById(`promo-rm-item-${elm.promotion_Code}`);
+//     button.addEventListener('click', () => {
+//       rmPromoCardItem(elm_set);
+//     });
+//   });
+// }
+
+async function addPromoCardButton() {
+
+  promotion_data.forEach(elm_set => {
+    let [elm,elm_menus] = elm_set;
+    let button = document.getElementById(`addPromotion${elm.promotion_Code}`);
+    button.addEventListener('click', () => {
+      AddPromoCardItem(elm_set);
+    });
+  });
+
+}
+
+
+function updateAddPromoButton(){
+  promotion_data.forEach((promo_set)=>{
+    let [promo,menus] = promo_set;
+    let addBtn = document.getElementById(`promo-add-item-${promo.promotion_Code}`);
+    if(addBtn){
+      addBtn.addEventListener("click",()=>{
+        AddPromoCardItem(promo_set);
+        //AddPromoPrice(promo);
+        
+        //updatedPromoPay();
+      });
+    }
+  });
+  promotion_data.forEach((promo_set)=>{
+    let [promo,menus] = promo_set;
+  let rmBtn = document.getElementById(`promo-rm-item-${promo.promotion_Code}`);
+  if(rmBtn){
+    rmBtn.addEventListener("click",()=>{
+      rmPromoCardItem(promo_set);
+      rmPromoPrice(promo);
+      updatedPay();
+      //updatedPromoPay();
+    });
+  }
+  });
+  
 }
 
 
@@ -296,12 +487,12 @@ dineInMode.addEventListener('click', function() {
 
 const checkBoxMember = document.getElementById('checkMember');
 const membershipInfo = document.getElementById('membershipInfo');
-const newMember = document.getElementById('newMember');
+const newMember = document.getElementById('member-input');
 
 checkBoxMember.addEventListener('click', function() {
     if(checkBoxMember.checked) {
         membershipInfo.style.display = 'block';
-        newMember.style.display = 'none';
+        newMember.style.display = 'block';
     } else {
         membershipInfo.style.display = 'none';
         newMember.style.display = 'block';
@@ -518,10 +709,16 @@ function addItem(index) {
                 <h3 id="qty-item-${index}">QTY:${menu_data[index].amount}</h3>
                 <h3 id="add-item-${index}" class="add-item-icon">+</h3>
                 <h3 id="rm-item-${index}" class="rm-item-icon">-</h3>
-                <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+
             </div>
         </div>
     `;
+
+    let itemCounthtml = document.getElementById('itemCount');
+    let itemCount = parseInt(itemCounthtml.textContent) + 1;
+    itemCounthtml.textContent = itemCount;
+
+    // <img id="rm-all-item-${index}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
 
     let itemAdd = document.querySelector('.qty-item-container');
 
@@ -540,6 +737,7 @@ function addItem(index) {
       addItemIcon.addEventListener('click', () => {
            addQty(idx);
            updatedPay();
+          //  updatedPromoPay();
          })
     }
 
@@ -549,25 +747,74 @@ function addItem(index) {
       rmItemIcon.addEventListener('click', () => {
         rmQty(idx);
         updatedPay();
+        // updatedPromoPay();
       })
     }
 
     for(let j=0;j<itemNum.length;j++){
       var rmAllItemIcon = document.getElementById(`rm-all-item-${itemNum[j]}`);
-      rmAllItemIcon.addEventListener('click', () => {
+      if(rmAllItemIcon){
+        rmAllItemIcon.addEventListener('click', () => {
         let rmNum = document.getElementById(`count-item-${index}`);
         rmNum.textContent = 1;
         console.log(rmNum.textContent);
         const idx = itemNum[j];
         rmQty(idx);
         updatedPay();
-      })
+        // updatedPromoPay();
+      });
+      }
+      
     }
 
     updatedPay();
+    // updatedPromoPay();
 }
 
 var totalPay = 0;
+
+async function updatedPromoPay() {
+  let total = 0;
+
+  for(promo_set of promotion_data){
+    let [promo,menus] = promo_set;
+    let card = document.getElementById(`promo-price-item-${promo.promotion_Code}`);
+    if(card){
+      let currentValue = card.textContent;
+      currentValue = parseInt(currentValue.substring(1));
+      total += currentValue;
+    }
+  }
+
+  totalPay = total;
+
+  let showPayment = document.getElementById('paymentTotal');
+  let currentValue = showPayment.textContent;
+  currentValue = parseInt(currentValue.substring(1));
+  currentValue = total;
+  showPayment.textContent = '$'+currentValue;
+
+  let PaymentAfterTax = document.getElementById('paymentTaxTotal');
+  let currentValue2 = PaymentAfterTax.textContent;
+  currentValue2 = parseInt(currentValue2.substring(1));
+  currentValue2 = (total*7.0/100);
+  PaymentAfterTax.textContent = '$'+currentValue2;
+
+  let PaymentDiscount = document.getElementById('paymentDiscountTotal');
+  let currentValue3 = PaymentDiscount.textContent;
+  currentValue3 = parseInt(currentValue3.substring(1));
+  currentValue3 = 0;
+  PaymentDiscount.textContent = '$'+currentValue3;
+
+  let allTotal = document.getElementById('allTotal');
+  let currentValue4 = allTotal.textContent;
+  currentValue4 = parseInt(currentValue4.substring(1));
+  currentValue4 = total + currentValue2 - currentValue3;
+  if(currentValue4 < 0){
+    currentValue4 = 0;
+  }
+  allTotal.textContent = '$'+currentValue4.toFixed(2);
+}
 
 function updatedPay() {
 
@@ -577,6 +824,15 @@ function updatedPay() {
     let currentValue = priceItems.textContent;
     currentValue = parseInt(currentValue.substring(1));
     total += currentValue;
+  }
+  for(promo_set of promotion_data){
+    let [promo,menus] = promo_set;
+    let card = document.getElementById(`promo-price-item-${promo.promotion_Code}`);
+    if(card){
+      let currentValue = card.textContent;
+      currentValue = parseInt(currentValue.substring(1));
+      total += currentValue;
+    }
   }
   totalPay = total;
   let showPayment = document.getElementById('paymentTotal');
@@ -607,6 +863,24 @@ function updatedPay() {
   allTotal.textContent = '$'+currentValue4.toFixed(2);
 }
 
+function AddPromoPrice(promo){
+  let addPrice = document.getElementById(`promo-price-item-${promo.promotion_Code}`); 
+  let currentValue = addPrice.textContent;
+  currentValue = parseInt(currentValue.substring(1));
+  currentValue = currentValue+(promo.promotion_Price);
+  console.log("ADd promo current " ,currentValue);
+  addPrice.textContent = '$'+currentValue;
+}
+
+function rmPromoPrice(promo){
+  let addPrice = document.getElementById(`promo-price-item-${promo.promotion_Code}`); 
+  let currentValue = addPrice.textContent;
+  currentValue = parseInt(currentValue.substring(1));
+  currentValue = currentValue-(promo.promotion_Price);
+  console.log("Rm promo current " ,currentValue);
+  addPrice.textContent = '$'+currentValue;
+}
+
 function addPrice(index) {
   let addPrice = document.getElementById(`price-item-${index}`); 
   let currentValue = addPrice.textContent;
@@ -622,6 +896,7 @@ function rmPrice(index) {
   currentValue = currentValue-menu_data[index].price;
   rmPrice.textContent = '$'+currentValue;
 }
+
 function updateOrderMenu(index,qty){
   orderMenu.forEach((elm)=>{
     if(elm[0] == menu_data[index]){
@@ -646,7 +921,12 @@ function addQty(index) {
   }
   countItem.textContent = currentQty;
   updatedPay();
+  // updatedPromoPay();
 }
+
+// addPrice(index);
+// updatedPay();
+// updatedPromoPay();
 
 function rmQty(index) {
   console.log("Rmqty index:",index);
@@ -674,6 +954,7 @@ function rmQty(index) {
   }
   countItem.textContent = currentQty;
   updatedPay();
+  // updatedPromoPay();
 }
 function updateAddMenuButton(menuAdd){
     
@@ -755,7 +1036,9 @@ var orderListCount = 0;
 
 placeOrder.addEventListener('click', async () => {
   let countItem = document.getElementById('itemCount').textContent;
+  console.log(countItem);
   if(countItem === '0') return;
+  console.log("Passing 0 item block");
   orderListCount++;
   const orderlistCardContainer = document.querySelector('.popup-order-list-slide-con');
   let orderNumber = document.getElementById('orderNumber').textContent;
@@ -907,8 +1190,21 @@ placeOrder.addEventListener('click', async () => {
       console.log("Json order menu before send :",jsonUpdateOrderMenu);
       await updateOrderMenu(jsonUpdateOrderMenu);
       
+      
+
    
     });
+    for (Promo of orderPromo){
+      console.log("Promo is ",Promo);
+      let dbUpdatePromo = {
+        "invoiceNo":data[0].invoiceNo,
+        "promotion_Code" : Promo[0][0].promotion_Code,
+        "p_amount" : Promo[1]
+      };
+      let dbUpdatePromojson = JSON.stringify(dbUpdatePromo);
+      await updateOrderPromo(dbUpdatePromojson);
+    }
+
     await updateQty();
     orderCon1.style.display = 'block';
     orderCon2.style.display = 'none';
@@ -918,6 +1214,32 @@ placeOrder.addEventListener('click', async () => {
   .catch(error => {
     // Handle any errors that occurred during the fetch
     console.error('There was a problem with the fetch operation:', error);
+  });
+
+  }
+  function updateOrderPromo(jsonPromo){
+    let url = 'http://localhost:8080/api/add/order/promotion'
+    console.log("Fetchin add Orderpromo :",jsonPromo);
+    return fetch(url,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add any other headers if required
+    },
+    body: jsonPromo,
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log("Update OrderMenu pass!");
+          return response.json(); // Return parsed JSON for successful response
+      } else {
+          console.error('Network response was not ok');
+          return null; // Return null for non-success response
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      //throw error; // Re-throw the error for further handling
   });
 
   }
@@ -947,7 +1269,7 @@ placeOrder.addEventListener('click', async () => {
   });
 
   }
-
+ 
   if(await updateDBInvoice(jsoninvoice) !== null){
    
     await getInvoice();
@@ -986,28 +1308,76 @@ function updateMemuQty(item){
 
 function updateQty () {
   
-  let itemCard = document.querySelectorAll('.item-card');
-  itemCard.forEach(() => {
-    let index = itemNum[0];
-    let val = document.getElementById(`count-item-${index}`);
-    let upd = val.textContent;
-    let toUpdate = menu_data[index];
-    toUpdate.amount -= parseInt(upd);
-    if(updateMemuQty(toUpdate) !== null){
-      //menu_data[index].amount -= parseInt(upd);
-    let menu = document.getElementById(`qty-${index}`);
-    menu.textContent = "QTY: " + menu_data[index].amount;
-    val.textContent = 1;
-    const idx = itemNum[0];
-    rmQty(idx);
+  // let itemCard = document.querySelectorAll('.item-card');
+  // itemCard.forEach(() => {
+  //   let index = itemNum[0];
+  //   let val = document.getElementById(`count-item-${index}`);
+    // let upd = val.textContent;
+    // let toUpdate = menu_data[index];
+    // toUpdate.amount -= parseInt(upd);
+    // if(updateMemuQty(toUpdate) !== null){
+    //   //menu_data[index].amount -= parseInt(upd);
+    // let menu = document.getElementById(`qty-${index}`);
+    // menu.textContent = "QTY: " + menu_data[index].amount;
+    // val.textContent = 1;
+    // const idx = itemNum[0];
+    // rmQty(idx);
+    // }
+    // else{
+    //   toUpdate.amount += parseInt(upd);
+    //   window.alert("Fail to Update DB");
+    // }
+  menu_data.forEach(async (menu,index)=>{
+    let card = document.getElementById(`count-item-${index}`);
+    if(card){
+      let upd = card.textContent;
+      let toUpdate = menu_data[index];
+      toUpdate.amount -= parseInt(upd);
+      if(await updateMemuQty(toUpdate) !== null){
+        //menu_data[index].amount -= parseInt(upd);
+      let menu = document.getElementById(`qty-${index}`);
+      menu.textContent = "QTY: " + menu_data[index].amount;
+      val.textContent = 1;
+      const idx = itemNum[0];
+      rmQty(idx);
+      }
+      else{
+        toUpdate.amount += parseInt(upd);
+        window.alert("Fail to Update DB");
+      }
+
     }
-    else{
-      toUpdate.amount += parseInt(upd);
-      window.alert("Fail to Update DB");
+  });
+  promotion_data.forEach(async (promo_set,index) =>{
+    let [promo,menus] = promo_set;
+    let card = document.getElementById(`promo-count-item-${promo.promotion_Code}`);
+    if(card){
+      let upd = card.textContent;
+      let multiplier = parseInt(upd);
+      menus.forEach((menuList,idx) => {
+        menu_data.forEach(async (menu,ix) =>{
+          if(menuList.foodname == menu.foodname){
+            let toUpdate = menu_data[ix];
+            toUpdate.amount -= parseInt(upd)*multiplier;
+            if(await updateMemuQty(toUpdate) !== null){
+              //menu_data[index].amount -= parseInt(upd);
+            let menu = document.getElementById(`qty-${ix}`);
+            menu.textContent = "QTY: " + menu_data[ix].amount;
+            val.textContent = 1;
+            }
+
+          }
+        })
+      });
+      card.textContent = 1;
+      rmPromoCardItem(promo_set);
+  
     }
+  });
+
     
  
-  });
+  // });
 }
 
 const newestMember = document.getElementById('newMember');
@@ -1127,6 +1497,7 @@ const exit = document.querySelector('.exit');
 exit.addEventListener('click', () => {
   popup.style.display = 'none';
 });
+
 
 
 

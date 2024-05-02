@@ -412,7 +412,7 @@ public class JdbcPosRepository implements PosRepository{
     }
     @Override
     public int deleteTransaction(String t_id){
-        return (jdbcTemplate.update("DELETE FROM OrderMenu WHERE InvoiceNo = ?",t_id)*jdbcTemplate.update("DELETE FROM Invoice WHERE InvoiceNo = ?",t_id));
+        return (jdbcTemplate.update("DELETE FROM OrderPromotion WHERE InvoiceNo = ?",t_id)*jdbcTemplate.update("DELETE FROM OrderMenu WHERE InvoiceNo = ?",t_id)*jdbcTemplate.update("DELETE FROM Invoice WHERE InvoiceNo = ?",t_id));
     }
     @Override
     public int deletePromotionByCode(String Promotion_Code) {

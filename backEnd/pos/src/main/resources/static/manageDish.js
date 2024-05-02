@@ -529,6 +529,7 @@ function updateEditMenuButton() {
       save.addEventListener("click", () => {
         console.log("save success!! " + elm.foodname);
         saveEditMenu(elm.foodname);
+        clearAddpromoList();
       });
     });
   });
@@ -798,23 +799,38 @@ function addPromoList() {
       }
       menu_list.push(promoMenu);
     }
+    
   }
+//   function validate(promodata,menu_List){
+//     console.log("Validating :",promodata);
+//     let date = promodata.promotion_Expire;
+//     let price = promodata.promotionPrice;
+//     let promoCode = promodata.promotion_Code;
+//     const dateRegex = /^(0[1-9]|[1-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
+//     const testPrice = (Number.isInteger(price) && price !== "" && price > 0);
+//     const testPromoCode = promoCode.length <= 20
+//     return dateRegex.test(date) && testPrice && testPromoCode && (menu_List.length > 0);
+// }
   console.log(data);
   let jsondata = JSON.stringify(data);
-  DBaddPromoList(jsondata).then(async (result) => {
-    if (result !== null) {
-      for (menu of menu_list){
-        let menujson = JSON.stringify(menu);
-        await DBaddMenuHavePronotion(menujson);
+
+
+    DBaddPromoList(jsondata).then(async (result) => {
+      if (result !== null) {
+        for (menu of menu_list){
+          let menujson = JSON.stringify(menu);
+          await DBaddMenuHavePronotion(menujson);
+        }
+        await promotion_data.push([data,menu_list]);
+        await addPromoCard([data,menu_list]);
+        await updateDeletePromoButton();
+      } else {
+        window.alert("Fail to add menu due to database");
       }
-      await promotion_data.push([data,menu_list]);
-      await addPromoCard([data,menu_list]);
-      await updateDeletePromoButton();
-    } else {
-      window.alert("Fail to add menu due to database");
-    }
-  });
-}
+    });
+  }
+  
+
 function DBaddMenuHavePronotion(json){
   let url = `http://localhost:8080/api/add/menu/havepromotion`;
   return fetch(url, {
