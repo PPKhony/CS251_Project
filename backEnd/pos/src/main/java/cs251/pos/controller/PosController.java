@@ -200,7 +200,7 @@ public class PosController {
     @DeleteMapping(value = "/delete/promotion/{Promotion_Code}")
     public ResponseEntity<String> deletePromotionByCode(@PathVariable("Promotion_Code") String Promotion_Code) {
         try {
-            int result = posRepository.deletePromotionByCode(Promotion_Code);
+            int result = (posRepository.deleteMenuHavePromotion(Promotion_Code)*posRepository.deletePromotionByCode(Promotion_Code));
             if (result == 0) {
                 return new ResponseEntity<>("Cannot find Promotion with code=" + Promotion_Code, HttpStatus.OK);
             }

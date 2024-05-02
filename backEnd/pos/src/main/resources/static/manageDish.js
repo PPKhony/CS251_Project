@@ -107,7 +107,7 @@ const promotionPopup = document.getElementById("promotionPopup");
 const exitPromotion = document.getElementById("exitPromotion");
 const savePromotion = document.getElementById("savePromotion");
 
-function openPopupPromotion() {
+async function openPopupPromotion() {
   promotionPopup.style.display = "block";
 
   exitPromotion.addEventListener("click", () => {
@@ -156,7 +156,7 @@ async function loadPromotion() {
       return response.json();
     })
     .then(async (data) => {
-      console.log("Get data promo", data);
+      console.log("Get data promo", data.promotion_Name);
       Promise.all(
         data.map(async (promo) => {
           const menuPromo = await loadMenuPromo(promo.promotion_Code);
@@ -200,6 +200,13 @@ async function loadMenuCard() {
 
   await updateDeleteMenuButton();
   await updateEditMenuButton();
+  // await menu_data.forEach(elm => {
+  //   addCardItemMenuPromoAdd(elm);
+  // });
+  for (elm of menu_data){
+    await addCardItemMenuPromoAdd(elm);
+  }
+  await updateButtonPromoMenu();
 }
 
 async function loadPromoCard() {
@@ -209,7 +216,7 @@ async function loadPromoCard() {
   }
 
   await updateDeletePromoButton();
-  // await updateEditPromoButton();
+   //await updateEditPromoButton();
 }
 
 function addMenuCard(menudata) {
@@ -467,11 +474,17 @@ function updateDeleteMenuButton() {
     console.log("Updating ", elm.foodname);
     var button = document.getElementById(`del-${elm.foodname}`);
     button.addEventListener("click", function () {
-      delDBMenu(elm).then((result) => {
+      delDBMenu(elm).then(async (result) => {
         if (result !== null) {
           var del = document.getElementById(`menu-${elm.foodname}`);
-          del.parentNode.removeChild(del);
+          await del.parentNode.removeChild(del);
           menu_data = menu_data.filter((item) => item !== elm);
+          await new Promise((resolve) => setTimeout(resolve, 0));
+          console.log("removing node ",elm.foodname);
+          let delPromo = document.getElementById(`item-card-${elm.foodname}`);
+          await delPromo.parentNode.removeChild(delPromo);
+          console.log("remove done :",elm.foodname);
+         // await updateButtonPromoMenu();
         } else {
           window.alert("Fail to delete the food");
         }
@@ -491,6 +504,7 @@ function updateDeletePromoButton() {
           let del = document.getElementById(`promo-${elm.promotion_Code}`);
           del.parentNode.removeChild(del);
           promotion_data = promotion_data.filter((item) => item != elm);
+          
         } else {
           window.alert("Fail to delete promotion");
         }
@@ -518,6 +532,12 @@ function updateEditMenuButton() {
       });
     });
   });
+}
+function clearAddpromoList(){
+  for (menu of menu_data){
+    let promoMenuhtml = document.getElementById(`count-item-${menu.foodname}`);
+    promoMenuhtml.textContent = "0";
+  }
 }
 
 function saveEditMenu(foodname) {
@@ -740,8 +760,10 @@ function addMenuList() {
     if (result !== null) {
       await menu_data.push(data);
       await addMenuCard(data);
+      await addCardItemMenuPromoAdd(data);
       console.log(menu_data);
       await updateDeleteMenuButton();
+      await updateButtonPromoMenu();
     } else {
       window.alert("Fail to add menu due to database");
     }
@@ -764,18 +786,57 @@ function addPromoList() {
     promotion_Expire: promotionExpiredCheck
   };
   let menu_list = [];
+  //ADDING menuList!!
+  for(menu of menu_data){
+    let menuhtml = document.getElementById(`count-item-${menu.foodname}`);
+    let menuAmount = parseInt(menuhtml.textContent);
+    if(menuAmount > 0){
+      let promoMenu = {
+        "foodname": menu.foodname,
+        "promotion_Code":promotionCode,
+        "amount": menuAmount
+      }
+      menu_list.push(promoMenu);
+    }
+  }
   console.log(data);
   let jsondata = JSON.stringify(data);
   DBaddPromoList(jsondata).then(async (result) => {
     if (result !== null) {
-      await promotion_data.push(data);
+      for (menu of menu_list){
+        let menujson = JSON.stringify(menu);
+        await DBaddMenuHavePronotion(menujson);
+      }
+      await promotion_data.push([data,menu_list]);
       await addPromoCard([data,menu_list]);
-      console.log(promotion_data);
       await updateDeletePromoButton();
     } else {
       window.alert("Fail to add menu due to database");
     }
   });
+}
+function DBaddMenuHavePronotion(json){
+  let url = `http://localhost:8080/api/add/menu/havepromotion`;
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // Add any other headers if required
+    },
+    body: json,
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json(); // Return parsed JSON for successful response
+      } else {
+        console.error("Network response was not ok");
+        return null; // Return null for non-success response
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      //throw error; // Re-throw the error for further handling
+    });
 }
 
 function validateDate(input) {
@@ -787,15 +848,77 @@ function validateDate(input) {
   return trimmedIsoString;
 }
 
-// function promotionEditButton () {
-//   promotion_data.forEach(elm => {
-//     let code = elm.promotion_Code;
-//     let edit = document.getElementById(`edit-promo-${code}`);
-//     edit.addEventListener('click', () => {
-//       let popup = document.getElementById(`promotionPopup${code}`);
-//       popup.style.display = 'none';
-      
-      
-//     });
-//   });
-// }
+function addCardItemMenuPromoRemove () {
+  let itemSlideCon = document.getElementById(`itemSlideCon`);
+  itemSlideCon.parentNode.removeChild(itemSlideCon);
+}
+var addPromoMenuList = [];
+
+async function addCardItemMenuPromoAdd (item) {
+
+let unit = item.unit;
+let amount = item.amount;
+let price = item.price;
+let foodname = item.foodname;
+
+let cardItem = `
+                <div class="item-card" id="item-card-${foodname}">
+                  <div class="item-card-con">
+                    <div class="item-card-pic-container">
+                      <img src="./component/CS251 Component/HomeMenuDish/${foodname}.png">
+                    </div>
+                    <h3 id="name-item-${foodname}">${foodname}</h3>
+                    <h3 id="count-item-${foodname}" class="count-item">${0}</h3>
+                    <h3 id="price-item-${foodname}" class="price-item">${price}</h3>
+                    <h3 id="qty-item-${foodname}">QTY:${amount}</h3>
+                    <h3 id="add-item-${foodname}" class="add-item-icon">+</h3>
+                    <h3 id="rm-item-${foodname}" class="rm-item-icon">-</h3>
+                    <img id="rm-all-item-${foodname}" src="./component/CS251 Component/icon/trash.png" class="item-bin">
+                  </div>
+                </div>
+`;
+
+let itemSlideCon = document.getElementById(`itemSlideCon`);
+itemSlideCon.innerHTML += cardItem;
+
+//var menuAdd = document.querySelectorAll('.menu-add-button');
+
+
+
+}
+function updateButtonPromoMenu(){
+  for (let menu of menu_data) {
+    let addBtn = document.getElementById(`add-item-${menu.foodname}`);
+    let rmBtn = document.getElementById(`rm-item-${menu.foodname}`);
+    let cntItemhtml = document.getElementById(`count-item-${menu.foodname}`);
+    let setZerohtml = document.getElementById(`rm-all-item-${menu.foodname}`);
+    
+    // Use a closure to capture the current 'menu' and 'cntItemhtml'
+    addBtn.addEventListener("click", (currentMenu => {
+      return () => {
+        let countItem = parseInt(cntItemhtml.textContent);
+        countItem = parseInt(countItem)+1;
+        console.log("Inc cnt value :",countItem);
+        cntItemhtml.textContent = countItem;
+      };
+    })(menu));
+  
+    // Use a closure to capture the current 'menu' and 'cntItemhtml'
+    rmBtn.addEventListener("click", (currentMenu => {
+      return () => {
+        let countItem = parseInt(cntItemhtml.textContent);
+        if (countItem > 0) {
+          countItem = parseInt(countItem)-1;
+          console.log("Dec cnt value :",countItem);
+          cntItemhtml.textContent = countItem;
+        }
+      };
+    })(menu));
+    setZerohtml.addEventListener("click", (currentMenu =>{
+      return () =>{
+        cntItemhtml.textContent = 0;
+      }
+    })(menu));
+  }
+}
+
