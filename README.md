@@ -3,10 +3,4 @@
 * please use in 80%
 
 
-
-
-
-
-
-
-Pee is gay
+Kub Admin BFS
