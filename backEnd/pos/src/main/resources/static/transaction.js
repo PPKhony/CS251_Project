@@ -352,22 +352,7 @@ async function addEditCardList(newMember) {
   let invoiceData = await loadTransactionHistory(invoiceNo);
   console.log("The data from ",invoiceNo ," is ",invoiceData);
   let invoicePromo = invoiceData.filter(item => item.promotionAmount > 0);
-//Example invoicePromo
-//   {
-//     dateTime: "2024-04-29T11:28:09.000+00:00",
-//     i_change: 561.3,
-//     invoiceNo: 41,
-//     memberID: null,
-//     netPrice: 438.7,
-//     orderedAmount: 0,
-//     orderedFood: null,
-//     payment: "1000.0",
-//     paymentMethod: "Cash",
-//     promotionAmount: 2,
-//     promotionCode: "RH8I-31SS-LOPQ",
-//     takeHome: false,
-//     totalDiscount: 0
-// }
+
 
 
   let invoiceMenu = invoiceData.filter(item => item.orderedAmount > 0);
@@ -470,12 +455,27 @@ async function addEditCardList(newMember) {
       paymentAll += menu.payment;
       countItem++;
     })
-
+//Example invoicePromo
+//   {
+//     dateTime: "2024-04-29T11:28:09.000+00:00",
+//     i_change: 561.3,
+//     invoiceNo: 41,
+//     memberID: null,
+//     netPrice: 438.7,
+//     orderedAmount: 0,
+//     orderedFood: null,
+//     payment: "1000.0",
+//     paymentMethod: "Cash",
+//     promotionAmount: 2,
+//     promotionCode: "RH8I-31SS-LOPQ",
+//     takeHome: false,
+//     totalDiscount: 0
+// }
     invoicePromo.forEach((promo) => {
       addCardItemPromo(promo);
-      netPriceAll += menu.netPrice;
-      totalDiscountAll += menu.totalDiscount;
-      paymentAll += menu.payment;
+      netPriceAll += promo.netPrice;
+      totalDiscountAll += promo.totalDiscount;
+      paymentAll += promo.payment;
       countItem++;
     })
 
@@ -555,7 +555,7 @@ function addCardItemPromo(promo) {
                       <div class="item-card" id="item-card-${invoiceNo}">
                         <div class="item-card-con">
                           <div class="item-card-pic-container">
-                              <img src="./component/CS251 Component/HomeMenuDish/Classic Margarita">
+                              <img src="./component/CS251 Component/HomeMenuDish/${orderedFood}.png">
                           </div>
                           <h3 id="name-item-${invoiceNo}">${orderedFood}</h3>
                           <h3 id="count-item-${invoiceNo}" class="count-item">${orderedAmount}</h3>

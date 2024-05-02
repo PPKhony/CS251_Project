@@ -973,10 +973,10 @@ function updateAddMenuButton(menuAdd){
       currentPriceValue = parseInt(currentPriceValue.substring(1));
       currentPriceValue = currentPriceValue-menu_data[index].price;
 
-      const itemCount = document.getElementById('itemCount');
-      let currentValue = parseInt(itemCount.textContent);
-      currentValue++;
-      itemCount.textContent = currentValue;
+      // const itemCount = document.getElementById('itemCount');
+      // let currentValue = parseInt(itemCount.textContent);
+      // currentValue++;
+      // itemCount.textContent = currentValue;
       }
       
       }
